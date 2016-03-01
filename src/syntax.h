@@ -7,48 +7,28 @@
 
 #ifndef TYPES_SYNTAX_H_
 #define TYPES_SYNTAX_H_
+
 class Syntax {
 protected:
 	static string keyWord;
 	static string all;
-	static list<Syntax> parsers;
-	static void init() {
-//		parsers.push_front(Procedure());
-	}
 public:
-	bool parseLine(string str) {
-		return false;
+	virtual bool parseLine(string str)=0;
+	virtual ~Syntax() {
 	}
-
-	static bool parse(string str) {
-		for (list<Syntax>::iterator it = parsers.begin(); it != parsers.end(); ++it) {
-			bool result = it->parseLine(str);
-			if (result) {
-				break;
-			}
-		}
-		return false;
-	}
-
-	Syntax() {
-		if (parsers.size() == 0) {
-			init();
-		}
-	}
-
 };
 string Syntax::all = "*";
+string Syntax::keyWord;
 
-//class Procedure: public Syntax {
-//
-//public:
-//	Procedure() {
-//		keyWord = "procedure";
-//	}
-//
-//	bool parseLine(string str) {
-//		return false;
-//	}
-//};
+class Procedure: public Syntax {
+public:
+	Procedure() {
+		keyWord = "procedure";
+	}
+
+	bool parseLine(string str) {
+		return str.find(keyWord) != std::string::npos;
+	}
+};
 
 #endif /* TYPES_SYNTAX_H_ */
