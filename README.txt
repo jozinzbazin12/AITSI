@@ -1,3 +1,7 @@
-Nie wiem jak z VS2010 i gitem, ale polecam œci¹gn¹c i zainstaloac gita https://git-scm.com/downloads.
+https://creately.com/diagram/ilumrhcz1/EIa0uN3NEUsNSOYAcOPc4FBSVQ%3D --> diagram klas
+https://docs.google.com/document/d/1mKGHTHvYleBG__uLGMndFNYd0incS-3dxKrmmVZSsWQ/edit?usp=sharing  --> dokladniejszy opis diagramu klas
+
+Nie wiem jak z VS2010 i gitem, ale polecam Å›ciÄ…gnÄ…c i zainstaloac gita https://git-scm.com/downloads.
 Commitowac tylko pliki zrodlowe, biblioteki i dane testowe.
-Jak nie odpowiada struktura plików to mo¿ecie sobie przystosowac do VS.
+Jak nie odpowiada struktura plikÃ³w to moÅ¼ecie sobie przystosowac do VS.
+
