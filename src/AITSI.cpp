@@ -1,8 +1,22 @@
-#include <iostream>
 #include <fstream>
+#include <sstream>
+#include <iostream>
+#include <string>
 #include <vector>
+#include <istream>
+#include <algorithm>
+#include <map>
+#include <iterator>
+
 using namespace std;
+
+string toLower(string str) {
+	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+	return str;
+}
+
 #include "types.h"
+#include "tree/tree_nodes.h"
 #include "syntax.h"
 #include "parser.h"
 
@@ -20,12 +34,12 @@ int main(int argc, char** args) {
 		if (!parser.fileExists) {
 			cout << "File not found\n";
 		} else {
-			bool result = parser.parse();
-			if (result) {
+			try {
+				parser.parse();
 				cout << "OK";
-			} else {
-				cout << "b³ont\n";
-				cout << "b³ont ortograficzny\n";
+			} catch (string &msg) {
+				cout << msg << endl;
+				cout << "FAIL";
 			}
 		}
 	}

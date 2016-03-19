@@ -8,22 +8,36 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
-#include <iostream>
-#include <string>
-
 class Parser {
 private:
 	fstream stream;
-	vector<Syntax*> parsers;
+	map<string, Syntax*> parsers;
+	int count = 0;
 
-	bool parseLine(string str) {
-		for (vector<Syntax*>::iterator it = parsers.begin(); it != parsers.end(); ++it) {
-			bool result = (*it)->parseLine(str);
-			if (result) {
-				return true;
+	vector<string> split(string s) {
+		istringstream iss(s);
+		vector < string > tokens;
+		copy(istream_iterator < string > (iss), istream_iterator<string>(), back_inserter(tokens));
+		return tokens;
+	}
+
+	void parseLine(string str) {
+		vector < string > splitLine = split(str);
+		Syntax* syntax = parsers[toLower(splitLine[0])];
+		if (!syntax) {
+			syntax = parsers[toLower(splitLine[1])];
+			if (!syntax) {
+				stringstream ss;
+				ss << "Nie mozna sparsowac linii " << str << "(linia " << count << ")";
+				throw ss.str();
 			}
 		}
-		return false;
+		Syntax::currLine = count;
+		syntax->parseLine(splitLine);
+	}
+
+	void addSyntax(Syntax* s) {
+		parsers[s->keyWord] = s;
 	}
 
 public:
@@ -35,22 +49,20 @@ public:
 			fileExists = true;
 			cout << "File " + fileName + " found!\n";
 			//Tu dodawac parsery polecen
-			parsers.push_back(new Procedure());
+			addSyntax(new ProcedureSyntax());
+			addSyntax(new AssingmentSyntax());
 		}
 	}
 
-	bool parse() {
+	void parse() {
 		string line;
-		bool result = false;
 		do {
 			getline(stream, line);
-			result = parseLine(line);
-			if (!result) {
-				return false;
-			}
+			count++;
+			parseLine(line);
 		} while (!stream.eof());
-		return true;
 	}
-};
+}
+;
 
 #endif /* PARSER_H_ */
