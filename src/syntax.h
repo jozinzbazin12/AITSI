@@ -8,47 +8,152 @@
 #ifndef TYPES_SYNTAX_H_
 #define TYPES_SYNTAX_H_
 
+class Matcher {
+private:
+	int getEnd(int pos, string str) {
+		int len = str.length() - pos;
+		if (!pos) {
+			len--;
+		}
+		return len;
+	}
+
+	void throwException(string msg) {
+		Exception e = Exception();
+		e.line = -1;
+		e.parser = "?";
+		e.msg = msg;
+		throw e;
+	}
+public:
+	static string space;
+//	static string nothing;
+	static string any;
+	static string anyWord;
+	string word;
+	string rSeparator = "";
+	string lSeparator = "";
+
+	int matchWildcard(string s, int currentPos, Matcher* next) {
+		if (word == any || (word == anyWord && !next)) {
+			return s.length() - 1;
+		}
+		int pos = s.substr(currentPos, getEnd(currentPos, s)).find(next->word.c_str());
+		if (pos == std::string::npos) {
+			throwException("Nie znaleziono nastepnego slowa " + word);
+		}
+		pos--;
+		if (lSeparator == space && s[currentPos - 1] != ' ') {
+			throwException("Niepoprawny lewy separator slowa " + word);
+		}
+		if (rSeparator == space && s[pos + currentPos] != ' ') {
+			throwException("Niepoprawny prawy separator slowa " + word);
+		}
+		return pos + currentPos + 1;
+
+	}
+	int match(string s, int currentPos, Matcher* next) {
+		if (word == any || word == anyWord) {
+			return matchWildcard(s, currentPos, next);
+		}
+		s = toLower(s);
+		int pos = s.substr(currentPos, getEnd(currentPos, s)).find(word.c_str());
+		if (pos == std::string::npos) {
+			throwException("Nie znaleziono slowa " + word);
+		}
+		if (lSeparator == space && s[pos - 1] != ' ') {
+			throwException("Niepoprawny lewy separator slowa " + word);
+		}
+		if (rSeparator == space && s[pos + s.length()] != ' ') {
+			throwException("Niepoprawny prawy separator slowa " + word);
+		}
+		return pos + word.length() + 1;
+	}
+	Matcher(string word, string lSeparator, string rSeparator) {
+		this->word = word;
+		this->lSeparator = lSeparator;
+		this->rSeparator = rSeparator;
+		if (word == any && rSeparator == space) {
+			cout << "Matcher " << word << " jest bez sensu" << endl;
+		}
+	}
+};
+string Matcher::space = " ";
+//string Matcher::nothing = "";
+string Matcher::any = "**";
+string Matcher::anyWord = "*";
+
 class Syntax {
 protected:
 	bool multiLine = false;
+	bool semicolon = true;
 	static string anyWord;
 	static string any;
-	vector<string> syntax;
+	vector<Matcher> syntax;
 	vector<Syntax*> possibleChildren;
 
-	string getError() {
-		stringstream ss;
-		ss << "Wystapil blad w linii " << currLine << ", " << keyWord << ", ";
-		return ss.str();
+	void throwException(string msg, bool runtime = false) {
+		Exception e;
+		if (runtime) {
+			e = RuntimeException();
+		} else {
+			e = Exception();
+		}
+		e.line = currLine;
+		e.parser = keyWord;
+		e.msg = msg;
+		throw e;
 	}
 
-	vector<string> match(vector<string> str) {
-		int lineSize = str.size();
-		int syntaxSize = syntax.size();
-		if (!multiLine && lineSize != syntaxSize) {
-			stringstream ss;
-			ss << getError() << "niepoprawna ilosc slow (" << lineSize << " vs " << syntaxSize << ")";
-			throw ss.str();
-		}
+	void ltrim(string &s) {
+		s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+	}
+
+	void rtrim(string &s) {
+		s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+	}
+
+	void trim(string &s) {
+		ltrim(s);
+		rtrim(s);
+	}
+
+	vector<string> match(string str) {
 		vector < string > vars;
-		for (unsigned i = 0; i < str.size(); i++) {
-			if (syntax[i] == any) {
-				for (unsigned j = i; j < str.size(); j++) {
-					vars.push_back(str[j]);
-				}
-				break;
-			} else if (syntax[i] == anyWord) {
-				vars.push_back(str[i]);
-			} else if (toLower(str[i]) != toLower(syntax[i])) {
-				string msg = getError() + "slowa nie pokrywaja sie (" + str[i] + " vs " + syntax[i] + ")";
+		int position = 0;
+		int newPosition = 0;
+		trim(str);
+		if (semicolon) {
+			int semicolonPos = str.find(";");
+			if (semicolonPos == string::npos || (semicolonPos != str.length() - 1 && str.find("}") != str.length() - 1)) {
+				throwException("brakuje srednika");
 			}
+
+		}
+		for (vector<Matcher>::iterator it = syntax.begin(); it != syntax.end(); ++it) {
+			Matcher* m = &*(it + 1);
+			newPosition = it->match(str, position, m);
+			if (it->word == any || it->word == anyWord) {
+				string result = str.substr(position, newPosition - position);
+				trim(result);
+				vars.push_back(result);
+			}
+			position = newPosition;
 		}
 		return vars;
 	}
+
+	vector<string> split(string s) {
+		istringstream iss(s);
+		vector < string > tokens;
+		copy(istream_iterator < string > (iss), istream_iterator<string>(), back_inserter(tokens));
+		return tokens;
+	}
+
 public:
 	static int currLine;
 	string keyWord;
-	virtual void parseLine(vector<string> strs)=0;
+	virtual Node* parseLine(string str)=0;
 	virtual ~Syntax() {
 	}
 }
@@ -64,16 +169,23 @@ private:
 public:
 	ProcedureSyntax() {
 		keyWord = StatementType::PROCEDURE;
-		syntax = {"procedure", "*", "{"};
+		syntax = {Matcher(StatementType::PROCEDURE,Matcher::anyWord, Matcher::any),
+			Matcher(Matcher::anyWord,Matcher::space, Matcher::anyWord), Matcher("{", Matcher::anyWord, Matcher::anyWord)};
+		semicolon = false;
 	}
 
-	void parseLine(vector<string> strs) {
-		vector<string> args=match(strs);
-		if(procedures[args[0]]) {
-			throw getError() +"procedura "+ args[0] +" juz istnieje!";
+	Node* parseLine(string str) {
+		vector < string > splitStr = split(str);
+		if (toLower(splitStr[0]) != keyWord) {
+			return NULL;
 		}
-		Procedure* p=new Procedure(args[0]);
-		procedures[args[0]]=p;
+		vector < string > args = match(str);
+		if (procedures[args[0]]) {
+			throwException("procedura " + args[0] + " juz istnieje!", true);
+		}
+		Procedure* p = new Procedure(args[0]);
+		procedures[args[0]] = p;
+		return p;
 	}
 }
 ;
@@ -81,8 +193,6 @@ map<string, Procedure*> ProcedureSyntax::procedures;
 
 class AssingmentSyntax: public Syntax {
 protected:
-	vector<string> varNames;
-
 	bool isLetter(char c) {
 		return (c >= 65 && c <= 90) || (c >= 97 && c <= 122);
 	}
@@ -106,25 +216,22 @@ protected:
 public:
 	AssingmentSyntax() {
 		keyWord = StatementType::ASSIGN;
-		syntax = {"*", "=", "**"};
+		syntax = {Matcher(Matcher::anyWord, Matcher::anyWord, Matcher::anyWord),
+			Matcher("=", Matcher::anyWord, Matcher::anyWord), Matcher(any, Matcher::anyWord, Matcher::anyWord)};
 		multiLine = true;
 	}
 
-	void parseLine(vector<string> strs) {
-		string last = strs.back();
-//		if (last.find(";") != last.length() - 1) {
-//			throw getError() + "brak ; na koncu linii";
-//		}
-		vector < string > args = match(strs);
+	Node* parseLine(string str) {
+		vector < string > args = match(str);
 		string name = args.front();
 		if (!isVar(name)) {
-			throw getError() + name + " nie jest nazwa zmiennej!";
+			throwException(name + " nie jest nazwa zmiennej!", true);
 		}
-		varNames.push_back(name);
 		args.erase(args.begin());
+		///rekurencja tu ma byc
+		return new Assignment();
 	}
 }
 ;
-
 
 #endif /* TYPES_SYNTAX_H_ */

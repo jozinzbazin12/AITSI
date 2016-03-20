@@ -10,52 +10,55 @@
 
 class Parser {
 private:
+	bool debug;
 	fstream stream;
-	map<string, Syntax*> parsers;
+	vector<Syntax*> parsers;
 	int count = 0;
-
-	vector<string> split(string s) {
-		istringstream iss(s);
-		vector < string > tokens;
-		copy(istream_iterator < string > (iss), istream_iterator<string>(), back_inserter(tokens));
-		return tokens;
-	}
+	stack<Node*> openedNodes;
+	Node* root;
 
 	void parseLine(string str) {
-		vector < string > splitLine = split(str);
-		Syntax* syntax = parsers[toLower(splitLine[0])];
-		if (!syntax) {
-			syntax = parsers[toLower(splitLine[1])];
-			if (!syntax) {
-				stringstream ss;
-				ss << "Nie mozna sparsowac linii " << str << "(linia " << count << ")";
-				throw ss.str();
+		Node* node = NULL;
+		Syntax::currLine = count;
+		for (vector<Syntax*>::iterator it = parsers.begin(); it != parsers.end(); ++it) {
+			try {
+				node = (*it)->parseLine(str);
+			} catch (Exception &e) {
+				if (debug) {
+					e.print();
+				}
+			}
+			if (node) {
+				break;
 			}
 		}
-		Syntax::currLine = count;
-		syntax->parseLine(splitLine);
-	}
-
-	void addSyntax(Syntax* s) {
-		parsers[s->keyWord] = s;
+		if (!node) {
+			RuntimeException e = RuntimeException();
+			e.line = count;
+			e.parser = "PARSER";
+			e.msg = "Nie mozna sparsowac linii";
+			throw e;
+		}
 	}
 
 public:
 	bool fileExists = false;
 
-	Parser(string fileName) {
+	Parser(string fileName, bool debug = false) {
+		this->debug = debug;
 		stream.open(fileName.c_str());
 		if (stream.good() && stream.is_open()) {
 			fileExists = true;
 			cout << "File " + fileName + " found!\n";
 			//Tu dodawac parsery polecen
-			addSyntax(new ProcedureSyntax());
-			addSyntax(new AssingmentSyntax());
+			parsers.push_back(new ProcedureSyntax());
+			parsers.push_back(new AssingmentSyntax());
 		}
 	}
 
 	void parse() {
 		string line;
+		root = new Program();
 		do {
 			getline(stream, line);
 			count++;

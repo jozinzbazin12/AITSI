@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <map>
 #include <iterator>
+#include <stack>
 
 using namespace std;
 
@@ -14,7 +15,7 @@ string toLower(string str) {
 	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 	return str;
 }
-
+#include "exceptions.h"
 #include "types.h"
 #include "tree/tree_nodes.h"
 #include "syntax.h"
@@ -30,15 +31,18 @@ int main(int argc, char** args) {
 	if (action == "help") {
 		cout << "Usage...\n";
 	} else if (action == "file") {
-		Parser parser(args[2]);
+		Parser parser(args[2], true);
 		if (!parser.fileExists) {
 			cout << "File not found\n";
 		} else {
 			try {
 				parser.parse();
 				cout << "OK";
-			} catch (string &msg) {
-				cout << msg << endl;
+			} catch (RuntimeException &ex) {
+				ex.print();
+				cout << "FAIL";
+			} catch (Exception &ex) {
+				ex.print();
 				cout << "FAIL";
 			}
 		}
