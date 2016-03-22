@@ -12,7 +12,7 @@
 using namespace std;
 
 string toLower(string str) {
-	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+	transform(str.begin(), str.end(), str.begin(), ::tolower);
 	return str;
 }
 
@@ -65,7 +65,7 @@ int main(int argc, char** args) {
 			}
 		}
 	} else {
-		cout << "Nie rozumiem";
+		cout << "Invalid arguments";
 	}
 	return 0;
 }

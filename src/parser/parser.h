@@ -15,7 +15,7 @@ private:
 	vector<Syntax*> parsers;
 	int count = 0;
 	stack<Node*> openedNodes;
-	Node* root;
+	Node* root = NULL;
 
 	void parseLine(string str) {
 		Node* node = NULL;
@@ -29,6 +29,13 @@ private:
 				}
 				node = (*it)->parseLine(str);
 				if (node) {
+					openedNodes.top()->children.push_back(node);
+					if (node->newLevel) {
+						openedNodes.push(node);
+					}
+					if (node->last) {
+						openedNodes.pop();
+					}
 					break;
 				}
 			} catch (Exception &e) {
@@ -41,7 +48,7 @@ private:
 			RuntimeException e = RuntimeException();
 			e.line = count;
 			e.parser = "PARSER";
-			e.msg = "Nie mozna sparsowac linii";
+			e.msg = "could not parse line";
 			throw e;
 		}
 	}
@@ -64,11 +71,15 @@ public:
 	void parse() {
 		string line;
 		root = new Program();
+		openedNodes.push(root);
 		do {
 			getline(stream, line);
 			count++;
 			parseLine(line);
 		} while (!stream.eof());
+		if (root != openedNodes.top()) {
+			throw RuntimeException(count, "?", "Program is not last node");
+		}
 	}
 }
 ;

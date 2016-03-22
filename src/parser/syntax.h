@@ -40,18 +40,19 @@ public:
 		}
 		int pos = s.substr(currentPos, getEnd(currentPos, s)).find(next->word.c_str());
 		if (pos == std::string::npos) {
-			throwException("Nie znaleziono nastepnego slowa " + word);
+			throwException("word not found " + word);
 		}
 		pos--;
 		if (lSeparator == space && s[currentPos - 1] != ' ') {
-			throwException("Niepoprawny lewy separator slowa " + word);
+			throwException("invalid left word separator " + word);
 		}
 		if (rSeparator == space && s[pos + currentPos] != ' ') {
-			throwException("Niepoprawny prawy separator slowa " + word);
+			throwException("invalid right word separator " + word);
 		}
 		return pos + currentPos + 1;
 
 	}
+
 	int match(string s, int currentPos, Matcher* next) {
 		if (word == any || word == anyWord) {
 			return matchWildcard(s, currentPos, next);
@@ -59,13 +60,13 @@ public:
 		s = toLower(s);
 		int pos = s.substr(currentPos, getEnd(currentPos, s)).find(word.c_str());
 		if (pos == std::string::npos) {
-			throwException("Nie znaleziono slowa " + word);
+			throwException("word not found " + word);
 		}
 		if (lSeparator == space && s[pos - 1] != ' ') {
-			throwException("Niepoprawny lewy separator slowa " + word);
+			throwException("invalid left word separator " + word);
 		}
 		if (rSeparator == space && s[pos + s.length()] != ' ') {
-			throwException("Niepoprawny prawy separator slowa " + word);
+			throwException("invalid right word separator " + word);
 		}
 		return pos + word.length() + 1;
 	}
@@ -75,7 +76,7 @@ public:
 		this->lSeparator = lSeparator;
 		this->rSeparator = rSeparator;
 		if (word == any && rSeparator == space) {
-			cout << "Matcher " << word << " jest bez sensu" << endl;
+			cout << "Matcher " << lSeparator << word << rSeparator << " has no sense" << endl;
 		}
 	}
 };
@@ -86,12 +87,19 @@ string Matcher::anyWord = "*";
 
 class Syntax {
 protected:
+	bool brace = false;
 	bool multiLine = false;
 	bool semicolon = true;
 	static string anyWord;
 	static string any;
 	vector<Matcher> syntax;
 	vector<Syntax*> possibleChildren;
+
+	bool getBrace() {
+		bool b = brace;
+		brace = false;
+		return b;
+	}
 
 	void throwException(string msg, bool runtime = false) {
 		Exception e;
@@ -117,12 +125,13 @@ protected:
 				string end = str.substr(semicolonPos, bracePos);
 				removeWhitespaces(end);
 				if (end.length() > 2) {
-					throwException("niedowzolone znaki po sredniku");
+					throwException("denied characters after semicolon");
 				}
+				brace = true;
 			} else if (semicolonPos == string::npos) {
-				throwException("brakuje srednika");
+				throwException("no semicolon found");
 			} else if (semicolonPos != str.length() - 1) {
-				throwException("niedowzolone znaki po sredniku");
+				throwException("denied characters after semicolon");
 			}
 
 		}
@@ -152,11 +161,17 @@ public:
 	virtual Node* parseLine(string str)=0;
 	virtual ~Syntax() {
 	}
-}
-;
+};
 string Syntax::anyWord = "*";
 string Syntax::any = "**";
 int Syntax::currLine = 0;
+
+class RecursiveSyntax: public Syntax {
+protected:
+	vector<Syntax*> parsers;
+public:
+
+};
 
 class ProcedureSyntax: public Syntax {
 private:
@@ -177,7 +192,7 @@ public:
 		}
 		vector < string > args = match(str);
 		if (procedures[args[0]]) {
-			throwException("procedura " + args[0] + " juz istnieje!", true);
+			throwException("procedure " + args[0] + " already exists!", true);
 		}
 		Procedure* p = new Procedure(args[0]);
 		procedures[args[0]] = p;
@@ -224,11 +239,13 @@ public:
 		vector < string > args = match(str);
 		string name = args.front();
 		if (!isVar(name)) {
-			throwException(name + " nie jest nazwa zmiennej!", true);
+			throwException(name + " is not variable name!", true);
 		}
 		args.erase(args.begin());
 		///rekurencja tu ma byc
-		return new Assignment();
+		Assignment* a = new Assignment();
+		a->last = getBrace();
+		return a;
 	}
 }
 ;
