@@ -36,8 +36,8 @@ void removeWhitespaces(string &str) {
 #include "exceptions.h"
 #include "types.h"
 #include "tree/tree_nodes.h"
-#include "syntax.h"
-#include "parser.h"
+#include "parser/syntax.h"
+#include "parser/parser.h"
 
 int main(int argc, char** args) {
 	if (argc <= 1) {
