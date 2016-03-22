@@ -69,6 +69,7 @@ public:
 		}
 		return pos + word.length() + 1;
 	}
+
 	Matcher(string word, string lSeparator, string rSeparator) {
 		this->word = word;
 		this->lSeparator = lSeparator;
@@ -105,28 +106,23 @@ protected:
 		throw e;
 	}
 
-	void ltrim(string &s) {
-		s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
-	}
-
-	void rtrim(string &s) {
-		s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
-	}
-
-	void trim(string &s) {
-		ltrim(s);
-		rtrim(s);
-	}
-
 	vector<string> match(string str) {
 		vector < string > vars;
 		int position = 0;
 		int newPosition = 0;
-		trim(str);
 		if (semicolon) {
 			int semicolonPos = str.find(";");
-			if (semicolonPos == string::npos || (semicolonPos != str.length() - 1 && str.find("}") != str.length() - 1)) {
+			int bracePos = str.find("}");
+			if (bracePos != string::npos && bracePos > semicolonPos) {
+				string end = str.substr(semicolonPos, bracePos);
+				removeWhitespaces(end);
+				if (end.length() > 2) {
+					throwException("niedowzolone znaki po sredniku");
+				}
+			} else if (semicolonPos == string::npos) {
 				throwException("brakuje srednika");
+			} else if (semicolonPos != str.length() - 1) {
+				throwException("niedowzolone znaki po sredniku");
 			}
 
 		}
@@ -222,6 +218,9 @@ public:
 	}
 
 	Node* parseLine(string str) {
+		if (str.find(keyWord) == string::npos) {
+			return NULL;
+		}
 		vector < string > args = match(str);
 		string name = args.front();
 		if (!isVar(name)) {

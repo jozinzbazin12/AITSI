@@ -20,16 +20,21 @@ private:
 	void parseLine(string str) {
 		Node* node = NULL;
 		Syntax::currLine = count;
+		string line;
 		for (vector<Syntax*>::iterator it = parsers.begin(); it != parsers.end(); ++it) {
 			try {
+				trim(str);
+				if (!str.length()) {
+					return;
+				}
 				node = (*it)->parseLine(str);
+				if (node) {
+					break;
+				}
 			} catch (Exception &e) {
 				if (debug) {
 					e.print();
 				}
-			}
-			if (node) {
-				break;
 			}
 		}
 		if (!node) {
