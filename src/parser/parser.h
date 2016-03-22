@@ -56,15 +56,14 @@ private:
 public:
 	bool fileExists = false;
 
-	Parser(string fileName, bool debug = false) {
-		this->debug = debug;
+	Parser(string fileName) {
 		stream.open(fileName.c_str());
 		if (stream.good() && stream.is_open()) {
 			fileExists = true;
 			cout << "File " + fileName + " found!\n";
 			//Tu dodawac parsery polecen
-			parsers.push_back(new ProcedureSyntax());
-			parsers.push_back(new AssingmentSyntax());
+			parsers.push_back(Syntax::allSynstax[StatementType::PROCEDURE]);
+			parsers.push_back(Syntax::allSynstax[StatementType::ASSIGN]);
 		}
 	}
 

@@ -13,6 +13,8 @@ public:
 	bool last = false;
 	bool newLevel = false;
 	vector<Node*> children;
+	Node() {
+	}
 };
 
 class NewLevelNode: public Node {
@@ -36,4 +38,17 @@ public:
 class Assignment: public Node {
 };
 
+class MathNode: public Node {
+public:
+	string op;
+	MathNode(string op) {
+		this->op = op;
+	}
+	MathNode() {
+	}
+};
+
+class OperandNode: public MathNode {
+public:
+};
 #endif /* SRC_TREE_TREE_NODES_H_ */
