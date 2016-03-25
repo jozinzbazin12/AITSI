@@ -1601,9 +1601,9 @@ template<typename iter> iter tree<T, tree_node_allocator>::move_in_as_nth_child(
 		while(true) {
 			if(walk==0)
 				throw std::range_error("tree: move_in_as_nth_child position "
-											  +std::to_string(n+1)
+											  + n+1
 											  +" out of range; only "
-											  +std::to_string(number_of_children(loc))
+											  + number_of_children(loc)
 											  +" child nodes present");
 			if(n==0) 
 				break;

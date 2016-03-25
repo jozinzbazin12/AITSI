@@ -1,5 +1,8 @@
 #ifndef ASTTree_H_
 #define ASTTree_H_
+
+using namespace std;
+
 class ASTTree
 {
 private:

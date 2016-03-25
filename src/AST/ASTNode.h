@@ -1,5 +1,8 @@
 #ifndef ASTNode_H_
 #define ASTNode_H_
+
+using namespace std;
+
 class ASTNode
 {
 public:
