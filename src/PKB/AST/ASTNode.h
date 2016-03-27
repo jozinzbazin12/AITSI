@@ -1,5 +1,5 @@
-#ifndef ASTNode_H_
-#define ASTNode_H_
+#ifndef SRC_PKB_AST_ASTNode_H_
+#define SRC_PKB_AST_ASTNode_H_
 #include <string>
 class ASTNode
 {

@@ -1,5 +1,5 @@
-#ifndef ASTTree_H_
-#define ASTTree_H_
+#ifndef SRC_PKB_AST_ASTTree_H_
+#define SRC_PKB_AST_ASTTree_H_
 class ASTTree
 {
 private:

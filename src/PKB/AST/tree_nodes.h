@@ -5,8 +5,10 @@
  *      Author: Grzegurz
  */
 
-#ifndef SRC_TREE_TREE_NODES_H_
-#define SRC_TREE_TREE_NODES_H_
+#ifndef SRC_PKB_AST_TREE_NODES_H_
+#define SRC_PKB_AST_TREE_NODES_H_
+
+using namespace std;
 
 class Node {
 public:
