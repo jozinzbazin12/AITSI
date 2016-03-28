@@ -91,7 +91,7 @@ protected:
 		for (vector<Matcher>::iterator it = syntax.begin(); it != syntax.end(); ++it) {
 			Matcher* m = &*(it + 1);
 			newPosition = it->match(str, position, m);
-			if (it->word == any || it->word == anyWord) {
+			if (!it->strict && (it->word == any || it->word == anyWord)) {
 				string result = str.substr(position, newPosition - position + 1);
 				trim(result);
 				vars.push_back(result);
@@ -133,16 +133,18 @@ protected:
 		}
 		return ss.str();
 	}
-
 	Node* parse(vector<string> line) {
-		Node* node = NULL;
 		string str = toString(line);
+		trim(str);
+		if (!str.length()) {
+			return NULL;
+		}
+		return parse(str);
+	}
+	Node* parse(string str) {
+		Node* node = NULL;
 		for (vector<Syntax*>::iterator it = parsers.begin(); it != parsers.end(); ++it) {
 			try {
-				trim(str);
-				if (!str.length()) {
-					continue;
-				}
 				node = (*it)->parseLine(str);
 				if (node) {
 					break;
@@ -212,11 +214,12 @@ public:
 };
 
 class MathSyntax: public RecursiveSyntax {
+
 public:
-	MathSyntax(string expr) {
+	MathSyntax(string expr, bool strict = false) {
 		semicolon = false;
 		keyWord = expr;
-		syntax = {Matcher(Matcher::anyWord), Matcher(keyWord), Matcher(Matcher::any)};
+		syntax = {Matcher(Matcher::anyWord), Matcher(keyWord, Matcher::anyWord, Matcher::anyWord, strict), Matcher(Matcher::any)};
 		multiLine = true;
 		parsers.push_back(allSynstax["op"]);
 	}
@@ -226,16 +229,24 @@ public:
 			return NULL;
 		}
 		vector < string > args = match(str);
-		args.erase(args.begin());
 		MathNode* n = new MathNode();
 		n->op = keyWord;
-		Node* result = parse(args);
-		if (result) {
-			n->children.push_back(result);
+		Node* lResult = parse(args[0]);
+		if (lResult) {
+			n->children.push_back(lResult);
+		}
+
+		Node* rResult = parse(args[1]);
+		if (lResult) {
+			n->children.push_back(rResult);
+		}
+		if (!lResult || !rResult) {
+			throwException("no argument for operand " + keyWord, true);
 		}
 		return n;
 	}
-};
+}
+;
 
 class AssingmentSyntax: public RecursiveSyntax {
 public:

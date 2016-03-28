@@ -29,6 +29,7 @@ protected:
 	Matcher() {
 	}
 public:
+	bool strict = false;
 	static string space;
 //	static string nothing;
 	static string any;
@@ -57,7 +58,7 @@ public:
 	}
 
 	int match(string s, int currentPos, Matcher* next) {
-		if (word == any || word == anyWord) {
+		if (!strict && (word == any || word == anyWord)) {
 			return matchWildcard(s, currentPos, next);
 		}
 		s = toLower(s);
@@ -74,7 +75,8 @@ public:
 		return currentPos + pos + word.length();
 	}
 
-	Matcher(string word, string lSeparator = anyWord, string rSeparator = anyWord) {
+	Matcher(string word, string lSeparator = anyWord, string rSeparator = anyWord, bool strict = false) {
+		this->strict = strict;
 		this->word = word;
 		this->lSeparator = lSeparator;
 		this->rSeparator = rSeparator;
