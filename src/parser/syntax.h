@@ -194,8 +194,8 @@ public:
 		procedures[args[0]] = p;
 		return p;
 	}
-}
-;
+};
+
 map<string, Procedure*> ProcedureSyntax::procedures;
 
 class OperandSyntax: public Syntax {

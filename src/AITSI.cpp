@@ -38,8 +38,8 @@ bool debug = true;
 #include "types.h"
 #include "PKB/AST/tree_nodes.h"
 #include "parser/matchers.h"
-
 #include "parser/syntax.h"
+
 void initSyntax() {
 	Syntax* s = new ProcedureSyntax();
 	Syntax::allSynstax[s->keyWord] = s;
@@ -86,7 +86,7 @@ void initSyntax() {
 
 #include "parser/parser.h"
 
-/*int main(int argc, char** args) {
+int main2(int argc, char** args) {
 	if (argc <= 1) {
 		cout << "No arguments, to see usage help, use \"help\" parameter";
 		return 0;
@@ -116,4 +116,4 @@ void initSyntax() {
 		cout << "Invalid arguments";
 	}
 	return 0;
-}*/
+}

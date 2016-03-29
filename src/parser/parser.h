@@ -21,12 +21,12 @@ private:
 		Node* node = NULL;
 		Syntax::currLine = count;
 		string line;
+		trim(str);
+		if (!str.length()) {
+			return;
+		}
 		for (vector<Syntax*>::iterator it = parsers.begin(); it != parsers.end(); ++it) {
 			try {
-				trim(str);
-				if (!str.length()) {
-					return;
-				}
 				node = (*it)->parseLine(str);
 				if (node) {
 					openedNodes.top()->children.push_back(node);
