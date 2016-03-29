@@ -1,8 +1,1 @@
-*.o
-*.exe
-*.proj
-.cproject
-.project
-Debug/
-Release/
-.settings/
+/Default/

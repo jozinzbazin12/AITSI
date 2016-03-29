@@ -14,11 +14,12 @@ public:
 	static string PROCEDURE;
 	static string ASSIGN;
 	static string EXPR;
+	static string STM_LIST;
 	//, STM_LIST, STMT, CALL, WHILE, IF, EXPR, TERM, FACTOR, VAR_NAME, PROC_NAME, CONST_NAME
 };
 string StatementType::PROGRAM = "";
 string StatementType::PROCEDURE = "procedure";
 string StatementType::ASSIGN = "=";
 string StatementType::EXPR = "EXPR";
-
+string StatementType::STM_LIST = "STM_LIST";
 #endif /* TYPES_H_ */

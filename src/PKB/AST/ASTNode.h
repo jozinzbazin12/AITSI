@@ -6,18 +6,21 @@ class ASTNode
 public:
 	std::string value="";
 	std::string type="";
+	int id;
 	int lineNumber;
 	ASTNode() {
 
 	}
-	ASTNode(std::string type,int lineNumber) {    //for nodes like stmtLst or assign
+	ASTNode(int id,std::string type,int lineNumber) {    //for nodes like stmtLst or assign
 		this->type = type;
 		this->lineNumber = lineNumber;
+		this->id=id;
 	}
-	ASTNode(std::string value, std::string type, int lineNumber) {  //for nodes like varable or call
+	ASTNode(int id, std::string type, int lineNumber, std::string value) {  //for nodes like varable or call
 		this->value = value;
 		this->type = type;
 		this->lineNumber = lineNumber;
+		this->id=id;
 	}
 };
 #endif

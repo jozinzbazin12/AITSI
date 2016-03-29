@@ -92,7 +92,7 @@ public:
 		while (begin != end) {
 			for (int i = 0; i<Tree->depth(begin); ++i)
 				cout << "    |";
-			cout << " \\ " << (begin.node->data.data.value) << endl;
+			cout << " \\ " << (begin.node->data.data.type) << endl;
 			++begin;
 		}
 	}
