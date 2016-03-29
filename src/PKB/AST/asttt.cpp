@@ -1,7 +1,6 @@
 // asttt.cpp : main project file.
 
 
-#include "stdafx.h"
 #include <string>
 using namespace std;
 

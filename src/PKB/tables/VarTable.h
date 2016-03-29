@@ -8,8 +8,8 @@
 #ifndef SRC_PKB_TABLES_VARTABLE_H_
 #define SRC_PKB_TABLES_VARTABLE_H_
 
-#include<string.h>
-#include<map>
+#include<string>
+#include<vector>
 
 using namespace std;
 
@@ -18,7 +18,7 @@ public:
 	VarTable();
 	virtual ~VarTable();
 	virtual int addVar(string name);
-	virtual int getVarId(string name); // raczej metoda nie powinna byc uzywana
+	virtual int getVarId(string name);
 	virtual string getVarName(int id);
 
 private:

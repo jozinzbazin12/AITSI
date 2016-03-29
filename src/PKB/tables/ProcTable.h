@@ -8,8 +8,8 @@
 #ifndef SRC_PKB_TABLES_PROCTABLE_H_
 #define SRC_PKB_TABLES_PROCTABLE_H_
 
-#include<string.h>
-#include<map>
+#include<string>
+#include<vector>
 
 using namespace std;
 
@@ -18,7 +18,7 @@ public:
 	ProcTable();
 	virtual ~ProcTable();
 	virtual int addProc(string name);
-	virtual int getProcId(string name); // raczej metoda nie powinna byc uzywana
+	virtual int getProcId(string name);
 	virtual string getProcName(int id);
 
 private:

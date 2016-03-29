@@ -22,12 +22,12 @@ int ProcTable::addProc(string name){
 }
 
 int ProcTable::getProcId(string name){
-	for( int i=0; i<procedures.size(); i++){
+	for(int i=0; i<procedures.size(); i++){
 		if(procedures.at(i).compare(name) == 0){
 			return i;
 		}
 	}
-	return NULL;
+	return -1;
 }
 
 string ProcTable::getProcName(int id){

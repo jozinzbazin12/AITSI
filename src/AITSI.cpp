@@ -36,7 +36,7 @@ void removeWhitespaces(string &str) {
 bool debug = true;
 #include "exceptions.h"
 #include "types.h"
-#include "tree/tree_nodes.h"
+#include "PKB/AST/tree_nodes.h"
 #include "parser/matchers.h"
 
 #include "parser/syntax.h"

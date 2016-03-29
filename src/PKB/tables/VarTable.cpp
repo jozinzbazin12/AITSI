@@ -28,7 +28,7 @@ int VarTable::getVarId(string name){
 			return i;
 		}
 	}
-	return NULL;
+	return -1;
 }
 
 string VarTable::getVarName(int id){
