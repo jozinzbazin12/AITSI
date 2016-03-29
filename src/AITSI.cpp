@@ -86,7 +86,7 @@ void initSyntax() {
 
 #include "parser/parser.h"
 
-/*int main() {
+/*int main(int argc, char** args) {
 	if (argc <= 1) {
 		cout << "No arguments, to see usage help, use \"help\" parameter";
 		return 0;
