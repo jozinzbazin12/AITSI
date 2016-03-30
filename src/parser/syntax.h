@@ -267,12 +267,17 @@ public:
 		if (!isVar(name)) {
 			throwException(name + " is not variable name!", true);
 		}
+		ASTTree* var = NodeUtil::createOperandNode(args.front(), currLine);
 		args.erase(args.begin());
 		ASTTree* n = NodeUtil::createAssignmentNode(currLine);
 		(*(n->getRoot()))->data->last = getBrace();
+		NodeUtil::appendChild(n, var);
+
 		ASTTree* result = parse(args);
 		if (result) {
 			NodeUtil::appendChild(n, result);
+		} else {
+			throwException("could not parse expression");
 		}
 		return n;
 	}

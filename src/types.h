@@ -17,7 +17,7 @@ public:
 	static string STM_LIST;
 	//, STM_LIST, STMT, CALL, WHILE, IF, EXPR, TERM, FACTOR, VAR_NAME, PROC_NAME, CONST_NAME
 };
-string StatementType::PROGRAM = "";
+string StatementType::PROGRAM = "PROGRAM";
 string StatementType::PROCEDURE = "procedure";
 string StatementType::ASSIGN = "=";
 string StatementType::EXPR = "EXPR";

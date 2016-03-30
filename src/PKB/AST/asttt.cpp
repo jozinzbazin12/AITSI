@@ -7,7 +7,7 @@ using namespace std;
 #include"tree_util.hh"
 #include "ASTNode.h"
 #include "ASTTree.h"
-int main()
+int main2()
 {
 
 	tree<tree_node_<ASTNode*>*>::iterator iter;

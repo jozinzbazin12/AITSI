@@ -17,9 +17,6 @@ private:
 	stack<tree<tree_node_<ASTNode*>*>::iterator> openedNodes;
 
 	void parseLine(string str) {
-		cout<<"<<<<<<<<<"<<endl;
-		root->printTree();
-		cout<<"<<<<<<<<<"<<endl;
 		ASTTree* node = NULL;
 		Syntax::currLine = count;
 		string line;
@@ -80,9 +77,9 @@ public:
 			count++;
 			parseLine(line);
 		} while (!stream.eof());
-		if (openedNodes.size()) {
+		if (openedNodes.size()!=1) {
 			cout << openedNodes.size();
-			//throw RuntimeException(count, "?", "Program is not last node");
+			throw RuntimeException(count, "?", "Program is not last node");
 		}
 	}
 }

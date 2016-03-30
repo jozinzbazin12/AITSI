@@ -67,23 +67,30 @@ public:
 		return Tree->number_of_siblings(nodeIter);
 	}
 
-	//Insert node as previous sibling of node pointed to by position.
 	tree<tree_node_<ASTNode*>*>::iterator appendSubTree(tree<tree_node_<ASTNode*>*>::iterator pos, ASTTree* subtree) {
-		return Tree->insert_subtree(pos, subtree->getRoot());
+		return Tree->append_child(pos, subtree->getRoot());
 	}
 
-	//Insert node as previous sibling of node pointed to by position.
 	tree<tree_node_<ASTNode*>*>::iterator getRoot() {
 		return Tree->begin();
 	}
+
+	tree<tree_node_<ASTNode*>*>::iterator parent(tree<tree_node_<ASTNode*>*>::iterator it) {
+			return Tree->parent(it);
+		}
 
 	void printTree() {
 		tree<tree_node_<ASTNode*>*>::iterator begin = Tree->begin();
 		tree<tree_node_<ASTNode*>*>::iterator end = Tree->end();
 		while (begin != end) {
-			for (int i = 0; i < Tree->depth(begin); ++i)
+			for (int i = 0; i < Tree->depth(begin); ++i) {
 				cout << "    |";
-			cout << " \\ " << "(" << (*begin)->data->type << " : " << (*begin)->data->value << ")" << endl;
+			}
+			if (!(*begin)->data) {
+				cout << "??" << endl;
+			} else {
+				cout << " \\ " << "(" << (*begin)->data->type << " : " << (*begin)->data->value << ")" << endl;
+			}
 			++begin;
 		}
 	}
