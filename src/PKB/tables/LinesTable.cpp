@@ -1,18 +1,18 @@
 /*
- * Calls.cpp
+ * LinesTable.cpp
  *
- *  Created on: 27 mar 2016
+ *  Created on: 29 mar 2016
  *      Author: Pawel
  */
 
-#include "Calls.h"
+#include "LinesTable.h"
 
-Calls::Calls() {
+LinesTable::LinesTable() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Calls::~Calls() {
+LinesTable::~LinesTable() {
 	// TODO Auto-generated destructor stub
 }
 

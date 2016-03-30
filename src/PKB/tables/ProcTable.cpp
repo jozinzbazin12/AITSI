@@ -22,8 +22,8 @@ int ProcTable::addProc(string name){
 }
 
 int ProcTable::getProcId(string name){
-	for(int i=0; i<procedures.size(); i++){
-		if(procedures.at(i).compare(name) == 0){
+	for(unsigned i=0; i<procedures.size(); i++){
+		if(procedures[i].compare(name) == 0){
 			return i;
 		}
 	}
@@ -31,6 +31,6 @@ int ProcTable::getProcId(string name){
 }
 
 string ProcTable::getProcName(int id){
-	return procedures.at(id);
+	return procedures[id];
 }
 

@@ -23,8 +23,8 @@ int VarTable::addVar(string name){
 }
 
 int VarTable::getVarId(string name){
-	for(int i=0; i<variables.size(); i++){
-		if(variables.at(i).compare(name) == 0){
+	for(unsigned i=0; i<variables.size(); i++){
+		if(variables[i].compare(name) == 0){
 			return i;
 		}
 	}
@@ -32,6 +32,6 @@ int VarTable::getVarId(string name){
 }
 
 string VarTable::getVarName(int id){
-	return variables.at(id);
+	return variables[id];
 }
 
