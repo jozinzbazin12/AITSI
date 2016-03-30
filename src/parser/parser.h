@@ -14,11 +14,13 @@ private:
 	fstream stream;
 	vector<Syntax*> parsers;
 	int count = 0;
-	stack<Node*> openedNodes;
-	Node* root = NULL;
+	stack<tree<tree_node_<ASTNode*>*>::iterator> openedNodes;
 
 	void parseLine(string str) {
-		Node* node = NULL;
+		cout<<"<<<<<<<<<"<<endl;
+		root->printTree();
+		cout<<"<<<<<<<<<"<<endl;
+		ASTTree* node = NULL;
 		Syntax::currLine = count;
 		string line;
 		trim(str);
@@ -29,11 +31,11 @@ private:
 			try {
 				node = (*it)->parseLine(str);
 				if (node) {
-					openedNodes.top()->children.push_back(node);
-					if (node->newLevel) {
-						openedNodes.push(node);
+					tree<tree_node_<ASTNode*>*>::iterator pos = NodeUtil::appendChild(root, openedNodes.top(), node);
+					if ((*node->getRoot())->data->newLevel) {
+						openedNodes.push(pos);
 					}
-					if (node->last) {
+					if ((*node->getRoot())->data->last) {
 						openedNodes.pop();
 					}
 					break;
@@ -55,8 +57,12 @@ private:
 
 public:
 	bool fileExists = false;
+	ASTTree* root = new ASTTree();
 
 	Parser(string fileName) {
+		tree_node_<ASTNode*>* program = NodeUtil::createProgramNode();
+		tree<tree_node_<ASTNode*>*>::iterator it = root->appendRoot(program);
+		openedNodes.push(it);
 		stream.open(fileName.c_str());
 		if (stream.good() && stream.is_open()) {
 			fileExists = true;
@@ -69,15 +75,14 @@ public:
 
 	void parse() {
 		string line;
-		root = new Program();
-		openedNodes.push(root);
 		do {
 			getline(stream, line);
 			count++;
 			parseLine(line);
 		} while (!stream.eof());
-		if (root != openedNodes.top()) {
-			throw RuntimeException(count, "?", "Program is not last node");
+		if (openedNodes.size()) {
+			cout << openedNodes.size();
+			//throw RuntimeException(count, "?", "Program is not last node");
 		}
 	}
 }

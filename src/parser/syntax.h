@@ -113,7 +113,7 @@ public:
 	static map<string, Syntax*> allSynstax;
 	static int currLine;
 	string keyWord;
-	virtual Node* parseLine(string str)=0;
+	virtual ASTTree* parseLine(string str)=0;
 	virtual ~Syntax() {
 
 	}
@@ -133,7 +133,8 @@ protected:
 		}
 		return ss.str();
 	}
-	Node* parse(vector<string> line) {
+
+	ASTTree* parse(vector<string> line) {
 		string str = toString(line);
 		trim(str);
 		if (!str.length()) {
@@ -141,8 +142,9 @@ protected:
 		}
 		return parse(str);
 	}
-	Node* parse(string str) {
-		Node* node = NULL;
+
+	ASTTree* parse(string str) {
+		ASTTree* node = NULL;
 		for (vector<Syntax*>::iterator it = parsers.begin(); it != parsers.end(); ++it) {
 			try {
 				node = (*it)->parseLine(str);
@@ -172,7 +174,7 @@ public:
 
 class ProcedureSyntax: public Syntax {
 private:
-	static map<string, Procedure*> procedures;
+	static map<string, tree_node_<ASTNode*>*> procedures;
 
 public:
 	ProcedureSyntax() {
@@ -181,7 +183,7 @@ public:
 		semicolon = false;
 	}
 
-	Node* parseLine(string str) {
+	ASTTree* parseLine(string str) {
 		vector < string > splitStr = split(str);
 		if (toLower(splitStr[0]) != keyWord) {
 			return NULL;
@@ -190,13 +192,13 @@ public:
 		if (procedures[args[0]]) {
 			throwException("procedure " + args[0] + " already exists!", true);
 		}
-		Procedure* p = new Procedure(args[0]);
-		procedures[args[0]] = p;
-		return p;
+		ASTTree* node = NodeUtil::createProcedureNode(args[0], currLine);
+		procedures[args[0]] = *(node->getRoot());
+		return node;
 	}
 };
 
-map<string, Procedure*> ProcedureSyntax::procedures;
+map<string, tree_node_<ASTNode*>*> ProcedureSyntax::procedures;
 
 class OperandSyntax: public Syntax {
 public:
@@ -205,9 +207,9 @@ public:
 		semicolon = false;
 	}
 
-	Node* parseLine(string str) {
+	ASTTree* parseLine(string str) {
 		if (isVar(str) || isNumber(str)) {
-			return new OperandNode();
+			return NodeUtil::createOperandNode(str, currLine);
 		}
 		return NULL;
 	}
@@ -224,21 +226,20 @@ public:
 		parsers.push_back(allSynstax["op"]);
 	}
 
-	Node* parseLine(string str) {
+	ASTTree* parseLine(string str) {
 		if (str.find(keyWord) == string::npos) {
 			return NULL;
 		}
 		vector < string > args = match(str);
-		MathNode* n = new MathNode();
-		n->op = keyWord;
-		Node* lResult = parse(args[0]);
+		ASTTree* n = NodeUtil::createExpressionNode(keyWord, currLine);
+		ASTTree* lResult = parse(args[0]);
 		if (lResult) {
-			n->children.push_back(lResult);
+			NodeUtil::appendChild(n, lResult);
 		}
 
-		Node* rResult = parse(args[1]);
+		ASTTree* rResult = parse(args[1]);
 		if (lResult) {
-			n->children.push_back(rResult);
+			NodeUtil::appendChild(n, rResult);
 		}
 		if (!lResult || !rResult) {
 			throwException("no argument for operand " + keyWord, true);
@@ -257,7 +258,7 @@ public:
 		parsers.push_back(allSynstax["op"]);
 	}
 
-	Node* parseLine(string str) {
+	ASTTree* parseLine(string str) {
 		if (str.find(keyWord) == string::npos) {
 			return NULL;
 		}
@@ -267,13 +268,13 @@ public:
 			throwException(name + " is not variable name!", true);
 		}
 		args.erase(args.begin());
-		Assignment* a = new Assignment();
-		a->last = getBrace();
-		Node* result = parse(args);
+		ASTTree* n = NodeUtil::createAssignmentNode(currLine);
+		(*(n->getRoot()))->data->last = getBrace();
+		ASTTree* result = parse(args);
 		if (result) {
-			a->children.push_back(result);
+			NodeUtil::appendChild(n, result);
 		}
-		return a;
+		return n;
 	}
 };
 

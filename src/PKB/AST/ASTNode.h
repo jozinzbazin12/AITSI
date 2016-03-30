@@ -1,26 +1,34 @@
 #ifndef SRC_PKB_AST_ASTNode_H_
 #define SRC_PKB_AST_ASTNode_H_
 #include <string>
-class ASTNode
-{
+class ASTNode {
 public:
-	std::string value="";
-	std::string type="";
+	std::string value = "";
+	std::string type = "";
 	int id;
 	int lineNumber;
+
+	//parser
+	bool last = false;
+	bool newLevel = false;
 	ASTNode() {
 
 	}
-	ASTNode(int id,std::string type,int lineNumber) {    //for nodes like stmtLst or assign
-		this->type = type;
-		this->lineNumber = lineNumber;
-		this->id=id;
-	}
-	ASTNode(int id, std::string type, int lineNumber, std::string value) {  //for nodes like varable or call
+
+	ASTNode(int id, std::string type, int lineNumber, std::string value = "") {  //for nodes like varable or call
 		this->value = value;
 		this->type = type;
 		this->lineNumber = lineNumber;
-		this->id=id;
+		this->id = id;
 	}
 };
+
+class NewLevelNode: public ASTNode {
+public:
+	NewLevelNode(int id, std::string type, int lineNumber, std::string value = "") :
+			ASTNode(id, type, lineNumber, value) {
+		newLevel = true;
+	}
+};
+
 #endif

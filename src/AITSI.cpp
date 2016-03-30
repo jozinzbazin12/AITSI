@@ -36,8 +36,12 @@ void removeWhitespaces(string &str) {
 bool debug = true;
 #include "exceptions.h"
 #include "types.h"
-#include "PKB/AST/tree_nodes.h"
+#include "PKB/AST/tree_util.hh"
+#include "PKB/AST/ASTNode.h"
+#include "PKB/AST/ASTTree.h"
+//#include "PKB/AST/tree_nodes.h"
 #include "parser/matchers.h"
+#include "parser/nodeUtil.h"
 #include "parser/syntax.h"
 
 void initSyntax() {
@@ -103,7 +107,8 @@ int main2(int argc, char** args) {
 		} else {
 			try {
 				parser.parse();
-				cout << "OK";
+				cout << "OK" << endl;
+				parser.root->printTree();
 			} catch (RuntimeException &ex) {
 				ex.print();
 				cout << "FAIL";

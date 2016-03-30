@@ -10,62 +10,59 @@ using namespace std;
 int main()
 {
 
-	tree<tree_node_<ASTNode>>::iterator iter;
-	tree<tree_node_<ASTNode>>::iterator tmp;
-	ASTTree* tree;
-	tree = tree->getInstance();
+	tree<tree_node_<ASTNode*>*>::iterator iter;
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
+	ASTTree* tree=new ASTTree();
 	ASTNode* node;
-	tree_node_<ASTNode>* treeNode;
+	tree_node_<ASTNode*>* treeNode;
 
 
 
 	node = new ASTNode(1,"PROCEDURE",1);
-	treeNode = new tree_node_<ASTNode>(*node);
+	treeNode = new tree_node_<ASTNode*>(node);
 	
-	iter = tree->appendRoot(*treeNode);
+	iter = tree->appendRoot(treeNode);
 
 	node = new ASTNode(2,"STM_LIST",2);
-	treeNode = new tree_node_<ASTNode>(*node);
+	treeNode = new tree_node_<ASTNode*>(node);
 		
-	iter = tree->appendChild(iter, *treeNode);
+	iter = tree->appendChild(iter, treeNode);
 	tmp = iter;
 
 
 	node = new ASTNode(3, "ASSIGN", 3);
-	treeNode = new tree_node_<ASTNode>(*node);
+	treeNode = new tree_node_<ASTNode*>(node);
 
-	iter = tree->appendChild(iter, *treeNode);
+	iter = tree->appendChild(iter, treeNode);
 
-	tmp = tree->appendChild(tmp, *treeNode);
+	tmp = tree->appendChild(tmp, treeNode);
 
 	node = new ASTNode(4, "Variable", 5);
-	treeNode = new tree_node_<ASTNode>(*node);
+	treeNode = new tree_node_<ASTNode*>(node);
 
-	iter = tree->appendChild(iter, *treeNode);
-	tmp = tree->appendChild(tmp, *treeNode);
+	iter = tree->appendChild(iter, treeNode);
+	tmp = tree->appendChild(tmp, treeNode);
 
 
 	node = new ASTNode(4, "Expression", 7);
-	treeNode = new tree_node_<ASTNode>(*node);
+	treeNode = new tree_node_<ASTNode*>(node);
 
-	iter = tree->appendSibling(iter, *treeNode);
-	tmp = tree->appendSibling(tmp, *treeNode);
-
-	node = new ASTNode(4, "Variable", 7);
-	treeNode = new tree_node_<ASTNode>(*node);
-
-	iter = tree->appendChild(iter, *treeNode);
-	tmp = tree->appendChild(tmp, *treeNode);
+	iter = tree->appendSibling(iter, treeNode);
+	tmp = tree->appendSibling(tmp, treeNode);
 
 	node = new ASTNode(4, "Variable", 7);
-	treeNode = new tree_node_<ASTNode>(*node);
+	treeNode = new tree_node_<ASTNode*>(node);
 
-	iter = tree->appendSibling(iter, *treeNode);
-	tmp = tree->appendSibling(tmp, *treeNode);
+	iter = tree->appendChild(iter, treeNode);
+	tmp = tree->appendChild(tmp, treeNode);
+
+	node = new ASTNode(4, "Variable", 7);
+	treeNode = new tree_node_<ASTNode*>(node);
+
+	iter = tree->appendSibling(iter, treeNode);
+	tmp = tree->appendSibling(tmp, treeNode);
 
 	tree->printTree();
 
-	int a;
-	cin >>a;
     return 0;
 }
