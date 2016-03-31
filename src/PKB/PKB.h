@@ -17,31 +17,35 @@
 
 class PKB {
 public:
-	PKB*& getInstance();
+	static PKB& getInstance(){
+		static PKB pkb;
+		return pkb;
+	}
+
 	virtual ~PKB();
 
-	Follows*& getFollows() {
+	Follows* getFollows() {
 		return follows;
 	}
 
-	Modifies*& getModifies() {
+	Modifies* getModifies() {
 		return modifies;
 	}
 
-	Parent*& getParent() {
+	Parent* getParent() {
 		return parent;
 	}
 
-	Uses*& getUses() {
+	Uses* getUses() {
 		return uses;
 	}
 
 private:
-	PKB * pkb = NULL;
-	Modifies * modifies = NULL;
-	Uses * uses = NULL;
-	Parent * parent = NULL;
-	Follows * follows = NULL;
+	static PKB* pkb;
+	Modifies* modifies = NULL;
+	Uses* uses = NULL;
+	Parent* parent = NULL;
+	Follows* follows = NULL;
 
 	PKB(){
 		modifies = new Modifies();

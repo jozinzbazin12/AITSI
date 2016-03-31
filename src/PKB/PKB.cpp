@@ -7,12 +7,6 @@
 
 #include "PKB.h"
 
-PKB*& PKB::getInstance() {
-	if(pkb == NULL)
-		pkb = new PKB();
-	return pkb;
-}
-
 PKB::~PKB() {
 	delete modifies;
 	delete uses;

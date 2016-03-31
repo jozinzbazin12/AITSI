@@ -8,8 +8,8 @@
 #include "DesignExtractor.h"
 
 DesignExtractor::DesignExtractor() {
-	// TODO Auto-generated constructor stub
-
+	PKB pkb = PKB::getInstance();
+	Follows * follows = pkb.getFollows();
 }
 
 DesignExtractor::~DesignExtractor() {
