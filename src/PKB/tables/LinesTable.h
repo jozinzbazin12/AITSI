@@ -12,6 +12,17 @@
 
 using namespace std;
 
+enum EnumStmt
+{
+    e_statement,
+	e_procedure,
+	e_while,
+	e_if,
+	e_assign,
+	e_variable,
+	e__
+};
+
 class LinesTable {
 public:
 	LinesTable();

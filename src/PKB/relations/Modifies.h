@@ -12,6 +12,8 @@
 #include <vector>
 #include <map>
 
+#include "../tables/LinesTable.h"
+
 using namespace std;
 
 class Modifies {
@@ -19,7 +21,12 @@ public:
 	Modifies();
 	virtual ~Modifies();
 	void add(int varId, int lineNumber);
+
 	//tutaj trzeba dodac metody do odpowiadania na pytania
+	bool modifies(int lineNumber, string varName); // jeœli varName puste to znaczy ¿e jakakolwiek zmienna
+	bool modifies(string procName, string varName);
+	bool modifies(EnumStmt enumStmt, string varName);
+
 	void writeAll();
 
 private:
