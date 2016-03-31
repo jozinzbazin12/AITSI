@@ -14,6 +14,10 @@ class DesignExtractor {
 public:
 	DesignExtractor();
 	virtual ~DesignExtractor();
+	void FillFollowers();
+private:
+	void getNextFollows();
+	void getPrevFollows();
 };
 
 #endif /* SRC_DESIGNEXTRACTOR_DESIGNEXTRACTOR_H_ */

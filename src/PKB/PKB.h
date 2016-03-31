@@ -9,7 +9,9 @@
 #define SRC_PKB_PKB_H_
 
 #include<iostream>
-
+#include"ast/tree_util.hh"
+#include "ast/ASTNode.h"
+#include "ast/ASTTree.h"
 #include "relations/Modifies.h"
 #include "relations/Uses.h"
 #include "relations/Parent.h"
@@ -40,12 +42,23 @@ public:
 		return uses;
 	}
 
+	ASTTree* getASTTree(){
+		if(tree == NULL)
+			setASTTree();
+		return tree;
+	}
+
+	void setASTTree(){
+
+	}
+
 private:
 	static PKB* pkb;
 	Modifies* modifies = NULL;
 	Uses* uses = NULL;
 	Parent* parent = NULL;
 	Follows* follows = NULL;
+	ASTTree * tree = NULL;
 
 	PKB(){
 		modifies = new Modifies();

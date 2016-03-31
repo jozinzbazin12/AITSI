@@ -1,5 +1,8 @@
 #ifndef SRC_PKB_AST_ASTTree_H_
 #define SRC_PKB_AST_ASTTree_H_
+
+using namespace std;
+
 class ASTTree {
 private:
 	//static ASTTree *Atree;
@@ -75,9 +78,20 @@ public:
 		return Tree->begin();
 	}
 
+	tree<tree_node_<ASTNode*>*>::iterator getEnd() {
+			return Tree->end();
+		}
+	int getDepth(tree<tree_node_<ASTNode*>*>::iterator it){
+		return Tree->depth(it);
+	}
+
 	tree<tree_node_<ASTNode*>*>::iterator parent(tree<tree_node_<ASTNode*>*>::iterator it) {
 			return Tree->parent(it);
 		}
+	//checks if iterator is in tree
+	bool isValid(tree<tree_node_<ASTNode*>*>::iterator it){
+		return Tree->is_valid(it);
+	}
 
 	void printTree() {
 		tree<tree_node_<ASTNode*>*>::iterator begin = Tree->begin();

@@ -16,3 +16,9 @@ Follows::~Follows() {
 	// TODO Auto-generated destructor stub
 }
 
+void Follows::addNext(int lineNum,int followLineNum){
+	varNextFollowers.insert(std::make_pair(lineNum,followLineNum));
+}
+void Follows::addPrev(int lineNum,int prevLineNum){
+	varPrevFollowers.insert(std::make_pair(lineNum,prevLineNum));
+}
