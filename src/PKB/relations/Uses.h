@@ -8,10 +8,20 @@
 #ifndef SRC_PKB_RELATIONS_USES_H_
 #define SRC_PKB_RELATIONS_USES_H_
 
+#include "../tables/LinesTable.h"
+
+using namespace std;
+
 class Uses {
 public:
 	Uses();
+	void add(int varId, int lineNumber);
+	bool uses(int lineNumber, string varName); // jeœli varName puste to znaczy ¿e jakakolwiek zmienna
+	void writeAll();
 	virtual ~Uses();
+
+private:
+	map <int, vector<int> > varUsesLines;
 };
 
 #endif /* SRC_PKB_RELATIONS_USES_H_ */
