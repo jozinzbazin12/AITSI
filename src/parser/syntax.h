@@ -215,6 +215,27 @@ public:
 	}
 };
 
+class ParentsisesSyntax: public RecursiveSyntax {
+public:
+	ParentsisesSyntax() {
+		keyWord = "()";
+		syntax = {Matcher("("), Matcher(Matcher::anyWord,Matcher::anyWord, Matcher::anyWord), Matcher(")")};
+		semicolon = false;
+	}
+
+	ASTTree* parseLine(string str) {
+		if (str.find("(") == string::npos || str.find(")") == string::npos) {
+			return NULL;
+		}
+		vector < string > args = match(str);
+		ASTTree* result = parse(args[0]);
+		if (!result) {
+			throwException("no argument for operand " + keyWord, true);
+		}
+		return result;
+	}
+};
+
 class MathSyntax: public RecursiveSyntax {
 
 public:

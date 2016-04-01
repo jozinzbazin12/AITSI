@@ -60,31 +60,44 @@ void initSyntax() {
 	Syntax::allSynstax[multi->keyWord] = multi;
 	RecursiveSyntax* div = new MathSyntax("/");
 	Syntax::allSynstax[div->keyWord] = div;
+	RecursiveSyntax* par = new ParentsisesSyntax();
+	Syntax::allSynstax[par->keyWord] = par;
 
 	ass->parsers.push_back(plus);
 	ass->parsers.push_back(minus);
 	ass->parsers.push_back(div);
 	ass->parsers.push_back(multi);
+	ass->parsers.push_back(par);
 
 	plus->parsers.push_back(plus);
 	plus->parsers.push_back(minus);
 	plus->parsers.push_back(div);
 	plus->parsers.push_back(multi);
+	plus->parsers.push_back(par);
 
 	minus->parsers.push_back(plus);
 	minus->parsers.push_back(minus);
 	minus->parsers.push_back(div);
 	minus->parsers.push_back(multi);
+	minus->parsers.push_back(par);
 
 	div->parsers.push_back(plus);
 	div->parsers.push_back(minus);
 	div->parsers.push_back(div);
 	div->parsers.push_back(multi);
+	div->parsers.push_back(par);
 
 	multi->parsers.push_back(plus);
 	multi->parsers.push_back(minus);
 	multi->parsers.push_back(div);
 	multi->parsers.push_back(multi);
+	multi->parsers.push_back(par);
+
+	par->parsers.push_back(plus);
+	par->parsers.push_back(minus);
+	par->parsers.push_back(div);
+	par->parsers.push_back(multi);
+	par->parsers.push_back(par);
 }
 
 #include "parser/parser.h"
