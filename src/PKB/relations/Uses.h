@@ -9,7 +9,9 @@
 #define SRC_PKB_RELATIONS_USES_H_
 
 #include "../tables/LinesTable.h"
-
+#include <map>
+#include <string>
+#include <iostream>
 using namespace std;
 
 class Uses {

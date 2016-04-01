@@ -16,8 +16,9 @@ class Follows {
 public:
 	Follows();
 	virtual ~Follows();
-	void addNext(int lineNum, int FollowerLineNum);
-	void addPrev(int lineNum, int PrevLineNum);
+	void addNext(int lineNum, int followerLineNum);
+	void addPrev(int lineNum, int prevLineNum);
+	bool follows(int lineNum, int followerLineNum);
 private:
 	map <int, int > varNextFollowers;
 	map <int, int > varPrevFollowers;

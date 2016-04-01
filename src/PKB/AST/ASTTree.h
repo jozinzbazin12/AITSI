@@ -103,7 +103,7 @@ public:
 			if (!(*begin)->data) {
 				cout << "??" << endl;
 			} else {
-				cout << " \\ " << "(" << (*begin)->data->type << " : " << (*begin)->data->value << ")" << endl;
+				cout << " \\ " << "(" << (*begin)->data->type << " : " << (*begin)->data->value << ")" <<" : " << (*begin)->data->lineNumber << ")" << endl;
 			}
 			++begin;
 		}

@@ -9,7 +9,7 @@
 #define SRC_PKB_RELATIONS_PARENT_H_
 
 #include "../tables/LinesTable.h"
-
+#include <map>
 using namespace std;
 
 class Parent {

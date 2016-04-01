@@ -22,3 +22,8 @@ void Follows::addNext(int lineNum,int followLineNum){
 void Follows::addPrev(int lineNum,int prevLineNum){
 	varPrevFollowers[lineNum] = prevLineNum;
 }
+bool Follows::follows(int lineNum,int followerLineNum){
+	if(varNextFollowers.count(lineNum)>0){
+		return varNextFollowers.at(lineNum)==followerLineNum;
+	}
+}

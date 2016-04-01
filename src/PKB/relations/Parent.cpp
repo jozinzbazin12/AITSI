@@ -33,19 +33,19 @@ void Parent::writeAll(){
 	for( map<int, vector<int> >::iterator iter = lineKids.begin(); iter != lineKids.end(); ++iter ) {
 	   vector<int> tempVec = (*iter).second;
 	   int key = (*iter).first;
-	   cout << key << " :";
+	   //cout << key << " :";
 	   for (unsigned i = 0; i < tempVec.size(); i++) {
-	      cout << " " << tempVec[i];
+	      //cout << " " << tempVec[i];
 	   }
-	   cout << endl;
+	   //cout << endl;
 	}
 
-	cout << "\nparents\n";
+	//cout << "\nparents\n";
 
 	for( map<int, int >::iterator iter = lineParent.begin(); iter != lineParent.end(); ++iter ) {
 	   int value = (*iter).second;
 	   int key = (*iter).first;
-	   cout << key << " : " << value << endl;
+	   //cout << key << " : " << value << endl;
 	}
 }
 

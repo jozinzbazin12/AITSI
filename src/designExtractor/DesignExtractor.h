@@ -14,7 +14,9 @@ class DesignExtractor {
 public:
 	DesignExtractor();
 	virtual ~DesignExtractor();
-	void FillFollowers();
+private:
+	void fillFollowRelations();
+	void fillParentRelations();
 };
 
 #endif /* SRC_DESIGNEXTRACTOR_DESIGNEXTRACTOR_H_ */
