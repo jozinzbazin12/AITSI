@@ -12,8 +12,7 @@
 #include <vector>
 #include <map>
 
-#include "../tables/LinesTable.h"
-#include "../PKB.h"
+
 
 using namespace std;
 

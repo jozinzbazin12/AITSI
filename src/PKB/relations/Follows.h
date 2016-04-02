@@ -8,8 +8,9 @@
 #ifndef SRC_PKB_RELATIONS_FOLLOWS_H_
 #define SRC_PKB_RELATIONS_FOLLOWS_H_
 
-#include <map>
 
+#include <map>
+#include <iostream>
 using namespace std;
 
 class Follows {

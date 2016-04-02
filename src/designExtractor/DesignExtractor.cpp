@@ -17,7 +17,7 @@ DesignExtractor::~DesignExtractor() {
 	// TODO Auto-generated destructor stub
 }
 
-void DesignExtractor::fillFollowRelations() {
+void DesignExtractor::setFollowRelations() {
 
 	PKB pkb = PKB::getInstance();
 	Follows * follows = pkb.getFollows();
@@ -46,7 +46,7 @@ void DesignExtractor::fillFollowRelations() {
 		++begin;
 	}
 }
-void DesignExtractor::fillParentRelations() {
+void DesignExtractor::setParentRelations() {
 	PKB pkb = PKB::getInstance();
 	Parent * parent = pkb.getParent();
 	ASTTree * ASTtree = pkb.getASTTree();
@@ -78,4 +78,54 @@ void DesignExtractor::fillParentRelations() {
 
 	}
 }
+void DesignExtractor::setLoopsTable() {
+	PKB pkb = PKB::getInstance();
+	LinesTable * linesTable = pkb.getLineTable();
+	ASTTree * ASTtree = pkb.getASTTree();
 
+	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
+	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
+	tree<tree_node_<ASTNode*>*>::iterator stmtlst;
+	tree<tree_node_<ASTNode*>*>::iterator sib;
+
+	while (begin != end) {
+		if (ASTtree->isValid(begin) && (*begin)->data->type == "LOOP") {
+			if (!(*begin)->data) {
+				cout << "error <fillLoops>" << endl;
+			} else {
+				stmtlst = begin.node->first_child;  //stmtlst    //
+				sib = ASTtree->getFirstChild(stmtlst); //first child of stmtlist   //7
+				linesTable->addWhileLine((*begin)->data->lineNumber,
+						(*sib)->data->lineNumber);
+				for (int i = 0; i < ASTtree->getNumberOfChildren(stmtlst);
+						i++) {
+					sib = sib.node->next_sibling;
+					if (ASTtree->isValid(sib))
+						linesTable->addWhileLine((*begin)->data->lineNumber,
+								(*sib)->data->lineNumber);
+				}
+
+			}
+		}
+
+		++begin;
+	}
+
+}
+void DesignExtractor::setAssignTable(){
+	PKB pkb = PKB::getInstance();
+		LinesTable * linesTable = pkb.getLineTable();
+		ASTTree * ASTtree = pkb.getASTTree();
+
+		tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
+				tree<tree_node_<ASTNode*>*>::iterator tmp;
+				tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
+
+				while (begin != end) {
+					if (ASTtree->isValid(begin) && (*begin)->data->type == "ASSIGN") {
+						linesTable->addAssignLine((*begin)->data->lineNumber);
+					}
+					++begin;
+
+				}
+}

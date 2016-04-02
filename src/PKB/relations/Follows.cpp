@@ -33,16 +33,12 @@ bool Follows::follows(int lineNum,int followerLineNum){
 
 void Follows::writeAll(){
 	for (map<int, int>::iterator iter = varNextFollowers.begin(); iter != varNextFollowers.end(); ++iter) {
-		vector<int> tempVec = (*iter).second;
-		int key = (*iter).first;
 		cout << (*iter).first << " --> " << (*iter).second <<endl;
 	}
 
 	cout << endl;
 
 	for (map<int, int>::iterator iter = varPrevFollowers.begin(); iter != varPrevFollowers.end(); ++iter) {
-		vector<int> tempVec = (*iter).second;
-		int key = (*iter).first;
 		cout << (*iter).first << " <-- " << (*iter).second <<endl;
 	}
 }

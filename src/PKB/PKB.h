@@ -8,15 +8,18 @@
 #ifndef SRC_PKB_PKB_H_
 #define SRC_PKB_PKB_H_
 
-#include<iostream>
-#include"ast/tree_util.hh"
+#include <iostream>
+#include "ast/tree_util.hh"
 #include "ast/ASTNode.h"
 #include "ast/ASTTree.h"
-#include "relations/Modifies.h"
-#include "relations/Uses.h"
+#include "tables/VarTable.h"
+#include "tables/LinesTable.h"
+
 #include "relations/Parent.h"
 #include "relations/Follows.h"
-#include "tables/VarTable.h"
+
+#include "relations/Uses.h"
+#include "relations/Modifies.h"
 
 class PKB {
 public:
@@ -53,6 +56,10 @@ public:
 		return varTable;
 	}
 
+	LinesTable* getLineTable(){
+			return lineTable;
+		}
+
 	void setASTTree(){
 
 	}
@@ -65,6 +72,7 @@ private:
 	Follows* follows = NULL;
 	ASTTree * tree = NULL;
 	VarTable * varTable = NULL;
+	LinesTable * lineTable = NULL;
 
 	PKB(){
 		modifies = new Modifies();
@@ -72,6 +80,7 @@ private:
 		parent = new Parent();
 		follows = new Follows();
 		varTable = new VarTable();
+		lineTable = new LinesTable();
 	}
 };
 

@@ -16,3 +16,15 @@ LinesTable::~LinesTable() {
 	// TODO Auto-generated destructor stub
 }
 
+void LinesTable::addWhileLine(int loopLine, int stmtLine) {
+	whileLines[loopLine].push_back(stmtLine);
+}
+void LinesTable::addAssignLine(int assignLine) {
+	assignLines.push_back(assignLine);
+}
+vector<int> LinesTable::getAssignLines(){
+	return assignLines;
+}
+map<int,vector<int>> LinesTable::getWhileLines(){
+	return whileLines;
+}

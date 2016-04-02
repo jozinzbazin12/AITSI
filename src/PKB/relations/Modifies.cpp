@@ -6,7 +6,7 @@
  */
 
 #include "Modifies.h"
-
+#include "../PKB.h"
 Modifies::Modifies() {
 	// TODO Auto-generated constructor stub
 

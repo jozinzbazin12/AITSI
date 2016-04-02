@@ -6,7 +6,7 @@
  */
 
 #include "Uses.h"
-
+#include "../PKB.h"
 Uses::Uses() {
 	// TODO Auto-generated constructor stub
 

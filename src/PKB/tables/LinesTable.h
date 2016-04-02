@@ -21,6 +21,8 @@ public:
 	map<int, vector<int> > getWhileLines(); // w pierwszym parametrze nr tej linijki z napisem while, a w vectorze pozosta³e liniie while
 	// jak bêd¹ potrzebowali stmt to chyba mog¹ sobie zrobic assign i while zamiast pobierac stmt
 	string getLineString(int lineNumber); // zwraca test który byl w linii o tym numerze
+	void addWhileLine(int loopLine,int stmtLine);
+	void addAssignLine(int assignLine);
 
 private:
 

@@ -15,8 +15,10 @@ public:
 	DesignExtractor();
 	virtual ~DesignExtractor();
 private:
-	void fillFollowRelations();
-	void fillParentRelations();
+	void setFollowRelations();
+	void setParentRelations();
+	void setLoopsTable();
+	void setAssignTable();
 };
 
 #endif /* SRC_DESIGNEXTRACTOR_DESIGNEXTRACTOR_H_ */
