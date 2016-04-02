@@ -16,6 +16,7 @@
 #include "relations/Uses.h"
 #include "relations/Parent.h"
 #include "relations/Follows.h"
+#include "tables/VarTable.h"
 
 class PKB {
 public:
@@ -48,6 +49,10 @@ public:
 		return tree;
 	}
 
+	VarTable* getVarTable(){
+		return varTable;
+	}
+
 	void setASTTree(){
 
 	}
@@ -59,12 +64,14 @@ private:
 	Parent* parent = NULL;
 	Follows* follows = NULL;
 	ASTTree * tree = NULL;
+	VarTable * varTable = NULL;
 
 	PKB(){
 		modifies = new Modifies();
 		uses = new Uses();
 		parent = new Parent();
 		follows = new Follows();
+		varTable = new VarTable();
 	}
 };
 

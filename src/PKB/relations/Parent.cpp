@@ -25,8 +25,10 @@ void Parent::addKid(int lineNumber, int kidLine) {
 }
 
 bool Parent::parent(int parentLine, int kidLine) {
-	if (lineParent.count(parentLine) > 0)
+	if (lineParent.count(parentLine) > 0){
 		return lineParent.at(parentLine) == kidLine;
+	}
+	return false;
 }
 
 void Parent::writeAll() {
@@ -34,20 +36,20 @@ void Parent::writeAll() {
 			iter != lineKids.end(); ++iter) {
 		vector<int> tempVec = (*iter).second;
 		int key = (*iter).first;
-		//cout << key << " :";
+		cout << key << " :";
 		for (unsigned i = 0; i < tempVec.size(); i++) {
-			//cout << " " << tempVec[i];
+			cout << " " << tempVec[i];
 		}
-		//cout << endl;
+		cout << endl;
 	}
 
-	//cout << "\nparents\n";
+	cout << "\nparents\n";
 
 	for (map<int, int>::iterator iter = lineParent.begin();
 			iter != lineParent.end(); ++iter) {
 		int value = (*iter).second;
 		int key = (*iter).first;
-		//cout << key << " : " << value << endl;
+		cout << key << " : " << value << endl;
 	}
 }
 

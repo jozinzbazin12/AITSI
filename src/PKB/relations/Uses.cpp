@@ -21,7 +21,28 @@ void Uses::add(int varId, int lineNumber){
 }
 
 bool Uses::uses(int lineNumber, string varName){
-	// do uzupe³nenia
+	if (varName == "") {
+		for (map<int, vector<int> >::iterator iter = varUsesLines.begin(); iter != varUsesLines.end(); ++iter) {
+			vector<int> tempVec = (*iter).second;
+			for (unsigned i = 0; i < tempVec.size(); i++) {
+				if(tempVec[i] == lineNumber){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	PKB pkb = PKB::getInstance();
+	int varId = pkb.getVarTable()->getVarId(varName);
+	if (varId == -1)
+		return false;
+	if (varUsesLines.count(varId) > 0) {
+		for (vector<int>::iterator iter = varUsesLines.at(varId).begin(); iter != varUsesLines.at(varId).end(); ++iter) {
+			if ((*iter) == lineNumber)
+				return true;
+		}
+	}
 	return false;
 }
 
