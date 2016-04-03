@@ -1,0 +1,183 @@
+1 - To test Follows(s1,s2) where s2 is first statement.
+statement s;
+Select s such that Follows(s, 1)
+none
+5000
+2 - To test Follows(s1,s2) when there is while statement before s2
+statement s;
+Select s such that Follows(s, 7)
+5
+5000
+3 - To test Follows(s1, s2) where s1 is while statement
+statement s;
+Select s such that Follows(5, s)
+6, 7
+5000
+4 - To test Follows(s1, s2) where both statements are assigments
+statement s;
+Select s such that Follows(1, s)
+2
+5000
+5 - 
+statement s;
+Select s such that Follows(s, 3)
+2
+5000
+6 - To test Follows(s1, s2) where s1 is last statement
+statement s;
+Select s such that Follows(10, s)
+none
+5000
+7 - To test Follows(s1,s2) where s2 is nested in s1
+statement s;
+Select s such that Follows(s, 6)
+5
+5000
+8 - To test Follows(s1, s2) where s1 or s2 is larger than number of lines in source file
+statement s;
+Select s such that Follows(s, 250)
+none
+5000
+9 - 
+statement s;
+Select s such that Follows(250, s)
+none
+5000
+10 - To test Follows(s1, s2) where s1 or s2 is number less than 0
+statement s;
+Select s such that Follows(s, -250)
+none
+5000
+11 - 
+statement s;
+Select s such that Follows(-2, s)
+none
+5000
+12 - To test Parent(s1, s2) where s1 isn’t container statement
+statement s;
+Select s such that Parent(2,s)
+none
+5000
+13 - To test Parent(s1, s2) where s2 isn’t in container statement
+statement s;
+Select s such that Parent(s,2)
+none
+5000
+14 - To test Parent(s1, s2) where s2 is nested in s1 container statement
+statment s;
+Select s such that Parent(s, 6)
+5
+5000
+15 - To test Parent(s1, s2) where s1 or s2 is number less than 0
+statement s;
+Select s such that Parent(s, -250)
+none
+5000
+16 - 
+statement s;
+Select s such that Parent(-2, s)
+none
+5000
+17 - To test Parent(s1, s2) where s1 or s2 is larger than number of lines in source file
+statement s;
+Select s such that Parent(s, 250)
+none
+5000
+18 - 
+statement s;
+Select s such that Parent(250, s)
+none
+5000
+19 - To test Uses(s, v) where variable v isn’t used in any statement
+statement s;
+Select s such that Uses(s, “c”)
+none
+5000
+20 - To test Uses(s, v) where s is container statement
+variable v;
+Select v such tat Uses(6, v)
+d, t
+5000
+21 - To test Uses(s, v) where variable v is used
+statement s;
+Select s such that Uses(s, “t”)
+3, 5, 7, 8, 9, 10
+5000
+22 - To test Uses(a, v) to list variables used in a assigment
+variable v;
+Select v such tat Uses(9, v)
+t, a, 2
+5000
+23 - To test Uses(p, v) where variables v doesn’t exist in procedure p
+procedure p;
+select p such that Uses(p, “x”)
+none
+5000
+24 - To test Uses(p, v) to list all variable used in procedure p
+variable v;
+Select v such that Uses(“TestProcedure”, v)
+1, t, 10, a , 2, d, k
+5000
+25 - To test Modifies(a, v) where v isn’t modified by a
+Select BOOLEAN such that Modifies(3, “x”)
+false
+5000
+26 - To test Modifies(a, v) to find all assigment that modifies “t”
+assigment a ;
+Select a such that Modifies( a, “t”)
+1, 2, 7
+5000
+27 - To test Modifies(a, v) where there is no variable v in source code
+assigment a ;
+Select a such that Modifies( a, “x”)
+none
+5000
+28 - To test Modifies(p, v) where there is no variable v in procedure p
+Select BOOLEAN such that Modifies(“TestProcedure”, “x”)
+false
+5000
+29 - To test Modifies(s, v) where statement s is container statement
+variable v;
+select v such that Modifies(5 ,v)
+d
+5000
+30 - To test properly handling multiply white characters in PQL Queries
+statment s;
+Select s        such that    Follows(s, 10) // multiply spaces
+9
+5000
+31 - 
+statment s;
+Select s 	such that    Follows(s, 10)  // tab
+9
+5000
+32 - 
+statment s;
+Select s        such that    Follows( s  , 10   ) // extra spaces in relation paramteres
+9
+5000
+33 - To test properly handling misstypes in PQL Queries.
+statment s;
+Seelct s such that Follows(s, 10)
+none
+5000
+34 - 
+statment s;
+Select s such that Folows(s, 10)
+none
+5000
+35 - 
+statment s;
+Select s such that Ussses(s, 10)
+none
+5000
+36 - 
+statment s;
+Select bool such that Uses(s, 10)
+none
+5000
+37 - 
+statment s;
+Select s such taht Uses(s, 10)
+none
+5000

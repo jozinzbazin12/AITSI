@@ -1,0 +1,5 @@
+1 -  To test properly handling multiply white characters in Sourcecode file.
+statment s;
+Select s such that Follows(s, 10)
+9
+5000

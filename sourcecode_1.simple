@@ -1,0 +1,11 @@
+procedure TestProcedure {
+	t = 1;
+	t = 1;
+	a = t + 10;
+	d = t + a + 2;
+	while d {
+		d = t + 2; }
+	t = 1;
+	a = t + 10;
+	d = t + a + 2;
+	c = t + k + d; }
