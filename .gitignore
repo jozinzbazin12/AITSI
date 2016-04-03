@@ -1,0 +1,12 @@
+/Default/
+
+Debug/
+
+*.o
+*.exe
+*.proj
+.cproject
+.project
+Release/
+.settings/
+EmptyGeneralTesting.VC.VC.* 

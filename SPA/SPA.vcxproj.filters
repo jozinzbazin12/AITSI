@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\PKB">
+      <UniqueIdentifier>{5387b52c-c12f-4d50-b69b-c44f969bcb47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\parser">
+      <UniqueIdentifier>{0d4103cc-4dca-4017-9165-88ed37ec83e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designExtractor">
+      <UniqueIdentifier>{390462f9-f77a-41fc-9991-9be38e4fa7c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PKB\api">
+      <UniqueIdentifier>{b28f0e3e-3bd9-4854-9bec-70a3446aa89a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PKB\AST">
+      <UniqueIdentifier>{e61e4a17-f950-41f8-8b42-704282883d02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PKB\relations">
+      <UniqueIdentifier>{8cc10cee-5497-4a98-aec4-274baa64f96d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PKB\tables">
+      <UniqueIdentifier>{77c89c4f-824b-4fb9-bc21-39b9cede1964}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PQL">
+      <UniqueIdentifier>{6b4e3093-120f-46a4-8f6c-cab17f35110b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\AITSI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\relations\Follows.cpp">
+      <Filter>Source Files\PKB\relations</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\relations\Modifies.cpp">
+      <Filter>Source Files\PKB\relations</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\relations\Parent.cpp">
+      <Filter>Source Files\PKB\relations</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\relations\Uses.cpp">
+      <Filter>Source Files\PKB\relations</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\PKB.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\tables\LinesTable.cpp">
+      <Filter>Source Files\PKB\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\tables\MainPawla.cpp">
+      <Filter>Source Files\PKB\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\tables\ProcTable.cpp">
+      <Filter>Source Files\PKB\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\tables\VarTable.cpp">
+      <Filter>Source Files\PKB\tables</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\AST\asttt.cpp">
+      <Filter>Source Files\PKB\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\AST\NodeFactory.cpp">
+      <Filter>Source Files\PKB\AST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\api\PKBApi.cpp">
+      <Filter>Source Files\PKB\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\designExtractor\DesignExtractor.cpp">
+      <Filter>Source Files\designExtractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\QueryPreProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PQL\Field.cpp">
+      <Filter>Source Files\PQL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PQL\PQL.cpp">
+      <Filter>Source Files\PQL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\parser\Matcher.cpp">
+      <Filter>Source Files\parser</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\source\exceptions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\types.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\relations\Follows.h">
+      <Filter>Source Files\PKB\relations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\relations\Modifies.h">
+      <Filter>Source Files\PKB\relations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\relations\Parent.h">
+      <Filter>Source Files\PKB\relations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\relations\Uses.h">
+      <Filter>Source Files\PKB\relations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\PKB.h">
+      <Filter>Source Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\tables\LinesTable.h">
+      <Filter>Source Files\PKB\tables</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\tables\ProcTable.h">
+      <Filter>Source Files\PKB\tables</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\tables\VarTable.h">
+      <Filter>Source Files\PKB\tables</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\AST\ASTNode.h">
+      <Filter>Source Files\PKB\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\AST\ASTTree.h">
+      <Filter>Source Files\PKB\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\AST\NodeFactory.h">
+      <Filter>Source Files\PKB\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\AST\tree.hh">
+      <Filter>Source Files\PKB\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\AST\tree_nodes.h">
+      <Filter>Source Files\PKB\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\AST\tree_util.hh">
+      <Filter>Source Files\PKB\AST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\api\PKBApi.h">
+      <Filter>Source Files\PKB\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\parser\matchers.h">
+      <Filter>Source Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\parser\nodeUtil.h">
+      <Filter>Source Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\parser\parser.h">
+      <Filter>Source Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\parser\syntax.h">
+      <Filter>Source Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\designExtractor\DesignExtractor.h">
+      <Filter>Source Files\designExtractor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\QueryPreProcessor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PQL\Field.h">
+      <Filter>Source Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PQL\PQL.h">
+      <Filter>Source Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PQL\PQLNode.h">
+      <Filter>Source Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PQL\PQLTree.h">
+      <Filter>Source Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PQL\tree.hh">
+      <Filter>Source Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PQL\tree_nodes.h">
+      <Filter>Source Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PQL\tree_util.hh">
+      <Filter>Source Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\parser\Exceptions.h">
+      <Filter>Source Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\parser\Matcher.h">
+      <Filter>Source Files\parser</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
