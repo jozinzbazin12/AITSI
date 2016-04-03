@@ -57,7 +57,7 @@ public:
 
 	}
 
-	int match(string s, int currentPos, Matcher* next) {
+	int match(string s, int currentPos, Matcher* next=NULL) {
 		if (!strict && (word == any || word == anyWord)) {
 			return matchWildcard(s, currentPos, next);
 		}

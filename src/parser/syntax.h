@@ -89,8 +89,13 @@ protected:
 			str.erase(semicolonPos, 1);
 		}
 		for (vector<Matcher>::iterator it = syntax.begin(); it != syntax.end(); ++it) {
-			Matcher* m = &*(it + 1);
-			newPosition = it->match(str, position, m);
+			if (it != syntax.end() - 1) {
+				vector<Matcher>::iterator it2 = next(it, 1);
+				Matcher m = *it2;
+				newPosition = it->match(str, position, &m);
+			} else {
+				newPosition = it->match(str, position);
+			}
 			if (!it->strict && (it->word == any || it->word == anyWord)) {
 				string result = str.substr(position, newPosition - position + 1);
 				trim(result);
