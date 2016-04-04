@@ -119,6 +119,8 @@ bool Validator::checkSelect(string query) {
 bool Validator::checkEntities(vector<Field> declarations) {
 	vector<string> symbols;
 	for (vector<Field>::iterator it = declarations.begin(); it != declarations.end(); ++it) {
+		if(it->getType() == "" || it->getValue() == "")
+			return false;
 		if(find(entityTab.begin(), entityTab.end(), it->getType()) != entityTab.end())
 				continue;
 			else
@@ -196,31 +198,107 @@ bool Validator::checkRelationship(string relationship) {
 	return true;
 }
 
-bool Validator::checkAttribute(string attribute) {    //MUSI JESZCZE JAKOS SPRAWDZAC I POBIERAC TYP ATRYBUTU
-    int dots = 0;
-    for(char& c : attribute) {
-        if(c == '.')
-            dots++;
-    }
-    if(dots >1)
-        return false;
-    vector<string> v1;
-    split(attribute, '.', v1);
-    string entity = v1[0], type = v1[1];
-    bool validEntity = false, validType = false;
-    int entityIndex;
-    for(size_t i=0; i < attributeTab.size(); i++) {
-        if(entity == attributeTab[i][0]) {
-            validEntity = true;
-            entityIndex = i;
-            break;
-        }
-    }
-    if(!validEntity)
-        return false;
-    if(type == attributeTab[entityIndex][1])
-        validType = true;
-    if(!validType)
-            return false;
-    return true;
+bool Validator::checkRelationship2(string relationship) {
+	int leftBrackets = 0, rightBrackets = 0, stars = 0;
+	for(char& c : relationship) {
+		if(c == '(')
+			leftBrackets++;
+		else if(c == ')')
+			rightBrackets++;
+		else if(c == '*')
+			stars++;
+	}
+	if(leftBrackets != 1 || rightBrackets != 1 || stars > 1)
+		return false;
+	vector<string> v1;
+	split(relationship, '(', v1);
+	string rel = v1[0];
+	string attributes = v1[1];
+	v1.clear();
+	split(attributes, ')', v1);
+	attributes = v1[0];
+	v1.clear();
+	bool validRel = false;
+	vector<int> relIdxs;
+	for(size_t i=0; i < relationshipTab.size(); i++) {
+		if(rel == relationshipTab[i][0]) {
+			validRel = true;
+			relIdxs.push_back(i);
+		}
+	}
+	if(!validRel)
+		return false;
+	split(attributes, ',', v1);
+	if(v1.size() != (size_t) stoi(relationshipTab[relIdxs[0]][1]))
+		return false;
+	vector<string> symbols;
+	for (vector<Field>::iterator it = queryDeclarations.begin(); it != queryDeclarations.end(); ++it) {
+		if(it->getType() == "" || it->getValue() == "")
+			return false;
+		symbols.push_back(it->getValue());
+	}
+	string *attributesArray = new string[v1.size()];
+	bool *attrValidatorsArray = new bool[v1.size()];
+	for(size_t i = 0; i < v1.size(); i++) {
+		attributesArray[i] = v1[i];
+		attrValidatorsArray[i] = false;
+		if(find(symbols.begin(), symbols.end(), attributesArray[i]) != symbols.end())
+			continue;
+		else
+			return false;
+	}
+	for (size_t i = 0; i < queryDeclarations.size(); i++) {
+		for (size_t j = 0; j < v1.size(); j++) {
+			if(attributesArray[j] == queryDeclarations[i].getValue())
+				attributesArray[j] = queryDeclarations[i].getType();
+		}
+	}
+	for(size_t i=0; i < relIdxs.size(); i++) {
+		for(size_t j = 0; j < v1.size(); j++) {
+			if(attributesArray[j] == relationshipTab[relIdxs[i]][j+2])
+				attrValidatorsArray[j] = true;
+		}
+		bool wrongAttr = false;
+		for(size_t j = 0; j < v1.size(); j++) {
+			if(attrValidatorsArray[j] == false) {
+				wrongAttr = true;
+				break;
+			}
+		}
+		if(!wrongAttr)
+			break;
+		if(wrongAttr && i == relIdxs.size() - 1)
+			return false;
+	}
+	return true;
+}
+
+
+bool Validator::checkAttribute(string attribute) {	//MUSI JESZCZE JAKOS SPRAWDZAC I POBIERAC TYP ATRYBUTU
+	int dots = 0;
+	for(char& c : attribute) {
+		if(c == '.')
+			dots++;
+	}
+	if(dots >1)
+		return false;
+	vector<string> v1;
+	split(attribute, '.', v1);
+	string entity = v1[0], type = v1[1];
+	bool validEntity = false, validType = false;
+	int entityIndex;
+	for(size_t i=0; i < attributeTab.size(); i++) {
+		if(entity == attributeTab[i][0]) {
+			validEntity = true;
+			entityIndex = i;
+			break;
+		}
+	}
+	if(!validEntity)
+		return false;
+	if(type == attributeTab[entityIndex][1])
+		validType = true;
+	if(!validType)
+			return false;
+	return true;
 }

@@ -31,6 +31,7 @@ public:
 	bool checkSelect(string query);
 	bool checkEntities(vector<Field> declarations);
 	bool checkRelationship(string relationship);
+	bool checkRelationship2(string relationship);
 	bool checkAttribute(string attribute);
 private:
 	vector<string> entityTab;

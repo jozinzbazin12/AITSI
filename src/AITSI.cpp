@@ -58,9 +58,21 @@ void mainPQL() {
 	cout << "**** KONIEC DRZEWA*****************************************************" << endl;
 	cout << "**** WALIDACJA TESTY - KRZYSIEK****************************************" << endl;
 	cout << v->checkSelect("select dgdd 4 23") << endl;
-    cout << v->checkSelect("select select dgdd 4 23") << endl;
-    cout << v->checkRelationship("modifies(procedure,variable)") << endl;
-    cout << v->checkAttribute("procedure.procname") << endl;
+	cout << v->checkSelect("select select dgdd 4 23") << endl;
+	vector<Field> entities;
+	Field* f1 = new Field();
+	string s1 = "stmt", s2 = "s", s3 = "variable", s4 = "v";
+	f1->setType(s1);
+	f1->setValue(s2);
+	Field* f2 = new Field();
+	f2->setType(s3);
+	f2->setValue(s4);
+	entities.push_back(*f1);
+	entities.push_back(*f2);
+	cout << v->checkEntities(entities) << endl;
+	cout << v->checkRelationship("modifies(stmt,variable)") << endl;
+	cout << v->checkRelationship2("modifies(s,v)") << endl;
+	cout << v->checkAttribute("constant.value") << endl;
 	cout << "**** WALIDACJA TESTY - KONIEC****************************************" << endl;
 
 
