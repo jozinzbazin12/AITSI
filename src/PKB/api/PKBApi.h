@@ -23,7 +23,6 @@ public:
 	// jak bêd¹ potrzebowali stmt to chyba mog¹ sobie zrobic assign i while zamiast pobierac stmt
 	string getLineString(int lineNumber);
 
-private:
 	PKB& pkb = PKB::getInstance();
 };
 

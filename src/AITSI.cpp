@@ -8,8 +8,15 @@
 #include <map>
 #include <iterator>
 #include <stack>
+#include "PQL/tree_util.hh"
+#include "PQL/PQLNode.h"
+#include "PQL/PQLTree.h"
+#include "QueryPreProcessor.h"
+#include "Validator/Validator.h"
+#include "PQL/PQL.h"
 
 using namespace std;
+bool debug = true;
 
 string toLower(string str) {
 	transform(str.begin(), str.end(), str.begin(), ::tolower);
@@ -33,7 +40,32 @@ void removeWhitespaces(string &str) {
 	str.erase(remove_if(str.begin(), str.end(), ptr_fun<int, int>(isspace)), str.end());
 }
 
-bool debug = true;
+void mainPQL() {
+	Validator* v = new Validator();
+	QueryPreProcessor* que = new QueryPreProcessor();
+	PQL *pql = new PQL();
+	pql->enterQuery();
+	//pql->processQuery(pql->getQuery());
+	//string a = "assign a; select a such that follows(a,\"a\");";
+	cout << "**** ZAPYTANIE **************************************************" << endl;
+	cout << pql->getQuery()<< endl << endl;
+	cout << "**** DRZEWO *****************************************************" << endl;
+	que->parseQuery(pql->getQuery());
+	tree<tree_node_<PQLNode>>::iterator iter;
+	PQLTree* tree = que->getTree();
+	tree->printTree();
+	cout << endl;
+	cout << "**** KONIEC DRZEWA*****************************************************" << endl;
+	cout << "**** WALIDACJA TESTY - KRZYSIEK****************************************" << endl;
+	cout << v->checkSelect("select dgdd 4 23") << endl;
+    cout << v->checkSelect("select select dgdd 4 23") << endl;
+    cout << v->checkRelationship("modifies(procedure,variable)") << endl;
+    cout << v->checkAttribute("procedure.procname") << endl;
+	cout << "**** WALIDACJA TESTY - KONIEC****************************************" << endl;
+
+
+}
+
 #include "exceptions.h"
 #include "types.h"
 #include "PKB/AST/tree_util.hh"
@@ -43,6 +75,7 @@ bool debug = true;
 #include "parser/matchers.h"
 #include "parser/nodeUtil.h"
 #include "parser/syntax.h"
+//#include ""
 
 void initSyntax() {
 	Syntax* s = new ProcedureSyntax();
@@ -132,5 +165,7 @@ int main(int argc, char** args) {
 	} else {
 		cout << "Invalid arguments";
 	}
+	mainPQL();
 	return 0;
 }
+
