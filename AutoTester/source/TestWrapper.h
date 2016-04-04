@@ -7,7 +7,7 @@
 
 // include your other headers here
 #include "AbstractWrapper.h"
-#include "PQL\PQL.cpp"
+#include "AITSI.cpp"
 
 class TestWrapper : public AbstractWrapper {
  public:

@@ -23,6 +23,7 @@ public:
 	string getLineString(int lineNumber); // zwraca test który byl w linii o tym numerze
 	void addWhileLine(int loopLine,int stmtLine);
 	void addAssignLine(int assignLine);
+	void addLine(int lineNumber, string text);
 
 private:
 

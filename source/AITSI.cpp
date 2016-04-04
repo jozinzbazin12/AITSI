@@ -4,13 +4,19 @@
 #include <string>
 #include <vector>
 #include <istream>
-#include <functional>
 #include <algorithm>
 #include <map>
 #include <iterator>
 #include <stack>
+#include "PQL/tree_util.hh"
+#include "PQL/PQLNode.h"
+#include "PQL/PQLTree.h"
+#include "QueryPreProcessor.h"
+#include "Validator/Validator.h"
+#include "PQL/PQL.h"
 
 using namespace std;
+bool debug = true;
 
 string toLower(string str) {
 	transform(str.begin(), str.end(), str.begin(), ::tolower);
@@ -34,15 +40,54 @@ void removeWhitespaces(string &str) {
 	str.erase(remove_if(str.begin(), str.end(), ptr_fun<int, int>(isspace)), str.end());
 }
 
-bool debug = true;
+void mainPQL() {
+	Validator* v = new Validator();
+	QueryPreProcessor* que = new QueryPreProcessor();
+	PQL *pql = new PQL();
+	pql->enterQuery();
+	//pql->processQuery(pql->getQuery());
+	//string a = "assign a; select a such that follows(a,\"a\");";
+	cout << "**** ZAPYTANIE **************************************************" << endl;
+	cout << pql->getQuery()<< endl << endl;
+	cout << "**** DRZEWO *****************************************************" << endl;
+	que->parseQuery(pql->getQuery());
+	tree<tree_node_<PQLNode>>::iterator iter;
+	PQLTree* tree = que->getTree();
+	tree->printTree();
+	cout << endl;
+	cout << "**** KONIEC DRZEWA*****************************************************" << endl;
+	cout << "**** WALIDACJA TESTY - KRZYSIEK****************************************" << endl;
+	cout << v->checkSelect("select dgdd 4 23") << endl;
+	cout << v->checkSelect("select select dgdd 4 23") << endl;
+	vector<Field> entities;
+	Field* f1 = new Field();
+	string s1 = "stmt", s2 = "s", s3 = "variable", s4 = "v";
+	f1->setType(s1);
+	f1->setValue(s2);
+	Field* f2 = new Field();
+	f2->setType(s3);
+	f2->setValue(s4);
+	entities.push_back(*f1);
+	entities.push_back(*f2);
+	cout << v->checkEntities(entities) << endl;
+	cout << v->checkRelationship("modifies(stmt,variable)") << endl;
+	cout << v->checkRelationship2("modifies(s,v)") << endl;
+	cout << v->checkAttribute("constant.value") << endl;
+	cout << "**** WALIDACJA TESTY - KONIEC****************************************" << endl;
+
+
+}
+
 #include "exceptions.h"
 #include "types.h"
 #include "PKB/AST/tree_util.hh"
 #include "PKB/AST/ASTNode.h"
 #include "PKB/AST/ASTTree.h"
+//#include "PKB/AST/tree_nodes.h"
 #include "parser/matchers.h"
 #include "parser/nodeUtil.h"
 #include "parser/syntax.h"
+//#include ""
 
 void initSyntax() {
 	Syntax* s = new ProcedureSyntax();
@@ -107,35 +152,32 @@ int main(int argc, char** args) {
 		cout << "No arguments, to see usage help, use \"help\" parameter";
 		return 0;
 	}
-	//W args[0] jest sciezka do exe.
+//W args[0] jest sciezka do exe.
 	string action = string(args[1]);
 	if (action == "help") {
 		cout << "Usage...\n";
-	}
-	else if (action == "file") {
+	} else if (action == "file") {
 		initSyntax();
 		Parser parser(args[2]);
 		if (!parser.fileExists) {
 			cout << "File not found\n";
-		}
-		else {
+		} else {
 			try {
 				parser.parse();
 				cout << "OK" << endl;
 				parser.root->printTree();
-			}
-			catch (RuntimeException &ex) {
+			} catch (RuntimeException &ex) {
 				ex.print();
 				cout << "FAIL";
-			}
-			catch (Exception &ex) {
+			} catch (Exception &ex) {
 				ex.print();
 				cout << "FAIL";
 			}
 		}
-	}
-	else {
+	} else {
 		cout << "Invalid arguments";
 	}
+	mainPQL();
 	return 0;
 }
+

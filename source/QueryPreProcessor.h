@@ -17,14 +17,14 @@
 #include <map>
 #include <iterator>
 
+#include "ParserPQL/Exceptions.h"
+#include "ParserPQL/MatcherPQL.h"
 #include "PQL/tree_util.hh"
 #include "PQL/PQLNode.h"
 #include "PQL/PQLTree.h"
 
 #include "PQL/Field.h"
-#include "Parser/Matcher.h"
 #include "PQL/PQLNode.h"
-#include "Parser/Exceptions.h"
 
 using namespace std;
 
@@ -33,13 +33,13 @@ public:
 	QueryPreProcessor();
 	virtual ~QueryPreProcessor();
 	void parseQuery(string query);
-	Matcher* matcher;
+	MatcherPQL* matcher;
 	Exceptions* exc;
 
 private:
 	void writeVector(vector<string> &tab) {
 		cout << "Kolejny wektor" << endl;
-		for (int i = 0; i < tab.size(); i++) {
+		for (size_t i = 0; i < tab.size(); i++) {
 			cout << "[" << i << "] " << tab[i] << endl;
 		}
 	}
@@ -69,7 +69,7 @@ private:
 			pos = s.find(token, pos + 3);
 		}
 
-		for (int i = 0; i < positions.size(); i++) {
+		for (size_t i = 0; i < positions.size(); i++) {
 			pos = positions[i];
 		}
 
@@ -90,15 +90,15 @@ private:
 		vector<string> tokens = {"assign","stmt","while","variable","constant","prog_line"};
 
 		//Matcher* matcher = new Matcher();
-		for (int i = 0; i < tmp.size(); i++) {
+		for (size_t i = 0; i < tmp.size(); i++) {
 			//cout << "Tmp" << i << ": " << tmp[i] << endl;
 			// Sprawdzenie czy deklaracja nie zawiera procName, varName, value albo stmt#
 			if (!matcher->checkAll(tmp[i])) {
-				for(int j = 0 ; j < tokens.size() ; j ++)
+				for(size_t j = 0 ; j < tokens.size() ; j ++)
 				{
 					if (tmp[i].find(tokens[j]) < tmp[i].length()) {
 						vector<Field> tmpFields = makeFieldType(tokens[j],tmp[i]);
-						for (int j = 0; j < tmpFields.size(); j++) {
+						for (size_t j = 0; j < tmpFields.size(); j++) {
 							//cout << tmpFields[j].getType() << " " << tmpFields[j].getValue() << endl;
 							fields.push_back(tmpFields[j]);
 						}
@@ -126,7 +126,7 @@ private:
 
 		vector<string> tmp = split(declaration, ',');
 		vector<Field> declarationFields;
-		for (int i = 0; i < tmp.size(); i++) {
+		for (size_t i = 0; i < tmp.size(); i++) {
 			declarationFields.push_back(Field(type, tmp[i]));
 		}
 
@@ -141,7 +141,7 @@ private:
 		//if(countSelect(elems[0]) > 1) throwException();
 
 		vector<string> queryMainTokens;
-		for(int i = 0 ; i < elems.size() ; i ++)
+		for(size_t i = 0 ; i < elems.size() ; i ++)
 		{
 			if(matcher->checkTokens(elems[i],"select")) {
 				//queryMainTokens.push_back("select");
@@ -161,8 +161,9 @@ private:
 
 		//writeVector(queryParts);
 
-		for(int i = 0 ; i < queryParts.size() ; i ++)
+		for(size_t i = 0 ; i < queryParts.size() ; i ++)
 		{
+			cout<< "Query part: " << queryParts[i] << endl;
 			switch(checkType(queryParts[i]))
 			{
 				case 0:
@@ -177,51 +178,51 @@ private:
 			}
 		}
 
-		tree<tree_node_<PQLNode>>::iterator iter;
+		tree<tree_node_<PQLNode*>*>::iterator iter;
 		PQLTree* tree;
 		tree = tree->getInstance();
 		PQLNode* node;
-		tree_node_<PQLNode>* treeNode;
+		tree_node_<PQLNode*>* treeNode;
 
-		node = new QueryNode();
-		treeNode = new tree_node_<PQLNode>(*node);
-		iter = tree->appendRoot(*treeNode);
+		node = new PQLNode("queryNode");
+		treeNode = new tree_node_<PQLNode*>(node);
+		iter = tree->appendRoot(treeNode);
 
 		if(selectNodes.size() > 0)
 		{
-			node = new ResultMainNode();
-			treeNode = new tree_node_<PQLNode>(*node);
-			iter = tree->appendChild(iter, *treeNode);
+			node = new PQLNode("resultMainNode");
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = tree->appendChild(iter, treeNode);
 
 			node = selectNodes[0];
-			treeNode = new tree_node_<PQLNode>(*node);
-			iter = tree->appendChild(iter, *treeNode);
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = tree->appendChild(iter, treeNode);
 
-			for(int i = 1 ; i < selectNodes.size() ; i ++)
+			for(size_t i = 1 ; i < selectNodes.size() ; i ++)
 			{
 				node = selectNodes[i];
-				treeNode = new tree_node_<PQLNode>(*node);
-				iter = tree->appendSibling(iter, *treeNode);
+				treeNode = new tree_node_<PQLNode*>(node);
+				iter = tree->appendSibling(iter, treeNode);
 			}
 		}
 
-		iter = tree->getRoot();
-
 		if(selectNodes.size() > 0)
 		{
-			node = new SuchMainNode();
-			treeNode = new tree_node_<PQLNode>(*node);
-			iter = tree->appendChild(iter, *treeNode);
+			iter = tree->getRoot();
+
+			node = new PQLNode("suchMainNode");
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = tree->appendChild(iter, treeNode);
 
 			node = suchNodes[0];
-			treeNode = new tree_node_<PQLNode>(*node);
-			iter = tree->appendChild(iter, *treeNode);
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = tree->appendChild(iter, treeNode);
 
-			for(int i = 1 ; i < suchNodes.size() ; i ++)
+			for(size_t i = 1 ; i < suchNodes.size() ; i ++)
 			{
 				node = suchNodes[i];
-				treeNode = new tree_node_<PQLNode>(*node);
-				iter = tree->appendSibling(iter, *treeNode);
+				treeNode = new tree_node_<PQLNode*>(node);
+				iter = tree->appendSibling(iter, treeNode);
 			}
 		}
 
@@ -229,8 +230,8 @@ private:
 		PqlTree = tree;
 	}
 
-	vector<ResultNode*> selectNodes;
-	vector<SuchNode*> suchNodes;
+	vector<PQLNode*> selectNodes;
+	vector<PQLNode*> suchNodes;
 
 	void makeSelectNode(string selectPart)
 	{
@@ -247,7 +248,7 @@ private:
 
 		Field* aktField;
 		int dotPos;
-		for(int i = 0 ; i < selectParts.size() ; i ++)
+		for(size_t i = 0 ; i < selectParts.size() ; i ++)
 		{
 			if(matcher->checkAll(selectParts[i]))
 			{
@@ -268,13 +269,13 @@ private:
 				if (matcher->checkValue(selectParts[i])) {
 					aktField->setVal(true);
 				}
-				selectNodes.push_back(new ResultNode(aktField));
+				selectNodes.push_back(new PQLNode("resultNode", aktField));
 				//selectNodes.push_back(new Field(aktField->getType(),aktField->getValue(),aktField->isProcName(),aktField->isVarName(),aktField->isVal(),aktField->isStmt()));
 			}
 			else
 			{
 				aktField = findField(selectParts[i]);
-				selectNodes.push_back(new ResultNode(aktField));
+				selectNodes.push_back(new PQLNode("resultNode", aktField));
 			}
 		}
 
@@ -300,7 +301,7 @@ private:
 		vector<Field> attr;
 		bool star;
 
-		for(int i = 0 ; i < suchParts.size() ; i ++)
+		for(size_t i = 0 ; i < suchParts.size() ; i ++)
 		{
 			suchParts[i].erase(remove_if(suchParts[i].begin(), suchParts[i].end(), ptr_fun<int, int>(isspace)), suchParts[i].end());
 
@@ -312,7 +313,7 @@ private:
 
 			if(attr.size() == 2)
 			{
-				suchNodes.push_back(new SuchNode(suchType,&attr[0],&attr[1],star));
+				suchNodes.push_back(new PQLNode("suchNode", suchType,&attr[0],&attr[1],star));
 			}
 			else
 			{
@@ -346,7 +347,7 @@ private:
 			attrParts = split(suchPart,',');
 			//writeVector(attrParts);
 
-			for(int i = 0; i < attrParts.size() ; i ++)
+			for(size_t i = 0; i < attrParts.size() ; i ++)
 			{
 				if(matcher->isString(attrParts[i]))
 				{
@@ -383,7 +384,7 @@ private:
 
 	Field* findField(string name)
 	{
-		for(int i = 0 ; i < fields.size() ; i ++)
+		for(size_t i = 0 ; i < fields.size() ; i ++)
 		{
 			if(fields[i].getValue() == name) return &fields[i];
 		}
@@ -392,6 +393,9 @@ private:
 
 	int checkType(string queryPart)
 	{
+		//cout << "[1] " << queryPart.find("select") << endl;
+		//cout << "[2] " << queryPart.find("such that") << endl;
+
 		if(queryPart.find("select") < queryPart.length()) return 1; //select
 		if(queryPart.find("such that") < queryPart.length()) return 2; //such that
 
@@ -413,6 +417,8 @@ private:
 
 		//cout<< "START " << aktPos << " " << lastPos << " " << queryLength << endl;
 
+		//cout << "Q: " << query << endl;
+
 		findPositions(query, tokensElems);
 
 		return queryParts;
@@ -420,27 +426,36 @@ private:
 
 	void findPositions(string query, vector<string> tokens)
 	{
+		bool isnext = false;
 		int tmpPos;
-		for(int i = 0 ; i < tokens.size() ; i ++)
+		for(size_t i = 0 ; i < tokens.size() ; i ++)
 		{
 			tmpPos = query.find(tokens[i], aktPos);
-			//cout << i << " -> " << tokens[i] << " " << aktPos << " " << lastPos << endl;
-			if(tmpPos < lastPos && tmpPos < query.length())
+			//cout << i << " -> " << tokens[i] << " " << aktPos << " " << lastPos << " " << tmpPos << endl;
+			if(tmpPos > 0 && tmpPos < lastPos && tmpPos < query.length())
 			{
+				isnext = true;
 				lastPos = tmpPos;
 				lastToken = aktToken;
 				aktToken = tokens[i];
-				//cout << "CHANGE -> " << lastPos << "|" << tmpPos << " " << aktToken << endl;
+				//cout << "CHANGE -> " << lastPos << "|" << tmpPos << " " << aktToken << " " << lastToken << endl;
 			}
 		}
 
 		//cout<< "NEXT? " << aktPos << " " << lastPos << " " << aktToken.length() << " " << queryLength << endl;
 
-		queryParts.push_back(query.substr(aktPos-lastToken.length(),lastPos));
+		if(isnext)
+			queryParts.push_back(query.substr(aktPos-lastToken.length(),lastPos));
+		else
+			queryParts.push_back(query);
+
+		//writeVector(queryParts);
 
 		query = query.substr(lastPos,queryLength);
 		//aktPos = lastPos;// + aktToken.length();
 		//lastPos = query.length();
+
+		//cout << query << endl;
 
 		//cout<< "NEXT? " << aktPos << " " << lastPos << " " << aktToken.length() << " " << queryLength << endl;
 
@@ -449,7 +464,7 @@ private:
 
 	bool getNextPosition(vector<string> tokens, string query)
 	{
-		for(int i = 0 ; i < tokens.size() ; i ++)
+		for(size_t i = 0 ; i < tokens.size() ; i ++)
 		{
 			if(query.find(tokens[i]) < query.length())
 				return true;

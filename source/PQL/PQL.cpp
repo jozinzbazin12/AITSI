@@ -1,16 +1,8 @@
-/*
- * PQL.cpp
- *
- *  Created on: 29 mar 2016
- *      Author: Popek
- */
-
-
 #include "PQL.h"
-#include "tree_util.hh"
-#include "PQLNode.h"
-#include "PQLTree.h"
-#include "../QueryPreProcessor.h"
+//#include "tree_util.hh"
+//#include "PQLNode.h"
+//#include "PQLTree.h"
+//#include "../QueryPreProcessor.h"
 
 using namespace std;
 
@@ -21,55 +13,47 @@ PQL::PQL() {
 PQL::~PQL() {
 	// TODO Auto-generated destructor stub
 }
+//Lulowe Funkcje
+string PQL::toLower(string str) {
+	transform(str.begin(), str.end(), str.begin(), ::tolower);
+	return str;
+}
 
-/*int main(int argc, char** args) {
+void PQL::ltrim(string &str) {
+	str.erase(str.begin(), find_if(str.begin(), str.end(), not1(ptr_fun<int, int>(isspace))));
+}
 
-	// DRZEWO PQL
-	tree<tree_node_<PQLNode>>::iterator iter;
-	PQLTree* tree;
-	tree = tree->getInstance();
-	PQLNode* node;
-	tree_node_<PQLNode>* treeNode;
+void PQL::rtrim(string &str) {
+	str.erase(find_if(str.rbegin(), str.rend(), not1(ptr_fun<int, int>(isspace))).base(), str.end());
+}
 
-	// assign a; select a such that parent(a,2) and follows*(_,a);
+void PQL::trim(string &str) {
+	ltrim(str);
+	rtrim(str);
+}
 
-	node = new QueryNode();
-	treeNode = new tree_node_<PQLNode>(*node);
-	iter = tree->appendRoot(*treeNode);
+void PQL::removeWhitespaces(string &str) {
+	str.erase(remove_if(str.begin(), str.end(), ptr_fun<int, int>(isspace)), str.end());
+}
+// koniec lulowych
 
-	node = new ResultMainNode();
-	treeNode = new tree_node_<PQLNode>(*node);
-	iter = tree->appendChild(iter, *treeNode);
+string PQL::getQuery()
+{
+	return this->query;
+}
 
-	node = new ResultNode(new Field("assign", "a", false, false, false));
-	treeNode = new tree_node_<PQLNode>(*node);
-	iter = tree->appendChild(iter, *treeNode);
+string PQL::processQuery(string query)
+{
+	string processedQuery;
+	processedQuery = toLower(query);
+	trim(processedQuery);
+	cout<<"processQuery: "<<processedQuery<<endl;
+	return processedQuery;
+}
 
-	iter = tree->getRoot();
-
-	node = new SuchMainNode();
-	treeNode = new tree_node_<PQLNode>(*node);
-	iter = tree->appendChild(iter, *treeNode);
-
-	node = new SuchNode("parent", new Field("assign", "a", false, false, false), new Field("constant", "2", false, false, false), false);
-	treeNode = new tree_node_<PQLNode>(*node);
-	iter = tree->appendChild(iter, *treeNode);
-
-	node = new SuchNode("follows", new Field("all", "_", false, false, false), new Field("assign", "a", false, false, false), true);
-	treeNode = new tree_node_<PQLNode>(*node);
-	iter = tree->appendSibling(iter, *treeNode);
-
-	tree->printTree();
-	
-
-
-	string a = "assign a, a2; prog_line p; select a, p.procname such that parent(a,2) and follows*(\"ala\",a2) such that uses(_,p) such that modifies*(2,p);";
-
-	cout << a << endl;
-	QueryPreProcessor* que = new QueryPreProcessor();
-	que->parseQuery(a);
-
-	que->getTree()->printTree();
-
-	return 0;
-}*/
+void PQL:: enterQuery()
+{
+	cout << "Enter Query: \n";
+	getline(cin,query);
+	query=processQuery(query);
+}

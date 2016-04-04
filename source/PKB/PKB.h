@@ -23,10 +23,7 @@
 
 class PKB {
 public:
-	static PKB& getInstance(){
-		static PKB pkb;
-		return pkb;
-	}
+	static PKB& getInstance();
 
 	virtual ~PKB();
 
@@ -58,14 +55,13 @@ public:
 
 	LinesTable* getLineTable(){
 			return lineTable;
-		}
+	}
 
 	void setASTTree(){
 
 	}
 
 private:
-	static PKB* pkb;
 	Modifies* modifies = NULL;
 	Uses* uses = NULL;
 	Parent* parent = NULL;

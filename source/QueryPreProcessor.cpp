@@ -6,12 +6,13 @@
  */
 
 #include "QueryPreProcessor.h"
-#include "Parser/Matcher.h"
+
+#include "ParserPQL/MatcherPQL.h"
 
 using namespace std;
 
 QueryPreProcessor::QueryPreProcessor() {
-	matcher = new Matcher();
+	matcher = new MatcherPQL();
 	exc = new Exceptions();
 }
 
@@ -25,8 +26,8 @@ void QueryPreProcessor::parseQuery(string query) {
 	vector<string> result_part;
 	vector<string> query_part;
 
-	Matcher* m = new Matcher();
-	for(int i = 0 ; i < first_split.size() ; i ++)
+	MatcherPQL* m = new MatcherPQL();
+	for(size_t i = 0 ; i < first_split.size() ; i ++)
 	{
 		if(!m->checkTokens(first_split[i], "select"))
 			result_part.push_back(first_split[i]);

@@ -13,7 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\source\AITSI.cpp" />
     <ClCompile Include="..\source\designExtractor\DesignExtractor.cpp" />
-    <ClCompile Include="..\source\parser\Matcher.cpp" />
+    <ClCompile Include="..\source\ParserPQL\MatcherPQL.cpp" />
     <ClCompile Include="..\source\PKB\api\PKBApi.cpp" />
     <ClCompile Include="..\source\PKB\AST\asttt.cpp" />
     <ClCompile Include="..\source\PKB\AST\NodeFactory.cpp" />
@@ -29,12 +29,14 @@
     <ClCompile Include="..\source\PQL\Field.cpp" />
     <ClCompile Include="..\source\PQL\PQL.cpp" />
     <ClCompile Include="..\source\QueryPreProcessor.cpp" />
+    <ClCompile Include="..\source\Validator\globalne.cpp" />
+    <ClCompile Include="..\source\Validator\Validator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\designExtractor\DesignExtractor.h" />
     <ClInclude Include="..\source\exceptions.h" />
-    <ClInclude Include="..\source\parser\Exceptions.h" />
-    <ClInclude Include="..\source\parser\Matcher.h" />
+    <ClInclude Include="..\source\ParserPQL\Exceptions.h" />
+    <ClInclude Include="..\source\ParserPQL\MatcherPQL.h" />
     <ClInclude Include="..\source\parser\matchers.h" />
     <ClInclude Include="..\source\parser\nodeUtil.h" />
     <ClInclude Include="..\source\parser\parser.h" />
@@ -63,6 +65,8 @@
     <ClInclude Include="..\source\PQL\tree_util.hh" />
     <ClInclude Include="..\source\QueryPreProcessor.h" />
     <ClInclude Include="..\source\types.h" />
+    <ClInclude Include="..\source\Validator\globalne.h" />
+    <ClInclude Include="..\source\Validator\Validator.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>
@@ -71,7 +75,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>

@@ -1,9 +1,9 @@
 /*
-* syntax.h
-*
-*  Created on: 1 mar 2016
-*      Author: lulewiczg
-*/
+ * syntax.h
+ *
+ *  Created on: 1 mar 2016
+ *      Author: lulewiczg
+ */
 
 #ifndef TYPES_SYNTAX_H_
 #define TYPES_SYNTAX_H_
@@ -57,8 +57,7 @@ protected:
 		Exception e;
 		if (runtime) {
 			e = RuntimeException();
-		}
-		else {
+		} else {
 			e = Exception();
 		}
 		e.line = currLine;
@@ -82,11 +81,9 @@ protected:
 				}
 				brace = true;
 				str.erase(bracePos, 1);
-			}
-			else if (semicolonPos == string::npos) {
+			} else if (semicolonPos == string::npos) {
 				throwException("no semicolon found");
-			}
-			else if (semicolonPos != str.length() - 1) {
+			} else if (semicolonPos != str.length() - 1) {
 				throwException("denied characters after semicolon");
 			}
 			str.erase(semicolonPos, 1);
@@ -96,8 +93,7 @@ protected:
 				vector<Matcher>::iterator it2 = next(it, 1);
 				Matcher m = *it2;
 				newPosition = it->match(str, position, &m);
-			}
-			else {
+			} else {
 				newPosition = it->match(str, position);
 			}
 			if (!it->strict && (it->word == any || it->word == anyWord)) {
@@ -113,7 +109,7 @@ protected:
 	vector<string> split(string s) {
 		istringstream iss(s);
 		vector < string > tokens;
-		copy(istream_iterator < string >(iss), istream_iterator<string>(), back_inserter(tokens));
+		copy(istream_iterator < string > (iss), istream_iterator<string>(), back_inserter(tokens));
 		return tokens;
 	}
 
@@ -122,7 +118,7 @@ public:
 	static map<string, Syntax*> allSynstax;
 	static int currLine;
 	string keyWord;
-	virtual ASTTree* parseLine(string str) = 0;
+	virtual ASTTree* parseLine(string str)=0;
 	virtual ~Syntax() {
 
 	}
@@ -132,7 +128,7 @@ string Syntax::any = "**";
 int Syntax::currLine = 0;
 map<string, Syntax*> Syntax::allSynstax;
 
-class RecursiveSyntax : public Syntax {
+class RecursiveSyntax: public Syntax {
 protected:
 
 	string toString(vector<string> str) {
@@ -160,8 +156,7 @@ protected:
 				if (node) {
 					break;
 				}
-			}
-			catch (Exception &e) {
+			} catch (Exception &e) {
 				if (debug) {
 					e.print();
 				}
@@ -182,14 +177,14 @@ public:
 
 };
 
-class ProcedureSyntax : public Syntax {
+class ProcedureSyntax: public Syntax {
 private:
 	static map<string, tree_node_<ASTNode*>*> procedures;
 
 public:
 	ProcedureSyntax() {
 		keyWord = StatementType::PROCEDURE;
-		syntax = { Matcher(StatementType::PROCEDURE,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::anyWord), Matcher("{") };
+		syntax = {Matcher(StatementType::PROCEDURE,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::anyWord), Matcher("{")};
 		semicolon = false;
 	}
 
@@ -210,7 +205,7 @@ public:
 
 map<string, tree_node_<ASTNode*>*> ProcedureSyntax::procedures;
 
-class OperandSyntax : public Syntax {
+class OperandSyntax: public Syntax {
 public:
 	OperandSyntax() {
 		keyWord = "op";
@@ -225,11 +220,11 @@ public:
 	}
 };
 
-class ParentsisesSyntax : public RecursiveSyntax {
+class ParentsisesSyntax: public RecursiveSyntax {
 public:
 	ParentsisesSyntax() {
 		keyWord = "()";
-		syntax = { Matcher("("), Matcher(Matcher::anyWord,Matcher::anyWord, Matcher::anyWord), Matcher(")") };
+		syntax = {Matcher("("), Matcher(Matcher::anyWord,Matcher::anyWord, Matcher::anyWord), Matcher(")")};
 		semicolon = false;
 	}
 
@@ -246,13 +241,13 @@ public:
 	}
 };
 
-class MathSyntax : public RecursiveSyntax {
+class MathSyntax: public RecursiveSyntax {
 
 public:
 	MathSyntax(string expr, bool strict = false) {
 		semicolon = false;
 		keyWord = expr;
-		syntax = { Matcher(Matcher::anyWord), Matcher(keyWord, Matcher::anyWord, Matcher::anyWord, strict), Matcher(Matcher::any) };
+		syntax = {Matcher(Matcher::anyWord), Matcher(keyWord, Matcher::anyWord, Matcher::anyWord, strict), Matcher(Matcher::any)};
 		multiLine = true;
 		parsers.push_back(allSynstax["op"]);
 	}
@@ -280,11 +275,11 @@ public:
 }
 ;
 
-class AssingmentSyntax : public RecursiveSyntax {
+class AssingmentSyntax: public RecursiveSyntax {
 public:
 	AssingmentSyntax() {
 		keyWord = StatementType::ASSIGN;
-		syntax = { Matcher(Matcher::anyWord), Matcher(keyWord), Matcher(any) };
+		syntax = {Matcher(Matcher::anyWord), Matcher(keyWord), Matcher(any)};
 		multiLine = true;
 		parsers.push_back(allSynstax["op"]);
 	}
@@ -307,8 +302,7 @@ public:
 		ASTTree* result = parse(args);
 		if (result) {
 			NodeUtil::appendChild(n, result);
-		}
-		else {
+		} else {
 			throwException("could not parse expression");
 		}
 		return n;

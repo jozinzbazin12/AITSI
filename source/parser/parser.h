@@ -24,7 +24,7 @@ private:
 		if (!str.length()) {
 			return;
 		}
-		for (vector<Syntax*>::iterator it = parsers.begin(); it != parsers.end(); it++) {
+		for (vector<Syntax*>::iterator it = parsers.begin(); it != parsers.end(); ++it) {
 			try {
 				node = (*it)->parseLine(str);
 				if (node) {

@@ -1,9 +1,9 @@
 /*
-* matchers.h
-*
-*  Created on: 22 mar 2016
-*      Author: lulewiczg
-*/
+ * matchers.h
+ *
+ *  Created on: 22 mar 2016
+ *      Author: lulewiczg
+ */
 
 #ifndef PARSER_MATCHERS_H_
 #define PARSER_MATCHERS_H_
@@ -31,7 +31,7 @@ protected:
 public:
 	bool strict = false;
 	static string space;
-	//	static string nothing;
+//	static string nothing;
 	static string any;
 	static string anyWord;
 	string word;
@@ -57,7 +57,7 @@ public:
 
 	}
 
-	int match(string s, int currentPos, Matcher* next = NULL) {
+	int match(string s, int currentPos, Matcher* next=NULL) {
 		if (!strict && (word == any || word == anyWord)) {
 			return matchWildcard(s, currentPos, next);
 		}
@@ -90,7 +90,7 @@ string Matcher::space = " ";
 string Matcher::any = "**";
 string Matcher::anyWord = "*";
 
-class MultiMatcher : public Matcher {
+class MultiMatcher: public Matcher {
 public:
 	string words[];
 

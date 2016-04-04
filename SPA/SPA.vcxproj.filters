@@ -37,6 +37,12 @@
     <Filter Include="Source Files\PQL">
       <UniqueIdentifier>{6b4e3093-120f-46a4-8f6c-cab17f35110b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Validator">
+      <UniqueIdentifier>{3eebfa56-2477-4277-b1ba-66d2dab58fed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ParserPQL">
+      <UniqueIdentifier>{1f282e4e-0796-4525-a190-efe745a02c4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\AITSI.cpp">
@@ -90,8 +96,14 @@
     <ClCompile Include="..\source\PQL\PQL.cpp">
       <Filter>Source Files\PQL</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\parser\Matcher.cpp">
-      <Filter>Source Files\parser</Filter>
+    <ClCompile Include="..\source\Validator\globalne.cpp">
+      <Filter>Source Files\Validator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Validator\Validator.cpp">
+      <Filter>Source Files\Validator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\ParserPQL\MatcherPQL.cpp">
+      <Filter>Source Files\ParserPQL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -185,11 +197,17 @@
     <ClInclude Include="..\source\PQL\tree_util.hh">
       <Filter>Source Files\PQL</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\parser\Exceptions.h">
-      <Filter>Source Files\parser</Filter>
+    <ClInclude Include="..\source\Validator\globalne.h">
+      <Filter>Source Files\Validator</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\parser\Matcher.h">
-      <Filter>Source Files\parser</Filter>
+    <ClInclude Include="..\source\Validator\Validator.h">
+      <Filter>Source Files\Validator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ParserPQL\Exceptions.h">
+      <Filter>Source Files\ParserPQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\ParserPQL\MatcherPQL.h">
+      <Filter>Source Files\ParserPQL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
