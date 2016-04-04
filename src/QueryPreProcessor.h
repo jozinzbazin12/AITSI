@@ -177,31 +177,31 @@ private:
 			}
 		}
 
-		tree<tree_node_<PQLNode>>::iterator iter;
+		tree<tree_node_<PQLNode*>*>::iterator iter;
 		PQLTree* tree;
 		tree = tree->getInstance();
 		PQLNode* node;
-		tree_node_<PQLNode>* treeNode;
+		tree_node_<PQLNode*>* treeNode;
 
-		node = new QueryNode();
-		treeNode = new tree_node_<PQLNode>(*node);
-		iter = tree->appendRoot(*treeNode);
+		node = new PQLNode("queryNode");
+		treeNode = new tree_node_<PQLNode*>(node);
+		iter = tree->appendRoot(treeNode);
 
 		if(selectNodes.size() > 0)
 		{
-			node = new ResultMainNode();
-			treeNode = new tree_node_<PQLNode>(*node);
-			iter = tree->appendChild(iter, *treeNode);
+			node = new PQLNode("resultMainNode");
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = tree->appendChild(iter, treeNode);
 
 			node = selectNodes[0];
-			treeNode = new tree_node_<PQLNode>(*node);
-			iter = tree->appendChild(iter, *treeNode);
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = tree->appendChild(iter, treeNode);
 
 			for(size_t i = 1 ; i < selectNodes.size() ; i ++)
 			{
 				node = selectNodes[i];
-				treeNode = new tree_node_<PQLNode>(*node);
-				iter = tree->appendSibling(iter, *treeNode);
+				treeNode = new tree_node_<PQLNode*>(node);
+				iter = tree->appendSibling(iter, treeNode);
 			}
 		}
 
@@ -209,19 +209,19 @@ private:
 		{
 			iter = tree->getRoot();
 
-			node = new SuchMainNode();
-			treeNode = new tree_node_<PQLNode>(*node);
-			iter = tree->appendChild(iter, *treeNode);
+			node = new PQLNode("suchMainNode");
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = tree->appendChild(iter, treeNode);
 
 			node = suchNodes[0];
-			treeNode = new tree_node_<PQLNode>(*node);
-			iter = tree->appendChild(iter, *treeNode);
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = tree->appendChild(iter, treeNode);
 
 			for(size_t i = 1 ; i < suchNodes.size() ; i ++)
 			{
 				node = suchNodes[i];
-				treeNode = new tree_node_<PQLNode>(*node);
-				iter = tree->appendSibling(iter, *treeNode);
+				treeNode = new tree_node_<PQLNode*>(node);
+				iter = tree->appendSibling(iter, treeNode);
 			}
 		}
 
@@ -229,8 +229,8 @@ private:
 		PqlTree = tree;
 	}
 
-	vector<ResultNode*> selectNodes;
-	vector<SuchNode*> suchNodes;
+	vector<PQLNode*> selectNodes;
+	vector<PQLNode*> suchNodes;
 
 	void makeSelectNode(string selectPart)
 	{
@@ -268,13 +268,13 @@ private:
 				if (matcher->checkValue(selectParts[i])) {
 					aktField->setVal(true);
 				}
-				selectNodes.push_back(new ResultNode(aktField));
+				selectNodes.push_back(new PQLNode("resultNode", aktField));
 				//selectNodes.push_back(new Field(aktField->getType(),aktField->getValue(),aktField->isProcName(),aktField->isVarName(),aktField->isVal(),aktField->isStmt()));
 			}
 			else
 			{
 				aktField = findField(selectParts[i]);
-				selectNodes.push_back(new ResultNode(aktField));
+				selectNodes.push_back(new PQLNode("resultNode", aktField));
 			}
 		}
 
@@ -312,7 +312,7 @@ private:
 
 			if(attr.size() == 2)
 			{
-				suchNodes.push_back(new SuchNode(suchType,&attr[0],&attr[1],star));
+				suchNodes.push_back(new PQLNode("suchNode", suchType,&attr[0],&attr[1],star));
 			}
 			else
 			{

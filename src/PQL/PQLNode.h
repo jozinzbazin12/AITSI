@@ -15,98 +15,49 @@ using namespace std;
 
 class PQLNode {
 public:
-	string type; // query (root), result, suchthat, with, pattern
-	string nodeType;
-};
-
-class QueryNode: public PQLNode {
-public:
-	QueryNode() {
-		this->type = "query";
-		this->nodeType = "query";
+	// for set field by yourself
+	PQLNode() {
 	}
-
-	void dupa()
-	{
-		cout << " DUPA ";
+	// for QueryNode, ResultMainNode, SuchMainNode
+	PQLNode(string type) {
+		this->type = type; // type = "queryNode" // type = "resultMainNode" // type = "suchMainNode"
 	}
-};
-
-class ResultMainNode: public PQLNode {
-public:
-	ResultMainNode() {
-		this->type = "mainResult";
-		this->nodeType = "mainResult";
+	// for ResultNode
+	PQLNode(string type, Field* field1) {
+		this->type = type; // type = "resultNode"
+		this->field1 = field1;
 	}
-};
-
-class ResultNode: public ResultMainNode {
-public:
-	ResultNode() {
-		this->type = "result";
-		this->nodeType = "result";
-	}
-
-	ResultNode(PQLNode& node) {}
-
-	ResultNode(Field* field) {
-		this->type = "result";
-		this->nodeType = "result";
-		this->field = field;
-	}
-
-public:
-    Field* getField() {
-		return field;
-	}
-
-	void setField(Field* field) {
-		this->field = field;
-	}
-
-private:
-	Field* field;
-};
-
-class SuchMainNode: public PQLNode {
-public:
-	SuchMainNode() {
-		this->type = "mainSuch";
-		this->nodeType = "mainSuch";
-	}
-};
-
-class SuchNode: public SuchMainNode {
-public:
-	SuchNode() {
-		this->type = "such";
-		this->nodeType = "such";
-		this->star = false;
-	}
-
-	SuchNode(string suchtype, Field* atr1, Field* atr2, bool star) {
-		this->type = "such";
-		this->nodeType = suchtype;
-		this->suchtype = suchtype;
-		this->attribute1 = atr1;
-		this->attribute2 = atr2;
+	// for SuchNode
+	PQLNode(string type, string nodeType, Field* field1, Field* field2, bool star) {
+		this->type = type; // type = "suchNode"
+		this->nodeType = nodeType;
+		this->field1 = field1;
+		this->field2 = field2;
 		this->star = star;
 	}
 
-	Field* getAttribute1() {
-		return attribute1;
+	Field*& getField1() {
+		return field1;
 	}
 
-	void setAttribute1(Field* attribute1) {
-		this->attribute1 = attribute1;
+	void setField1(Field*& field1) {
+		this->field1 = field1;
 	}
 
-	Field* getAttribute2() {
-		return attribute2;
+	Field*& getField2() {
+		return field2;
 	}
 
-	void setAttribute2(Field* attribute2) {
-		this->attribute2 = attribute2;
+	void setField2(Field*& field2) {
+		this->field2 = field2;
+	}
+
+	string& getNodeType() {
+		return nodeType;
+	}
+
+	void setNodeType(string& nodeType) {
+		this->nodeType = nodeType;
 	}
 
 	bool isStar() {
@@ -117,19 +68,28 @@ public:
 		this->star = star;
 	}
 
-	string& getSuchType() {
-		return suchtype;
+	string& getType() {
+		return type;
 	}
 
-	void setSuchType(string& suchtype) {
-		this->suchtype = suchtype;
+	void setType(string& type) {
+		this->type = type;
 	}
 
 private:
-	string suchtype; // parent, follows, modifies, uses, affects, next, calls
-	Field* attribute1; // 1st attribute in function
-	Field* attribute2; // 2nd attribute in function
-	bool star; // function with star or not - DEFAULT NOT
+	// node type - queryNode, resultMainNode, resultNode, suchMainNode, suchNode, ...
+	string type;
+	// for Such That Node - parent, follows, modifies, uses, ...
+	// for Other Node - ""
+	string nodeType;
+	// for Result Node - field
+	// for Such Node - field (attributte 1 in relations)
+	Field* field1;
+	// for Result Node - empty
+	// only for Such Node - field (attributte 2 in relations)
+	Field* field2;
+	// only for Such Field - relations with star or not
+	bool star;
 };
 
 #endif /* SRC_PQL_PQLNODE_H_ */
