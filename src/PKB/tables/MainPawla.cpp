@@ -5,19 +5,16 @@
  *      Author: Pawel
  */
 
-#include "../relations/Modifies.h"
+#include "../PKB.h"
+#include "../api/PKBApi.h"
 
 int main3() {
-	Modifies * modifies = new Modifies();
-	modifies->add(1, 30);
-	modifies->add(1, 32);
-	modifies->add(2, 40);
-	modifies->add(1, 34);
-	modifies->add(2, 42);
-	modifies->add(1, 36);
-	modifies->add(3, 50);
-	modifies->writeAll();
+	PKB& pkb = PKB::getInstance();
+	pkb.getModifies()->add(1 ,1);
+	PKBApi api;
 
+	pkb.getModifies()->writeAll();
+	api.pkb.getModifies()->writeAll();
 	return 0;
 }
 
