@@ -6,9 +6,8 @@
  */
 
 #include "Uses.h"
-#include "../PKB.h"
+#include "../../globalVars.h"
 Uses::Uses() {
-	// TODO Auto-generated constructor stub
 
 }
 
@@ -33,8 +32,7 @@ bool Uses::uses(int lineNumber, string varName){
 		return false;
 	}
 
-	PKB pkb = PKB::getInstance();
-	int varId = pkb.getVarTable()->getVarId(varName);
+	int varId = pkb -> getVarTable() -> getVarId(varName);
 	if (varId == -1)
 		return false;
 	if (varUsesLines.count(varId) > 0) {

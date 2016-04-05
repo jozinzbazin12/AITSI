@@ -8,12 +8,12 @@
 #ifndef SRC_DESIGNEXTRACTOR_DESIGNEXTRACTOR_H_
 #define SRC_DESIGNEXTRACTOR_DESIGNEXTRACTOR_H_
 
-#include "../PKB/PKB.h"
-
 class DesignExtractor {
 public:
 	DesignExtractor();
 	virtual ~DesignExtractor();
+	void start();
+
 private:
 	void setFollowRelations();
 	void setParentRelations();

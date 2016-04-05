@@ -6,22 +6,26 @@
  */
 
 #include "DesignExtractor.h"
+#include "../globalVars.h"
 
 DesignExtractor::DesignExtractor() {
-	PKB pkb = PKB::getInstance();
-	Follows * follows = pkb.getFollows();
-	ASTTree * tree = pkb.getASTTree();
 }
 
 DesignExtractor::~DesignExtractor() {
 	// TODO Auto-generated destructor stub
 }
 
+void DesignExtractor::start(){
+	setFollowRelations();
+	setParentRelations();
+	setLoopsTable();
+	setAssignTable();
+}
+
 void DesignExtractor::setFollowRelations() {
 
-	PKB pkb = PKB::getInstance();
-	Follows * follows = pkb.getFollows();
-	ASTTree * ASTtree = pkb.getASTTree();
+	Follows * follows = pkb -> getFollows();
+	ASTTree * ASTtree = pkb -> getASTTree();
 
 	map<int, int> nextFollow;    //1 arg - line num   , 2 - its follower
 	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
@@ -47,9 +51,8 @@ void DesignExtractor::setFollowRelations() {
 	}
 }
 void DesignExtractor::setParentRelations() {
-	PKB pkb = PKB::getInstance();
-	Parent * parent = pkb.getParent();
-	ASTTree * ASTtree = pkb.getASTTree();
+	Parent * parent = pkb -> getParent();
+	ASTTree * ASTtree = pkb -> getASTTree();
 
 	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
 	tree<tree_node_<ASTNode*>*>::iterator tmp;
@@ -79,9 +82,8 @@ void DesignExtractor::setParentRelations() {
 	}
 }
 void DesignExtractor::setLoopsTable() {
-	PKB pkb = PKB::getInstance();
-	LinesTable * linesTable = pkb.getLineTable();
-	ASTTree * ASTtree = pkb.getASTTree();
+	LinesTable * linesTable = pkb -> getLineTable();
+	ASTTree * ASTtree = pkb -> getASTTree();
 
 	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
 	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
@@ -113,9 +115,8 @@ void DesignExtractor::setLoopsTable() {
 
 }
 void DesignExtractor::setAssignTable(){
-	PKB pkb = PKB::getInstance();
-		LinesTable * linesTable = pkb.getLineTable();
-		ASTTree * ASTtree = pkb.getASTTree();
+		LinesTable * linesTable = pkb -> getLineTable();
+		ASTTree * ASTtree = pkb -> getASTTree();
 
 		tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
 				tree<tree_node_<ASTNode*>*>::iterator tmp;

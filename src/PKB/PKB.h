@@ -23,7 +23,15 @@
 
 class PKB {
 public:
-	static PKB& getInstance();
+
+	PKB(){
+		modifies = new Modifies();
+		uses = new Uses();
+		parent = new Parent();
+		follows = new Follows();
+		varTable = new VarTable();
+		lineTable = new LinesTable();
+	}
 
 	virtual ~PKB();
 
@@ -44,8 +52,6 @@ public:
 	}
 
 	ASTTree* getASTTree(){
-		if(tree == NULL)
-			setASTTree();
 		return tree;
 	}
 
@@ -54,11 +60,11 @@ public:
 	}
 
 	LinesTable* getLineTable(){
-			return lineTable;
+		return lineTable;
 	}
 
-	void setASTTree(){
-
+	void setASTTree(ASTTree * tree2){
+		tree = tree2;
 	}
 
 private:
@@ -69,15 +75,6 @@ private:
 	ASTTree * tree = NULL;
 	VarTable * varTable = NULL;
 	LinesTable * lineTable = NULL;
-
-	PKB(){
-		modifies = new Modifies();
-		uses = new Uses();
-		parent = new Parent();
-		follows = new Follows();
-		varTable = new VarTable();
-		lineTable = new LinesTable();
-	}
 };
 
 #endif /* SRC_PKB_PKB_H_ */

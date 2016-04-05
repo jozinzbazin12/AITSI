@@ -148,6 +148,10 @@ void initSyntax() {
 }
 
 #include "parser/parser.h"
+#include "globalVars.h"
+
+PKB * pkb = new PKB();
+DesignExtractor * designExtractor = new DesignExtractor();
 
 int main(int argc, char** args) {
 	if (argc <= 1) {
@@ -168,6 +172,18 @@ int main(int argc, char** args) {
 				parser.parse();
 				cout << "OK" << endl;
 				parser.root->printTree();
+				pkb->setASTTree(parser.root);
+				designExtractor -> start();
+
+				cout<< "**********************************************************\n";
+				pkb -> getFollows() -> writeAll();
+				cout<< "**********************************************************\n";
+				pkb -> getParent() -> writeAll();
+				cout<< "**********************************************************\n";
+				pkb -> getModifies() -> writeAll();
+				cout<< "**********************************************************\n";
+				pkb -> getUses() -> writeAll();
+				cout<< "**********************************************************\n";
 			} catch (RuntimeException &ex) {
 				ex.print();
 				cout << "FAIL"<<endl;

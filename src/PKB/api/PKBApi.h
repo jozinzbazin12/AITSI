@@ -7,7 +7,11 @@
 #ifndef SRC_PKB_API_PKBAPI_H_
 #define SRC_PKB_API_PKBAPI_H_
 
-#include "../PKB.h"
+#include <vector>
+#include <map>
+#include <string>
+
+using namespace std;
 
 class PKBApi {
 public:
@@ -22,8 +26,6 @@ public:
 	map<int, vector<int> > getWhileLines(); // w pierwszym parametrze nr tej linijki z napisem while, a w vectorze pozosta³e liniie while
 	// jak bêd¹ potrzebowali stmt to chyba mog¹ sobie zrobic assign i while zamiast pobierac stmt
 	string getLineString(int lineNumber);
-
-	PKB& pkb = PKB::getInstance();
 };
 
 #endif /* SRC_PKB_API_PKBAPI_H_ */
