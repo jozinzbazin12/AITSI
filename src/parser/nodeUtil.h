@@ -45,6 +45,12 @@ public:
 		return createTree(node);
 	}
 
+	static ASTTree* createWhileNode(string name, int lineNumber) {
+		ASTNode* node = new ASTNode(0, "WHILE", lineNumber, name);
+		node->newLevel = true;
+		return createTree(node);
+	}
+
 	static ASTTree* createExpressionNode(string name, int lineNumber) {
 		ASTNode* node = new ASTNode(0, "EXPRESSION", lineNumber, name);
 		return createTree(node);

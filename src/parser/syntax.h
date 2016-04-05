@@ -308,5 +308,28 @@ public:
 		return n;
 	}
 };
+class WhileSyntax: public Syntax {
+public:
+	WhileSyntax() {
+		keyWord = StatementType::WHILE;
+		syntax = {Matcher(keyWord, Matcher::any, Matcher::space), Matcher(anyWord), Matcher("{")};
+		multiLine = true;
+		semicolon = false;
+	}
+
+	ASTTree* parseLine(string str) {
+		vector < string > splitStr = split(str);
+		if (str.find(splitStr[0]) == string::npos) {
+			return NULL;
+		}
+		vector < string > args = match(str);
+		string name = args.front();
+		if (!isVar(name)) {
+			throwException(name + " is not variable name!", true);
+		}
+		ASTTree* n = NodeUtil::createWhileNode(name, currLine);
+		return n;
+	}
+};
 
 #endif /* TYPES_SYNTAX_H_ */

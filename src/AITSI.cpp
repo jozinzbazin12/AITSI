@@ -92,6 +92,8 @@ void mainPQL() {
 void initSyntax() {
 	Syntax* s = new ProcedureSyntax();
 	Syntax::allSynstax[s->keyWord] = s;
+	Syntax* w = new WhileSyntax();
+	Syntax::allSynstax[w->keyWord] = w;
 	Syntax* op = new OperandSyntax();
 	Syntax::allSynstax[op->keyWord] = op;
 
@@ -168,10 +170,10 @@ int main(int argc, char** args) {
 				parser.root->printTree();
 			} catch (RuntimeException &ex) {
 				ex.print();
-				cout << "FAIL";
+				cout << "FAIL"<<endl;
 			} catch (Exception &ex) {
 				ex.print();
-				cout << "FAIL";
+				cout << "FAIL"<<endl;
 			}
 		}
 	} else {
