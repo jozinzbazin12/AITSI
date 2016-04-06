@@ -41,8 +41,8 @@ void DesignExtractor::setFollowRelations() {
 				if (ASTtree->isValid(tmp)) {
 					if ((*begin)->data->lineNumber
 							!= (*tmp)->data->lineNumber) {
-						follows->addNext((*begin)->data->id, (*tmp)->data->id);
-						follows->addPrev((*tmp)->data->id, (*begin)->data->id);
+						follows->addNext((*begin)->data->lineNumber, (*tmp)->data->lineNumber);
+						follows->addPrev((*tmp)->data->lineNumber, (*begin)->data->lineNumber);
 					}
 				}
 			}
@@ -65,7 +65,7 @@ void DesignExtractor::setParentRelations() {
 			} else {
 				tmp = begin.node->parent;
 				if (ASTtree->isValid(tmp)
-						&& (*tmp)->data->type != "procedure") {
+						&& (*tmp)->data->type != "procedure" && (*tmp)->data->type != "PROGRAM") {
 					if ((*begin)->data->lineNumber
 							!= (*tmp)->data->lineNumber) {
 						parent->addParent((*begin)->data->lineNumber,
@@ -96,7 +96,7 @@ void DesignExtractor::setLoopsTable() {
 				cout << "error <fillLoops>" << endl;
 			} else {
 				stmtlst = begin.node->first_child;  //stmtlst    //
-				sib = ASTtree->getFirstChild(stmtlst); //first child of stmtlist   //7
+				sib = stmtlst; //first child of stmtlist   //7  //THERE IS NO STMTLST
 				linesTable->addWhileLine((*begin)->data->lineNumber,
 						(*sib)->data->lineNumber);
 				for (int i = 0; i < ASTtree->getNumberOfChildren(stmtlst);
@@ -123,7 +123,7 @@ void DesignExtractor::setAssignTable(){
 				tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
 
 				while (begin != end) {
-					if (ASTtree->isValid(begin) && (*begin)->data->type == "ASSIGN") {
+					if (ASTtree->isValid(begin) && (*begin)->data->type == "=") {
 						linesTable->addAssignLine((*begin)->data->lineNumber);
 					}
 					++begin;
