@@ -176,12 +176,16 @@ int main(int argc, char** args) {
 				designExtractor -> start();
 
 				cout<< "**********************************************************\n";
+				cout<< "***********FOLLOWS**\n";
 				pkb -> getFollows() -> writeAll();
 				cout<< "**********************************************************\n";
+				cout<< "***********PARENTS**\n";
 				pkb -> getParent() -> writeAll();
 				cout<< "**********************************************************\n";
+				cout<< "***********MODIFIES**\n";
 				pkb -> getModifies() -> writeAll();
 				cout<< "**********************************************************\n";
+				cout<< "***********USES**\n";
 				pkb -> getUses() -> writeAll();
 				cout<< "**********************************************************\n";
 			} catch (RuntimeException &ex) {

@@ -7,6 +7,7 @@
 
 #include "Uses.h"
 #include "../../globalVars.h"
+
 Uses::Uses() {
 
 }

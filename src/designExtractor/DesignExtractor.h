@@ -20,6 +20,7 @@ private:
 	void setLoopsTable();
 	void setAssignTable();
 	void setModifiesRelations();
+	void setUsesRelations();
 };
 
 #endif /* SRC_DESIGNEXTRACTOR_DESIGNEXTRACTOR_H_ */

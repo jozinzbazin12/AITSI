@@ -21,6 +21,7 @@ void DesignExtractor::start() {
 	setLoopsTable();
 	setAssignTable();
 	setModifiesRelations();
+	setUsesRelations();
 }
 
 void DesignExtractor::setFollowRelations() {
@@ -122,7 +123,6 @@ void DesignExtractor::setAssignTable() {
 	ASTTree * ASTtree = pkb->getASTTree();
 
 	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
-	tree<tree_node_<ASTNode*>*>::iterator tmp;
 	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
 
 	while (begin != end) {
@@ -135,9 +135,9 @@ void DesignExtractor::setAssignTable() {
 }
 void DesignExtractor::setModifiesRelations() {
 
-	Modifies * modifies = pkb -> getModifies();
-	ASTTree * ASTtree = pkb -> getASTTree();
-	VarTable * varTable = pkb -> getVarTable();
+	Modifies * modifies = pkb->getModifies();
+	ASTTree * ASTtree = pkb->getASTTree();
+	VarTable * varTable = pkb->getVarTable();
 
 	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
 	tree<tree_node_<ASTNode*>*>::iterator tmp;
@@ -148,10 +148,62 @@ void DesignExtractor::setModifiesRelations() {
 			//linesTable->addAssignLine((*begin)->data->lineNumber);
 			tmp = begin.node->first_child;
 			int varId = varTable->getVarId((*tmp)->data->value);
-			if(varId!=-1)
-				modifies->add(varId,(*begin)->data->lineNumber);
+			if (varId != -1)
+				modifies->add(varId, (*begin)->data->lineNumber);
 			else
-				modifies->add(varTable->addVar((*tmp)->data->value),(*begin)->data->lineNumber);
+				modifies->add(varTable->addVar((*tmp)->data->value),
+						(*begin)->data->lineNumber);
+		}
+		++begin;
+
+	}
+}
+void DesignExtractor::setUsesRelations() {
+	Uses * uses = pkb->getUses();
+	ASTTree * ASTtree = pkb->getASTTree();
+	VarTable * varTable = pkb->getVarTable();
+
+	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
+	tree<tree_node_<ASTNode*>*>::iterator firstChildOfAssign;
+	tree<tree_node_<ASTNode*>*>::iterator secondChildOfAssign;
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
+	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
+
+	while (begin != end) {
+		if (ASTtree->isValid(begin)) {
+			if ((*begin)->data->type == "=") {                                                   //if assign only value
+				firstChildOfAssign = begin.node->first_child;
+				secondChildOfAssign = firstChildOfAssign.node->next_sibling;
+				if (ASTtree->isValid(secondChildOfAssign)
+						&& (*secondChildOfAssign)->data->type == "OPERAND") {
+					int varId = varTable->getVarId(
+							(*secondChildOfAssign)->data->value);
+					if (varId != -1)
+						uses->add(varId, (*begin)->data->lineNumber);
+					else
+						uses->add(varTable->addVar((*secondChildOfAssign)->data->value),
+								(*begin)->data->lineNumber);
+
+				}
+			} else if ((*begin)->data->type == "WHILE") {                                            //in loop
+				int varId = varTable->getVarId((*begin)->data->value);
+				if (varId != -1)
+					uses->add(varId, (*begin)->data->lineNumber);
+				else
+					uses->add(varTable->addVar((*begin)->data->value),
+							(*begin)->data->lineNumber);
+			} else if ((*begin)->data->type == "OPERAND") {                                           //under Expression
+				tmp = begin.node->parent;
+				if ((*tmp)->data->type == "EXPRESSION") {
+					int varId = varTable->getVarId((*begin)->data->value);
+					if (varId != -1)
+						uses->add(varId, (*begin)->data->lineNumber);
+					else
+						uses->add(varTable->addVar((*begin)->data->value),
+								(*begin)->data->lineNumber);
+				}
+
+			}
 		}
 		++begin;
 
