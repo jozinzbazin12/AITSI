@@ -15,17 +15,18 @@ DesignExtractor::~DesignExtractor() {
 	// TODO Auto-generated destructor stub
 }
 
-void DesignExtractor::start(){
+void DesignExtractor::start() {
 	setFollowRelations();
 	setParentRelations();
 	setLoopsTable();
 	setAssignTable();
+	setModifiesRelations();
 }
 
 void DesignExtractor::setFollowRelations() {
 
-	Follows * follows = pkb -> getFollows();
-	ASTTree * ASTtree = pkb -> getASTTree();
+	Follows * follows = pkb->getFollows();
+	ASTTree * ASTtree = pkb->getASTTree();
 
 	map<int, int> nextFollow;    //1 arg - line num   , 2 - its follower
 	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
@@ -41,8 +42,10 @@ void DesignExtractor::setFollowRelations() {
 				if (ASTtree->isValid(tmp)) {
 					if ((*begin)->data->lineNumber
 							!= (*tmp)->data->lineNumber) {
-						follows->addNext((*begin)->data->lineNumber, (*tmp)->data->lineNumber);
-						follows->addPrev((*tmp)->data->lineNumber, (*begin)->data->lineNumber);
+						follows->addNext((*begin)->data->lineNumber,
+								(*tmp)->data->lineNumber);
+						follows->addPrev((*tmp)->data->lineNumber,
+								(*begin)->data->lineNumber);
 					}
 				}
 			}
@@ -51,8 +54,8 @@ void DesignExtractor::setFollowRelations() {
 	}
 }
 void DesignExtractor::setParentRelations() {
-	Parent * parent = pkb -> getParent();
-	ASTTree * ASTtree = pkb -> getASTTree();
+	Parent * parent = pkb->getParent();
+	ASTTree * ASTtree = pkb->getASTTree();
 
 	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
 	tree<tree_node_<ASTNode*>*>::iterator tmp;
@@ -64,8 +67,8 @@ void DesignExtractor::setParentRelations() {
 				cout << "error <fillParents>" << endl;
 			} else {
 				tmp = begin.node->parent;
-				if (ASTtree->isValid(tmp)
-						&& (*tmp)->data->type != "procedure" && (*tmp)->data->type != "PROGRAM") {
+				if (ASTtree->isValid(tmp) && (*tmp)->data->type != "procedure"
+						&& (*tmp)->data->type != "PROGRAM") {
 					if ((*begin)->data->lineNumber
 							!= (*tmp)->data->lineNumber) {
 						parent->addParent((*begin)->data->lineNumber,
@@ -82,8 +85,8 @@ void DesignExtractor::setParentRelations() {
 	}
 }
 void DesignExtractor::setLoopsTable() {
-	LinesTable * linesTable = pkb -> getLineTable();
-	ASTTree * ASTtree = pkb -> getASTTree();
+	LinesTable * linesTable = pkb->getLineTable();
+	ASTTree * ASTtree = pkb->getASTTree();
 
 	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
 	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
@@ -114,19 +117,43 @@ void DesignExtractor::setLoopsTable() {
 	}
 
 }
-void DesignExtractor::setAssignTable(){
-		LinesTable * linesTable = pkb -> getLineTable();
-		ASTTree * ASTtree = pkb -> getASTTree();
+void DesignExtractor::setAssignTable() {
+	LinesTable * linesTable = pkb->getLineTable();
+	ASTTree * ASTtree = pkb->getASTTree();
 
-		tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
-				tree<tree_node_<ASTNode*>*>::iterator tmp;
-				tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
+	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
+	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
 
-				while (begin != end) {
-					if (ASTtree->isValid(begin) && (*begin)->data->type == "=") {
-						linesTable->addAssignLine((*begin)->data->lineNumber);
-					}
-					++begin;
+	while (begin != end) {
+		if (ASTtree->isValid(begin) && (*begin)->data->type == "=") {
+			linesTable->addAssignLine((*begin)->data->lineNumber);
+		}
+		++begin;
 
-				}
+	}
+}
+void DesignExtractor::setModifiesRelations() {
+
+	Modifies * modifies = pkb -> getModifies();
+	ASTTree * ASTtree = pkb -> getASTTree();
+	VarTable * varTable = pkb -> getVarTable();
+
+	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
+	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
+
+	while (begin != end) {
+		if (ASTtree->isValid(begin) && (*begin)->data->type == "=") {
+			//linesTable->addAssignLine((*begin)->data->lineNumber);
+			tmp = begin.node->first_child;
+			int varId = varTable->getVarId((*tmp)->data->value);
+			if(varId!=-1)
+				modifies->add(varId,(*begin)->data->lineNumber);
+			else
+				modifies->add(varTable->addVar((*tmp)->data->value),(*begin)->data->lineNumber);
+		}
+		++begin;
+
+	}
 }

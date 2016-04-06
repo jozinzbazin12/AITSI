@@ -19,6 +19,7 @@ private:
 	void setParentRelations();
 	void setLoopsTable();
 	void setAssignTable();
+	void setModifiesRelations();
 };
 
 #endif /* SRC_DESIGNEXTRACTOR_DESIGNEXTRACTOR_H_ */
