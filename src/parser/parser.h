@@ -17,9 +17,11 @@ private:
 	stack<tree<tree_node_<ASTNode*>*>::iterator> openedNodes;
 
 	void parseLine(string str) {
+		string str2 = str;
 		ASTTree* node = NULL;
 		Syntax::currLine = count;
 		string line;
+		int closed;
 		trim(str);
 		if (!str.length()) {
 			return;
@@ -32,8 +34,10 @@ private:
 					if ((*node->getRoot())->data->newLevel) {
 						openedNodes.push(pos);
 					}
-					if ((*node->getRoot())->data->last) {
+					closed = (*node->getRoot())->data->closed;
+					while (closed > 0) {
 						openedNodes.pop();
+						closed--;
 					}
 					break;
 				}
@@ -47,7 +51,7 @@ private:
 			RuntimeException e = RuntimeException();
 			e.line = count;
 			e.parser = "PARSER";
-			e.msg = "could not parse line";
+			e.msg = "could not parse line: " + str2;
 			throw e;
 		}
 	}
@@ -78,12 +82,12 @@ public:
 			count++;
 			parseLine(line);
 		} while (!stream.eof());
-		if (openedNodes.size()!=1) {
-			cout << openedNodes.size();
-			throw RuntimeException(count, "?", "Program is not last node");
+		if (openedNodes.size() != 1) {
+			stringstream ss;
+			ss << "Program is not last node (" << openedNodes.size() << " too much opened nodes)";
+			throw RuntimeException(count, "PARSER", ss.str());
 		}
 	}
-}
-;
+};
 
 #endif /* PARSER_H_ */

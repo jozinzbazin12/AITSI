@@ -31,7 +31,6 @@ protected:
 public:
 	bool strict = false;
 	static string space;
-//	static string nothing;
 	static string any;
 	static string anyWord;
 	string word;
@@ -43,7 +42,7 @@ public:
 			return s.length() - 1;
 		}
 		int pos = s.substr(currentPos, getEnd(currentPos, s)).find(next->word.c_str());
-		if (pos == std::string::npos) {
+		if (pos == string::npos) {
 			throwException("word not found: " + word);
 		}
 		pos--;
@@ -89,19 +88,5 @@ string Matcher::space = " ";
 //string Matcher::nothing = "";
 string Matcher::any = "**";
 string Matcher::anyWord = "*";
-
-class MultiMatcher: public Matcher {
-public:
-	string words[];
-
-	MultiMatcher(string words[], string lSeparator = anyWord, string rSeparator = anyWord) {
-		this->lSeparator = lSeparator;
-		this->rSeparator = rSeparator;
-		if (word == any && rSeparator == space) {
-			cout << "Matcher " << lSeparator << word << rSeparator << " has no sense" << endl;
-		}
-	}
-
-};
 
 #endif /* PARSER_MATCHERS_H_ */

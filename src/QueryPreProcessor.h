@@ -431,7 +431,7 @@ private:
 		{
 			tmpPos = query.find(tokens[i], aktPos);
 			//cout << i << " -> " << tokens[i] << " " << aktPos << " " << lastPos << " " << tmpPos << endl;
-			if(tmpPos > 0 && tmpPos < lastPos && tmpPos < query.length())
+			if(tmpPos > 0 && tmpPos < lastPos && tmpPos < (int) query.length())
 			{
 				isnext = true;
 				lastPos = tmpPos;

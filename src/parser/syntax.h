@@ -10,7 +10,7 @@
 
 class Syntax {
 protected:
-	bool brace = false;
+	int braces = 0;
 	bool multiLine = false;
 	bool semicolon = true;
 	static string anyWord;
@@ -47,9 +47,9 @@ protected:
 		return true;
 	}
 
-	bool getBrace() {
-		bool b = brace;
-		brace = false;
+	int getBrace() {
+		int b = braces;
+		braces = 0;
 		return b;
 	}
 
@@ -74,16 +74,19 @@ protected:
 			int semicolonPos = str.find(";");
 			int bracePos = str.find("}");
 			if (bracePos != string::npos && bracePos > semicolonPos) {
-				string end = str.substr(semicolonPos, bracePos);
+				string end = str.substr(semicolonPos);
 				removeWhitespaces(end);
-				if (end.length() > 2) {
+				braces = count(end.begin(), end.end(), '}');
+				string bracesStr(braces, '}');
+				int bracePos2 = end.find('}');
+				int semicolonPos2 = end.find(';');
+				if (semicolonPos2 + bracePos2 + bracesStr.length() != end.length() || end.find(bracesStr) == string::npos) {
 					throwException("denied characters after semicolon");
 				}
-				brace = true;
-				str.erase(bracePos, 1);
+				str.erase(bracePos, bracesStr.length());
 			} else if (semicolonPos == string::npos) {
 				throwException("no semicolon found");
-			} else if (semicolonPos != str.length() - 1) {
+			} else if (semicolonPos != (int) str.length() - 1) {
 				throwException("denied characters after semicolon");
 			}
 			str.erase(semicolonPos, 1);
@@ -296,7 +299,7 @@ public:
 		ASTTree* var = NodeUtil::createOperandNode(args.front(), currLine);
 		args.erase(args.begin());
 		ASTTree* n = NodeUtil::createAssignmentNode(currLine);
-		(*(n->getRoot()))->data->last = getBrace();
+		(*(n->getRoot()))->data->closed = getBrace();
 		NodeUtil::appendChild(n, var);
 
 		ASTTree* result = parse(args);
