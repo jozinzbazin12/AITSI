@@ -16,6 +16,7 @@ public:
 	static string EXPR;
 	static string STM_LIST;
 	static string WHILE;
+	static string CALL;
 	//, STM_LIST, STMT, CALL, WHILE, IF, EXPR, TERM, FACTOR, VAR_NAME, PROC_NAME, CONST_NAME
 };
 string StatementType::PROGRAM = "PROGRAM";
@@ -24,4 +25,5 @@ string StatementType::ASSIGN = "=";
 string StatementType::EXPR = "EXPR";
 string StatementType::STM_LIST = "STM_LIST";
 string StatementType::WHILE = "while";
+string StatementType::CALL = "call";
 #endif /* TYPES_H_ */

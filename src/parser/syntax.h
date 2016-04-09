@@ -73,7 +73,9 @@ protected:
 		if (semicolon) {
 			int semicolonPos = str.find(";");
 			int bracePos = str.find("}");
-			if (bracePos != string::npos && bracePos > semicolonPos) {
+			if (semicolonPos == string::npos) {
+				throwException("no semicolon found");
+			} else if (bracePos != string::npos && bracePos > semicolonPos) {
 				string end = str.substr(semicolonPos);
 				removeWhitespaces(end);
 				braces = count(end.begin(), end.end(), '}');
@@ -84,8 +86,6 @@ protected:
 					throwException("denied characters after semicolon");
 				}
 				str.erase(bracePos, bracesStr.length());
-			} else if (semicolonPos == string::npos) {
-				throwException("no semicolon found");
 			} else if (semicolonPos != (int) str.length() - 1) {
 				throwException("denied characters after semicolon");
 			}
@@ -181,7 +181,7 @@ public:
 };
 
 class ProcedureSyntax: public Syntax {
-private:
+protected:
 	static map<string, tree_node_<ASTNode*>*> procedures;
 
 public:
@@ -205,7 +205,6 @@ public:
 		return node;
 	}
 };
-
 map<string, tree_node_<ASTNode*>*> ProcedureSyntax::procedures;
 
 class OperandSyntax: public Syntax {
@@ -275,8 +274,7 @@ public:
 		}
 		return n;
 	}
-}
-;
+};
 
 class AssingmentSyntax: public RecursiveSyntax {
 public:
@@ -332,6 +330,30 @@ public:
 		}
 		ASTTree* n = NodeUtil::createWhileNode(name, currLine);
 		return n;
+	}
+};
+
+class CallSyntax: public ProcedureSyntax {
+public:
+	CallSyntax() {
+		keyWord = StatementType::CALL;
+		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::anyWord)};
+		semicolon = true;
+		multiLine = false;
+	}
+
+	ASTTree* parseLine(string str) {
+		vector < string > splitStr = split(str);
+		if (toLower(splitStr[0]) != keyWord) {
+			return NULL;
+		}
+		vector < string > args = match(str);
+		if (!procedures[args[0]]) {
+			throwException("procedure " + args[0] + " does not exist!", true);
+		}
+		ASTTree* node = NodeUtil::createCallNode(args[0], currLine);
+		procedures[args[0]] = *(node->getRoot());
+		return node;
 	}
 };
 

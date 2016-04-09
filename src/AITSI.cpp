@@ -48,7 +48,7 @@ void mainPQL() {
 	//pql->processQuery(pql->getQuery());
 	//string a = "assign a; select a such that follows(a,\"a\");";
 	cout << "**** ZAPYTANIE **************************************************" << endl;
-	cout << pql->getQuery()<< endl << endl;
+	cout << pql->getQuery() << endl << endl;
 	cout << "**** DRZEWO *****************************************************" << endl;
 	que->parseQuery(pql->getQuery());
 	tree<tree_node_<PQLNode>>::iterator iter;
@@ -75,7 +75,6 @@ void mainPQL() {
 	cout << v->checkAttribute("constant.value") << endl;
 	cout << "**** WALIDACJA TESTY - KONIEC****************************************" << endl;
 
-
 }
 
 #include "exceptions.h"
@@ -96,6 +95,8 @@ void initSyntax() {
 	Syntax::allSynstax[w->keyWord] = w;
 	Syntax* op = new OperandSyntax();
 	Syntax::allSynstax[op->keyWord] = op;
+	Syntax* callMeBabe = new CallSyntax();
+	Syntax::allSynstax[callMeBabe->keyWord] = callMeBabe;
 
 	RecursiveSyntax* ass = new AssingmentSyntax();
 	Syntax::allSynstax[ass->keyWord] = ass;
@@ -173,27 +174,27 @@ int main(int argc, char** args) {
 				cout << "OK" << endl;
 				parser.root->printTree();
 				pkb->setASTTree(parser.root);
-				designExtractor -> start();
+				designExtractor->start();
 
-				cout<< "**********************************************************\n";
-				cout<< "***********FOLLOWS**\n";
-				pkb -> getFollows() -> writeAll();
-				cout<< "**********************************************************\n";
-				cout<< "***********PARENTS**\n";
-				pkb -> getParent() -> writeAll();
-				cout<< "**********************************************************\n";
-				cout<< "***********MODIFIES**\n";
-				pkb -> getModifies() -> writeAll();
-				cout<< "**********************************************************\n";
-				cout<< "***********USES**\n";
-				pkb -> getUses() -> writeAll();
-				cout<< "**********************************************************\n";
+				cout << "**********************************************************\n";
+				cout << "***********FOLLOWS**\n";
+				pkb->getFollows()->writeAll();
+				cout << "**********************************************************\n";
+				cout << "***********PARENTS**\n";
+				pkb->getParent()->writeAll();
+				cout << "**********************************************************\n";
+				cout << "***********MODIFIES**\n";
+				pkb->getModifies()->writeAll();
+				cout << "**********************************************************\n";
+				cout << "***********USES**\n";
+				pkb->getUses()->writeAll();
+				cout << "**********************************************************\n";
 			} catch (RuntimeException &ex) {
 				ex.print();
-				cout << "FAIL"<<endl;
+				cout << "FAIL" << endl;
 			} catch (Exception &ex) {
 				ex.print();
-				cout << "FAIL"<<endl;
+				cout << "FAIL" << endl;
 			}
 		}
 	} else {

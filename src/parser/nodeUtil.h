@@ -35,6 +35,11 @@ public:
 		return createTree(node);
 	}
 
+	static ASTTree* createCallNode(string name, int lineNumber) {
+			ASTNode* node = new ASTNode(0, StatementType::CALL, lineNumber, name);
+			return createTree(node);
+		}
+
 	static tree_node_<ASTNode*>* createProgramNode() {
 		ASTNode* node = new NewLevelNode(0, StatementType::PROGRAM, 0);
 		return createTreeNode(node);
@@ -46,7 +51,7 @@ public:
 	}
 
 	static ASTTree* createWhileNode(string name, int lineNumber) {
-		ASTNode* node = new ASTNode(0, "WHILE", lineNumber, name);
+		ASTNode* node = new ASTNode(0, StatementType::WHILE, lineNumber, name);
 		node->newLevel = true;
 		return createTree(node);
 	}

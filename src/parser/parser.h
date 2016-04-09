@@ -72,6 +72,7 @@ public:
 			parsers.push_back(Syntax::allSynstax[StatementType::PROCEDURE]);
 			parsers.push_back(Syntax::allSynstax[StatementType::ASSIGN]);
 			parsers.push_back(Syntax::allSynstax[StatementType::WHILE]);
+			parsers.push_back(Syntax::allSynstax[StatementType::CALL]);
 		}
 	}
 
