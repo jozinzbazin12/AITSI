@@ -69,10 +69,10 @@ public:
 			fileExists = true;
 			cout << "File " + fileName + " found!\n";
 			//Tu dodawac parsery polecen
-			parsers.push_back(Syntax::allSynstax[StatementType::PROCEDURE]);
-			parsers.push_back(Syntax::allSynstax[StatementType::ASSIGN]);
-			parsers.push_back(Syntax::allSynstax[StatementType::WHILE]);
-			parsers.push_back(Syntax::allSynstax[StatementType::CALL]);
+			parsers.push_back(Syntax::allSynstax[Keywords::PROCEDURE]);
+			parsers.push_back(Syntax::allSynstax[Keywords::ASSIGN]);
+			parsers.push_back(Syntax::allSynstax[Keywords::WHILE]);
+			parsers.push_back(Syntax::allSynstax[Keywords::CALL]);
 		}
 	}
 

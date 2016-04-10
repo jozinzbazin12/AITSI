@@ -186,8 +186,8 @@ protected:
 
 public:
 	ProcedureSyntax() {
-		keyWord = StatementType::PROCEDURE;
-		syntax = {Matcher(StatementType::PROCEDURE,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::anyWord), Matcher("{")};
+		keyWord = Keywords::PROCEDURE;
+		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::anyWord), Matcher("{")};
 		semicolon = false;
 	}
 
@@ -210,7 +210,7 @@ map<string, tree_node_<ASTNode*>*> ProcedureSyntax::procedures;
 class OperandSyntax: public Syntax {
 public:
 	OperandSyntax() {
-		keyWord = "op";
+		keyWord = Keywords::OPERAND;
 		semicolon = false;
 	}
 
@@ -225,7 +225,7 @@ public:
 class ParentsisesSyntax: public RecursiveSyntax {
 public:
 	ParentsisesSyntax() {
-		keyWord = "()";
+		keyWord = Keywords::PARENTSISES;
 		syntax = {Matcher("("), Matcher(Matcher::anyWord,Matcher::anyWord, Matcher::anyWord), Matcher(")")};
 		semicolon = false;
 	}
@@ -279,7 +279,7 @@ public:
 class AssingmentSyntax: public RecursiveSyntax {
 public:
 	AssingmentSyntax() {
-		keyWord = StatementType::ASSIGN;
+		keyWord = Keywords::ASSIGN;
 		syntax = {Matcher(Matcher::anyWord), Matcher(keyWord), Matcher(any)};
 		multiLine = true;
 		parsers.push_back(allSynstax["op"]);
@@ -312,7 +312,7 @@ public:
 class WhileSyntax: public Syntax {
 public:
 	WhileSyntax() {
-		keyWord = StatementType::WHILE;
+		keyWord = Keywords::WHILE;
 		syntax = {Matcher(keyWord, Matcher::any, Matcher::space), Matcher(anyWord), Matcher("{")};
 		multiLine = true;
 		semicolon = false;
@@ -336,7 +336,7 @@ public:
 class CallSyntax: public ProcedureSyntax {
 public:
 	CallSyntax() {
-		keyWord = StatementType::CALL;
+		keyWord = Keywords::CALL;
 		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::anyWord)};
 		semicolon = true;
 		multiLine = false;
