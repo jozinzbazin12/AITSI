@@ -51,8 +51,16 @@ public:
 	}
 
 	static ASTTree* createWhileNode(string name, int lineNumber) {
-		ASTNode* node = new ASTNode(0, NodeName::WHILE, lineNumber, name);
-		node->newLevel = true;
+		ASTNode* node = new NewLevelNode(0, NodeName::WHILE, lineNumber, name);
+		return createTree(node);
+	}
+
+	static ASTTree* createIfNode(string name, int lineNumber) {
+		ASTNode* node = new NewLevelNode(0, NodeName::IF, lineNumber, name);
+		return createTree(node);
+	}
+	static ASTTree* createElseNode(int lineNumber) {
+		ASTNode* node = new NewLevelNode(0, NodeName::ELSE, lineNumber);
 		return createTree(node);
 	}
 

@@ -18,6 +18,8 @@ public:
 	static string WHILE;
 	static string CALL;
 	static string OPERAND;
+	static string IF;
+	static string ELSE;
 	//, STM_LIST, STMT, CALL, WHILE, IF, EXPR, TERM, FACTOR, VAR_NAME, PROC_NAME, CONST_NAME
 };
 string NodeName::OPERAND = "OPERAND";
@@ -28,6 +30,8 @@ string NodeName::EXPR = "EXPR";
 string NodeName::STM_LIST = "STM_LIST";
 string NodeName::WHILE = "WHILE";
 string NodeName::CALL = "CALL";
+string NodeName::IF = "IF";
+string NodeName::ELSE = "ELSE";
 
 class Keywords {
 public:
@@ -39,6 +43,8 @@ public:
 	static string CALL;
 	static string OPERAND;
 	static string PARENTSISES;
+	static string IF;
+	static string ELSE;
 };
 string Keywords::PROGRAM = "program";
 string Keywords::PARENTSISES = "PARENTISIES";
@@ -48,4 +54,7 @@ string Keywords::OPERAND = "op";
 string Keywords::EXPR = "expr";
 string Keywords::WHILE = "while";
 string Keywords::CALL = "call";
+string Keywords::IF = "if";
+string Keywords::ELSE = "else";
+
 #endif /* TYPES_H_ */

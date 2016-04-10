@@ -123,7 +123,6 @@ public:
 	string keyWord;
 	virtual ASTTree* parseLine(string str)=0;
 	virtual ~Syntax() {
-
 	}
 };
 string Syntax::anyWord = "*";
@@ -203,6 +202,13 @@ public:
 		ASTTree* node = NodeUtil::createProcedureNode(args[0], currLine);
 		procedures[args[0]] = *(node->getRoot());
 		return node;
+	}
+
+	void validate(ASTTree* t, tree<tree_node_<ASTNode*>*>::iterator n) {
+		n = t->getParent(n);
+		if ((*n)->data->type != NodeName::PROGRAM) {
+			throwException("procedure node can be child only of program node!", true);
+		}
 	}
 };
 map<string, tree_node_<ASTNode*>*> ProcedureSyntax::procedures;
@@ -354,6 +360,57 @@ public:
 		ASTTree* node = NodeUtil::createCallNode(args[0], currLine);
 		procedures[args[0]] = *(node->getRoot());
 		return node;
+	}
+};
+
+class IfSyntax: public Syntax {
+public:
+	IfSyntax() {
+		keyWord = Keywords::IF;
+		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::space),
+			Matcher("then",Matcher::space, Matcher::anyWord), Matcher("{")};
+		semicolon = false;
+		multiLine = true;
+	}
+
+	ASTTree* parseLine(string str) {
+		vector < string > splitStr = split(str);
+		if (toLower(splitStr[0]) != keyWord) {
+			return NULL;
+		}
+		vector < string > args = match(str);
+		if (!isVar(args[0])) {
+			throwException(args[0] + " is not variable name!", true);
+		}
+		ASTTree* node = NodeUtil::createIfNode(args[0], currLine);
+		return node;
+	}
+};
+
+class ElseSyntax: public Syntax {
+public:
+	ElseSyntax() {
+		keyWord = Keywords::ELSE;
+		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::anyWord), Matcher("{")};
+		semicolon = false;
+		multiLine = true;
+	}
+
+	ASTTree* parseLine(string str) {
+		vector < string > splitStr = split(str);
+		if (str.find(keyWord) == string::npos) {
+			return NULL;
+		}
+		match(str);
+		ASTTree* node = NodeUtil::createElseNode(currLine);
+		return node;
+	}
+
+	void validate(ASTTree* t, tree<tree_node_<ASTNode*>*>::iterator n) {
+		n = t->getPrevSibling(n);
+		if ((*n)->data->type != NodeName::IF) {
+			throwException("else node could be placed only after if node!", true);
+		}
 	}
 };
 

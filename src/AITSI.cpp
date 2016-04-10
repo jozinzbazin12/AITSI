@@ -97,6 +97,10 @@ void initSyntax() {
 	Syntax::allSynstax[op->keyWord] = op;
 	Syntax* callMeBabe = new CallSyntax();
 	Syntax::allSynstax[callMeBabe->keyWord] = callMeBabe;
+	Syntax* yiff = new IfSyntax();
+	Syntax::allSynstax[yiff->keyWord] = yiff;
+	Syntax* elze = new ElseSyntax();
+	Syntax::allSynstax[elze->keyWord] = elze;
 
 	RecursiveSyntax* ass = new AssingmentSyntax();
 	Syntax::allSynstax[ass->keyWord] = ass;

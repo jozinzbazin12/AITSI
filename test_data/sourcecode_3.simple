@@ -14,10 +14,14 @@ procedure test{
 	q=123+213+a;
 	call Dupa;
 	while q{
-		q=q+1;}}
+		q=q+1;}
+	if q then{
+		q=1;}
+	else{
+		siema=to+powinno-dzialac;}}
 		
 
 procedure iksde				{
 	q=123+213+a;
 	call test;
-	lolol=trolololo		+ qtaz;}		
+	lolol=trolololo		+ qtaz;}	

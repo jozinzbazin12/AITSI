@@ -56,7 +56,7 @@ public:
 
 	}
 
-	int match(string s, int currentPos, Matcher* next=NULL) {
+	int match(string s, int currentPos, Matcher* next = NULL) {
 		if (!strict && (word == any || word == anyWord)) {
 			return matchWildcard(s, currentPos, next);
 		}
@@ -65,10 +65,10 @@ public:
 		if (pos == std::string::npos) {
 			throwException("word not found: " + word);
 		}
-		if (lSeparator == space && s[pos - 1] != ' ') {
+		if (lSeparator == space && s[pos + currentPos - 1] != ' ') {
 			throwException("invalid left word separator: " + word);
 		}
-		if (rSeparator == space && s[pos + word.length()] != ' ') {
+		if (rSeparator == space && s[pos + currentPos + word.length()] != ' ') {
 			throwException("invalid right word separator: " + word);
 		}
 		return currentPos + pos + word.length();

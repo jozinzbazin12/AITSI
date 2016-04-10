@@ -16,11 +16,20 @@ private:
 	int count = 0;
 	stack<tree<tree_node_<ASTNode*>*>::iterator> openedNodes;
 
+	void throwException(string msg) {
+		RuntimeException e = RuntimeException();
+		e.line = count;
+		e.parser = "PARSER";
+		e.msg = msg;
+		throw e;
+	}
+
 	void parseLine(string str) {
 		string str2 = str;
 		ASTTree* node = NULL;
 		Syntax::currLine = count;
 		string line;
+		Syntax* s;
 		int closed;
 		trim(str);
 		if (!str.length()) {
@@ -28,9 +37,15 @@ private:
 		}
 		for (vector<Syntax*>::iterator it = parsers.begin(); it != parsers.end(); ++it) {
 			try {
-				node = (*it)->parseLine(str);
+				s = *it;
+				node = s->parseLine(str);
 				if (node) {
 					tree<tree_node_<ASTNode*>*>::iterator pos = NodeUtil::appendChild(root, openedNodes.top(), node);
+					if (s->keyWord == Keywords::ELSE) {
+						((ElseSyntax*) s)->validate(root, pos);
+					} else if (s->keyWord == Keywords::PROCEDURE) {
+						((ProcedureSyntax*) s)->validate(root, pos);
+					}
 					if ((*node->getRoot())->data->newLevel) {
 						openedNodes.push(pos);
 					}
@@ -42,17 +57,16 @@ private:
 					break;
 				}
 			} catch (Exception &e) {
+				if (e.runtime) {
+					throw e;
+				}
 				if (debug) {
 					e.print();
 				}
 			}
 		}
 		if (!node) {
-			RuntimeException e = RuntimeException();
-			e.line = count;
-			e.parser = "PARSER";
-			e.msg = "could not parse line: " + str2;
-			throw e;
+			throwException("could not parse line: " + str2);
 		}
 	}
 
@@ -73,6 +87,8 @@ public:
 			parsers.push_back(Syntax::allSynstax[Keywords::ASSIGN]);
 			parsers.push_back(Syntax::allSynstax[Keywords::WHILE]);
 			parsers.push_back(Syntax::allSynstax[Keywords::CALL]);
+			parsers.push_back(Syntax::allSynstax[Keywords::IF]);
+			parsers.push_back(Syntax::allSynstax[Keywords::ELSE]);
 		}
 	}
 
