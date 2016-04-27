@@ -17,7 +17,7 @@ public:
 	QueryEvaluator();
 	virtual ~QueryEvaluator();
 	string getResult(PQLTree* tree);
-	string getModifiesResult();
+	vector<int> getModifiesResult(Field* field1, Field* field2, vector<int> lines);
 	constexpr unsigned int str2int(const char* str, int h = 0);
 	string getUsesResult();
 	string getFollowsResult();

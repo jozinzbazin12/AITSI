@@ -6,6 +6,7 @@
  */
 
 #include "QueryEvaluator.h"
+#include "../globalVars.h"
 
 namespace std {
 
@@ -20,6 +21,7 @@ QueryEvaluator::~QueryEvaluator() {
 
 string QueryEvaluator::getResult(PQLTree *Tree) {
 	string result;
+	vector<int> lines;
 
 	tree<tree_node_<PQLNode*>*>::iterator begin = Tree->Tree->begin();
 	tree<tree_node_<PQLNode*>*>::iterator end = Tree->Tree->end();
@@ -31,6 +33,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					switch (i)
 					{
 						case str2int("assign"):
+								lines = pkb -> getLineTable() -> getAssignLines();
 								break;
 						case str2int("string"):
 								break;
@@ -49,7 +52,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 				if(((*begin)->data->getType())=="suchNode")
 				{
 					if((*begin)->data->getNodeType()=="modifies"){
-						getModifiesResult();
+						lines = getModifiesResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
 						cout<<"Modifies";
 					}
 					if((*begin)->data->getNodeType()=="parent"){
@@ -77,9 +80,22 @@ constexpr unsigned int QueryEvaluator::str2int(const char* str, int h = 0)
     return !str[h] ? 5381 : (str2int(str, h+1) * 33) ^ str[h];
 }
 
-string QueryEvaluator::getModifiesResult(){
-	string modResult;
-	return modResult;
+vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vector<int> lines){
+	if(field1->isVal())
+	{
+
+	}
+	else if(field1->isStmt())
+	{
+
+	}
+	else if(field1->isProcName()){
+
+	}
+	else if(field1->isVarName()){
+
+	}
+	return lines;
 }
 
 string QueryEvaluator::getParentResult(){
