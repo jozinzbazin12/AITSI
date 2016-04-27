@@ -34,7 +34,7 @@ public:
 
 
 private:
-	string type;
+	string type;  // assign, string, constant, variable, prog_line, procedure, stmt#, any
 	string value;
 	bool procName; // DEFAULT FALSE
 	bool varName; // DEFAULT FALSE

@@ -44,6 +44,7 @@ void mainPQL() {
 	Validator* v = new Validator();
 	QueryPreProcessor* que = new QueryPreProcessor();
 	PQL *pql = new PQL();
+	QueryEvaluator qe = new QueryEvaluator();
 	pql->enterQuery();
 	//pql->processQuery(pql->getQuery());
 	//string a = "assign a; select a such that follows(a,\"a\");";
@@ -54,6 +55,7 @@ void mainPQL() {
 	tree<tree_node_<PQLNode>>::iterator iter;
 	PQLTree* tree = que->getTree();
 	tree->printTree();
+/////////////////////////////////////////////////////////////////////////////////////////////////
 	cout << endl;
 	cout << "**** KONIEC DRZEWA*****************************************************" << endl;
 	cout << "**** WALIDACJA TESTY - KRZYSIEK****************************************" << endl;
@@ -74,7 +76,8 @@ void mainPQL() {
 	cout << v->checkRelationship2("modifies(s,v)") << endl;
 	cout << v->checkAttribute("constant.value") << endl;
 	cout << "**** WALIDACJA TESTY - KONIEC****************************************" << endl;
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+	qe.getResult(tree);
 }
 
 #include "exceptions.h"
