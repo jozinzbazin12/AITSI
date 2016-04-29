@@ -63,21 +63,27 @@ private:
 		vector<size_t> positions;
 		size_t pos = s.find(token, 0);
 		while (pos != string::npos) {
-			elems.push_back(s.substr(0, pos));
+			//elems.push_back(s.substr(0, pos));
 			positions.push_back(pos);
 			pos = s.find(token, pos + 3);
 		}
 
-		for (size_t i = 0; i < positions.size(); i++) {
-			pos = positions[i];
-		}
+		int p1 = 0;
+		int p2 = s.length();
 
 		if (positions.size() > 0)
-			elems.push_back(s.substr(pos + 3));
+		{
+			for (size_t i = 0; i < positions.size(); i++) {
+				pos = positions[i];
+				elems.push_back(s.substr(p1,pos-p1));
+				p1 = pos + 3;
+			}
+			elems.push_back(s.substr(p1,p2-p1));
+		}
 		else
-			elems.push_back(s.substr(0));
+			elems.push_back(s.substr(p1,p2));
 
-		return elems;
+        return elems;
 	}
 
 	vector<Field> makeFields(vector<string> &elems) {
@@ -86,8 +92,8 @@ private:
 
 		//writeVector(tmp);
 
-		vector<string> tokens = {"assign","stmt","while","variable","constant","prog_line"};
-
+		vector<string> tokens = matcher->getTokensList();
+		//writeVector(tokens);
 		//Matcher* matcher = new Matcher();
 		for (size_t i = 0; i < tmp.size(); i++) {
 			//cout << "Tmp" << i << ": " << tmp[i] << endl;
@@ -98,7 +104,7 @@ private:
 					if (tmp[i].find(tokens[j]) < tmp[i].length()) {
 						vector<Field> tmpFields = makeFieldType(tokens[j],tmp[i]);
 						for (size_t j = 0; j < tmpFields.size(); j++) {
-							//cout << tmpFields[j].getType() << " " << tmpFields[j].getValue() << endl;
+							cout << tmpFields[j].getType() << " " << tmpFields[j].getValue() << endl;
 							fields.push_back(tmpFields[j]);
 						}
 
@@ -162,7 +168,7 @@ private:
 
 		for(size_t i = 0 ; i < queryParts.size() ; i ++)
 		{
-			cout<< "Query part: " << queryParts[i] << endl;
+			//cout<< "Query part: " << queryParts[i] << endl;
 			switch(checkType(queryParts[i]))
 			{
 				case 0:
@@ -281,8 +287,9 @@ private:
 		/*
 		for(int i = 0 ; i < selectNodes.size() ; i ++)
 		{
-			cout << "[-" << i << "] " << selectNodes[i].getField()->printField();
-		}*/
+			cout << "[-" << i << "] " << selectNodes[i]->getField1()->printField();
+		}
+		*/
 	}
 
 	void makeSuchNode(string suchPart)
@@ -431,7 +438,7 @@ private:
 		{
 			tmpPos = query.find(tokens[i], aktPos);
 			//cout << i << " -> " << tokens[i] << " " << aktPos << " " << lastPos << " " << tmpPos << endl;
-			if(tmpPos > 0 && tmpPos < lastPos && tmpPos < (int) query.length())
+			if(tmpPos > 0 && tmpPos < lastPos && tmpPos < query.length())
 			{
 				isnext = true;
 				lastPos = tmpPos;
