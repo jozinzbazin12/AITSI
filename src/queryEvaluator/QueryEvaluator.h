@@ -1,10 +1,3 @@
-/*
- * queryEvaluator.h
- *
- *  Created on: 19 kwi 2016
- *      Author: Popek
- */
-
 #ifndef SRC_QUERYEVALUATOR_QUERYEVALUATOR_H_
 #define SRC_QUERYEVALUATOR_QUERYEVALUATOR_H_
 #include "PQLNode.h"
@@ -19,9 +12,9 @@ public:
 	string getResult(PQLTree* tree);
 	vector<int> getModifiesResult(Field* field1, Field* field2, vector<int> lines);
 	constexpr unsigned int str2int(const char* str, int h = 0);
-	string getUsesResult();
-	string getFollowsResult();
-	string getParentResult();
+	vector<int> getUsesResult(Field* field1, Field* field2, vector<int> lines);
+	vector<int> getFollowsResult(Field* field1, Field* field2, vector<int> lines);
+	vector<int> getParentResult(Field* field1, Field* field2, vector<int> lines);
 };
 
 } /* namespace std */

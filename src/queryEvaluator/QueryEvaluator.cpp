@@ -1,12 +1,6 @@
-/*
- * queryEvaluator.cpp
- *
- *  Created on: 19 kwi 2016
- *      Author: Popek
- */
-
 #include "QueryEvaluator.h"
 #include "../globalVars.h"
+#include <set>
 
 namespace std {
 
@@ -37,6 +31,9 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 								break;
 						case str2int("string"):
 								break;
+						case str2int("while"):
+								lines = pkb -> getLineTable() -> getWhileLines();
+								break;
 						case str2int("variable"):
 								break;
 						case str2int("prog_line"):
@@ -56,15 +53,15 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 						cout<<"Modifies";
 					}
 					if((*begin)->data->getNodeType()=="parent"){
-						getParentResult();
+						lines = getParentResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
 						cout<<"Parent";
 					}
 					if((*begin)->data->getNodeType()=="follows"){
-						getFollowsResult();
+						lines = getFollowsResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
 						cout<<"Follows";
 					}
 					if((*begin)->data->getNodeType()=="uses"){
-						getUsesResult();
+						lines = getUsesResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
 					    cout<<"Uses";
 					}
 				}
@@ -81,36 +78,55 @@ constexpr unsigned int QueryEvaluator::str2int(const char* str, int h = 0)
 }
 
 vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vector<int> lines){
-	if(field1->isVal())
-	{
+	set<int> myset;
+	// "any", "assign", "procedure", "while", "constant", "variable", "prog_line", "stmt"
+	//if(field1->getType() == "any"){ 1st argument Modifies nigdy nie bedzie ' _ '
+
+	//}
+	//FIELD1
+	if(field1->getType() == "assign"){
 
 	}
-	else if(field1->isStmt())
-	{
+	else if(field1->getType() == "procedure"){
 
 	}
-	else if(field1->isProcName()){
+	else if(field1->getType() == "while"){
 
 	}
-	else if(field1->isVarName()){
+	//dla Constant czyli stalych wartosci - pobieram assign list
+	//i sprawdzam dla wartosci constant - jezeli prawda to wszystkie assign s¹ ok
+	else if(field2->getType() == "constant"){
 
 	}
+	//stmt czyli : assign, call, while, if
+	else if(field1->getType() == "stmt"){
+		lines = pkb -> getLineTable() -> getAssignLines();
+		lines
+
+	}
+	else if(field1->getType() == "variable"){
+
+	}
+	else if(field1->getType() == "prog_line"){
+
+	}
+
 	return lines;
 }
 
-string QueryEvaluator::getParentResult(){
-	string modResult;
-	return modResult;
+vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector<int> lines){
+
+	return lines;
 }
 
-string QueryEvaluator::getFollowsResult(){
-	string modResult;
-	return modResult;
+vector<int>  QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vector<int> lines){
+
+	return lines;
 }
 
-string QueryEvaluator::getUsesResult(){
-	string modResult;
-	return modResult;
+vector<int>  QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<int> lines){
+
+	return lines;
 }
 
 
