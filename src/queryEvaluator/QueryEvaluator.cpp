@@ -17,6 +17,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 	string result;
 	vector<int> lines;
 	set<int> setLines;
+	string searchResult;
 	tree<tree_node_<PQLNode*>*>::iterator begin = Tree->Tree->begin();
 	tree<tree_node_<PQLNode*>*>::iterator end = Tree->Tree->end();
 		while (begin != end) {
@@ -81,7 +82,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 						}
 						//zwyk³y Follows
 						else{
-							lines = getFollowsResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
+							lines = getFollowsResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines,searchResult);
 							cout<<"Follows"<<endl;
 						}
 					}
@@ -227,21 +228,171 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 
 	return lines;
 }
+
 vector<int> QueryEvaluator::getParentSResult(Field* field1, Field* field2, vector<int> lines){
 
 	return lines;
 }
-vector<int>  QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vector<int> lines){
 
+vector<int>  QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vector<int> lines, string searchResult){
+	set<int> setLines1;
+	set<int> setLines2;
+
+	//Sprawdzanie pierwszego parametru (Filed1) w relacji Follows
+	if(field1->getType() == "constant" && field2->getType() != "constant"){
+		char* s = field1->getValue();
+		int param = str2int(s);
+		//Dodanie wartoœci constant do listy 1
+		setLines1.insert(param);
+		//Sprawdzanie czym jest drugi parametr i ewentualne pobranie listy
+		if(field2->getType() == "stmt" || field2->getType() == "any") {
+			setLines2 = pkb -> getLineTable() -> getAssignLines();
+			set<int> pom = pkb -> getLineTable() -> getWhileLines();
+			setLines2.insert(pom.begin(), pom.end());
+
+			//Dodac tak jak wy¿ej
+			//setLines2 = pkb -> getLineTable() -> getIfLines();
+			//setLines2 = pkb -> getLineTable() -> getCallLines();
+		}
+		else if(field2->getType() == "while") {
+			setLines2 = pkb -> getLineTable() -> getWhileLines();
+		}
+		else if(field2->getType() == "if"){
+			//setLines2 = pkb -> getLineTable() -> getIfLines();
+		}
+		else if(field2->getType() == "call"){
+			//setLines2 = pkb -> getLineTable() -> getCallLines();
+		}
+		else if(field2->getType() == "assign"){
+			setLines2 = pkb -> getLineTable() -> getAssignLines();
+		}
+	}
+	else if(field1->getType() != "constant" && field2->getType() == "constant"){
+		char* s = field2->getValue();
+		int param = str2int(s);
+		//Dodanie wartoœci constant do listy 2
+		setLines2.insert(param);
+		//Sprawdzanie czym jest pierwszy parametr i ewentualne pobranie listy
+		if(field1->getType() == "stmt" || field1->getType() == "any") {
+			setLines1 = pkb -> getLineTable() -> getAssignLines();
+			set<int> pom = pkb -> getLineTable() -> getWhileLines();
+			setLines1.insert(pom.begin(), pom.end());
+
+			//Dodac tak jak wy¿ej
+			//setLines1 = pkb -> getLineTable() -> getIfLines();
+			//setLines1 = pkb -> getLineTable() -> getCallLines();
+		}
+		else if(field1->getType() == "while") {
+			setLines1 = pkb -> getLineTable() -> getWhileLines();
+		}
+		else if(field1->getType() == "if"){
+			//setLines1 = pkb -> getLineTable() -> getIfLines();
+		}
+		else if(field1->getType() == "call"){
+			//setLines1 = pkb -> getLineTable() -> getCallLines();
+		}
+		else if(field1->getType() == "assign"){
+			setLines1 = pkb -> getLineTable() -> getAssignLines();
+		}
+	}
+	else if(field1->getType() == "constant" && field2->getType() == "constant"){
+		char* s1 = field1->getValue();
+		int param1 = str2int(s1);
+		char* s2 = field1->getValue();
+		int param2 = str2int(s2);
+		if(pkb -> follows(param1,param2) == true){
+			return lines;
+		}
+	}
+	else{
+		// Pobranie listy dla pierwszego parametru
+		// Any - TZN. dowolna wartoœæ z dostêpnych czyli stmt
+		if(field1->getType() == "stmt" || field1->getType() == "any") {
+			setLines1 = pkb -> getLineTable() -> getAssignLines();
+			set<int> pom = pkb -> getLineTable() -> getWhileLines();
+			setLines1.insert(pom.begin(), pom.end());
+
+			//Dodac tak jak wy¿ej
+			//setLines1 = pkb -> getLineTable() -> getIfLines();
+			//setLines1 = pkb -> getLineTable() -> getCallLines();
+		}
+		else if(field1->getType() == "while") {
+			setLines1 = pkb -> getLineTable() -> getWhileLines();
+		}
+		else if(field1->getType() == "if"){
+			//setLines1 = pkb -> getLineTable() -> getIfLines();
+		}
+		else if(field1->getType() == "call"){
+			//setLines1 = pkb -> getLineTable() -> getCallLines();
+		}
+		else if(field1->getType() == "assign"){
+			setLines1 = pkb -> getLineTable() -> getAssignLines();
+		}
+
+		// Pobranie listy dla drugiego parametru
+		if(field2->getType() == "stmt" || field2->getType() == "any") {
+			setLines2 = pkb -> getLineTable() -> getAssignLines();
+			set<int> pom = pkb -> getLineTable() -> getWhileLines();
+			setLines2.insert(pom.begin(), pom.end());
+
+			//Dodac tak jak wy¿ej
+			//setLines2 = pkb -> getLineTable() -> getIfLines();
+			//setLines2 = pkb -> getLineTable() -> getCallLines();
+		}
+		else if(field2->getType() == "while") {
+			setLines2 = pkb -> getLineTable() -> getWhileLines();
+		}
+		else if(field2->getType() == "if"){
+			//setLines2 = pkb -> getLineTable() -> getIfLines();
+		}
+		else if(field2->getType() == "call"){
+			//setLines2 = pkb -> getLineTable() -> getCallLines();
+		}
+		else if(field2->getType() == "assign"){
+			setLines2 = pkb -> getLineTable() -> getAssignLines();
+		}
+	}
+
+	vector<int> resultPart;
+	// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
+	if(setLines1 != nullptr && setLines2 != nullptr) {
+		for(set<int>::iterator l1 = setLines1.begin() ; l1 < setLines1.end() ; ++l1) {
+			for(set<int>::iterator l2 = setLines2.begin() ; l2 < setLines2.end() ; ++l2) {
+				if(pkb -> follows(l1,l2) == true) {
+					if(searchResult == field1->getValue() && searchResult == field2->getValue()) {
+						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
+						return nullptr;
+					}
+					else if(searchResult == field1->getValue() && find(lines.begin(), lines.end(),l1) != lines.end()) {
+						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
+						resultPart.push_back(*l1);
+					}
+					else if(searchResult == field2->getValue() && find(lines.begin(), lines.end(),l2) != lines.end()) {
+						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
+						resultPart.push_back(*l2);
+					} else {
+						// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
+						return lines;
+					}
+				}
+			}
+		}
+	}
+	lines = resultPart;
 	return lines;
 }
+
 vector<int>  QueryEvaluator::getFollowsSResult(Field* field1, Field* field2, vector<int> lines){
 	return lines;
 }
-vector<int>  QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<int> lines){
 
+
+
+
+vector<int>  QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<int> lines){
 	return lines;
 }
+
 vector<int>  QueryEvaluator::getUsesSResult(Field* field1, Field* field2, vector<int> lines){
 
 	return lines;
