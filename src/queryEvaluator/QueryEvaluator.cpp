@@ -63,7 +63,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					if((*begin)->data->getNodeType()=="parent"){
 						//*
 						if((*begin)->data->isStar()){
-							//lines = getParentSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
+							lines = getParentSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
 							cout<<"Parent*"<<endl;
 						}
 						//zwyk³y Parent
@@ -76,7 +76,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					if((*begin)->data->getNodeType()=="follows"){
 						//*
 						if((*begin)->data->isStar()){
-							//lines = getFollowsSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
+							lines = getFollowsSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
 							cout<<"Follows*"<<endl;
 						}
 						//zwyk³y Follows
@@ -89,7 +89,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					if((*begin)->data->getNodeType()=="uses"){
 						//*
 						if((*begin)->data->isStar()){
-							//lines = getUsesSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
+							lines = getUsesSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
 							cout<<"Uses*"<<endl;
 						}
 						//zwyk³y Follows
@@ -165,7 +165,8 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 		char* s = field2->getValue();
 		int param = str2int(s);
 
-		//setLines = pkb -> getLineTables - > getParentLines(param);
+		//setLines = pkb -> getLineTables - > getParentLines(param);//albo w forze - sprawdzac dla kazdej z lines
+		//... czy zachodzi Parent dla tego parametru  i wtedy zapisywac parent
 		// ... tutaj jakby getParentLines - > to sa getFirstWhileLines i get firstIfLines
 		//dopisac sprawdzanie z 3cim parametrem- lines - aby juz wyeliminowac wartosci i zwrocic wynik
 	}
@@ -174,7 +175,7 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 	    int param1 = str2int(s1);
 	    char* s2 = field1->getValue();
 	    int param2 = str2int(s2);
-	    if(pkb -> parent(s1,s2) == true){
+	    if(pkb -> parent(param1,param2) == true){
 	    	return lines;
 	    }
 	}
@@ -182,6 +183,7 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 		if(field1->getType() == "stmt"){
 			setLines1 = pkb -> getLineTable() -> getWhileLines();
 			//setLines1 = pkb -> getLineTable() -> getIfLines();
+
 		}
 		else if(field1->getType() == "while"){
 			setLines1 = pkb ->getLineTable() -> getWhileLines();
@@ -210,8 +212,16 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 		else if(field2->getType() == "prog_line"){
 			//setLines2 = pkb -> getLineTable() -> getProgLines();
 		}
-		else if(field2->getType() == ""){
+		else if(field2->getType() == "any"){
+//dopisac do any
+		}
+		for(int i=0; i<setLines1.size(); i++){
+			for(int j=0; j<setLines2.size(); j++)
+			{
+				if(pkb -> parent(setLines1[i],setLines2[j])==true){
 
+				}
+			}
 		}
 	}
 

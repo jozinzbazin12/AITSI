@@ -44,7 +44,6 @@ void mainPQL() {
 	Validator* v = new Validator();
 	QueryPreProcessor* que = new QueryPreProcessor();
 	PQL *pql = new PQL();
-	QueryEvaluator qe = new QueryEvaluator();
 	pql->enterQuery();
 	//pql->processQuery(pql->getQuery());
 	//string a = "assign a; select a such that follows(a,\"a\");";
@@ -77,7 +76,6 @@ void mainPQL() {
 	cout << v->checkAttribute("constant.value") << endl;
 	cout << "**** WALIDACJA TESTY - KONIEC****************************************" << endl;
 /////////////////////////////////////////////////////////////////////////////////////////////////
-	qe.getResult(tree);
 }
 
 #include "exceptions.h"
