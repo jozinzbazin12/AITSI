@@ -27,6 +27,8 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					int i= str2int(s);
 					switch (i)
 					{
+					    // Tutaj trzeba dopisac zapisywanie wartoœci do zmiennej 'serachResult'
+					    // tzn. tego co szukamy zeby przekazac potem do metod
 						case str2int("assign"):
 								lines = pkb -> getLineTable() -> getAssignLines();
 								break;
