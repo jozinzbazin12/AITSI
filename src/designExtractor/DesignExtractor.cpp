@@ -126,7 +126,7 @@ void DesignExtractor::setAssignTable() {
 	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
 
 	while (begin != end) {
-		if (ASTtree->isValid(begin) && (*begin)->data->type == "=") {
+		if (ASTtree->isValid(begin) && (*begin)->data->type == "ASSIGN") {
 			linesTable->addAssignLine((*begin)->data->lineNumber);
 		}
 		++begin;
@@ -144,7 +144,7 @@ void DesignExtractor::setModifiesRelations() {
 	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
 
 	while (begin != end) {
-		if (ASTtree->isValid(begin) && (*begin)->data->type == "=") {
+		if (ASTtree->isValid(begin) && (*begin)->data->type == "ASSIGN") {
 			//linesTable->addAssignLine((*begin)->data->lineNumber);
 			tmp = begin.node->first_child;
 			int varId = varTable->getVarId((*tmp)->data->value);
@@ -171,7 +171,7 @@ void DesignExtractor::setUsesRelations() {
 
 	while (begin != end) {
 		if (ASTtree->isValid(begin)) {
-			if ((*begin)->data->type == "=") {                                                   //if assign only value
+			if ((*begin)->data->type == "ASSIGN") {                                                   //if assign only value
 				firstChildOfAssign = begin.node->first_child;
 				secondChildOfAssign = firstChildOfAssign.node->next_sibling;
 				if (ASTtree->isValid(secondChildOfAssign)
@@ -194,7 +194,7 @@ void DesignExtractor::setUsesRelations() {
 							(*begin)->data->lineNumber);
 			} else if ((*begin)->data->type == "OPERAND") {                                           //under Expression
 				tmp = begin.node->parent;
-				if ((*tmp)->data->type == "EXPRESSION") {
+				if ((*tmp)->data->type == "EXPR") {
 					int varId = varTable->getVarId((*begin)->data->value);
 					if (varId != -1)
 						uses->add(varId, (*begin)->data->lineNumber);

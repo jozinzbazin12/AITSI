@@ -10,6 +10,8 @@
 
 #include<string>
 #include<vector>
+#include <map>
+#include <iostream>
 
 using namespace std;
 
@@ -20,6 +22,7 @@ public:
 	virtual int addVar(string name);
 	virtual int getVarId(string name);
 	virtual string getVarName(int id);
+	virtual void writeAll();
 
 private:
 	vector<string> variables;

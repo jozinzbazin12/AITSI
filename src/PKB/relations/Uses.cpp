@@ -49,7 +49,7 @@ void Uses::writeAll(){
 	for( map<int, vector<int> >::iterator iter = varUsesLines.begin(); iter != varUsesLines.end(); ++iter ) {
 	   vector<int> tempVec = (*iter).second;
 	   int key = (*iter).first;
-	   cout << key << " :";
+	   cout << pkb->varTable->getVarName(key) << " :";
 	   for (unsigned i = 0; i < tempVec.size(); i++) {
 	      cout << " " << tempVec[i];
 	   }

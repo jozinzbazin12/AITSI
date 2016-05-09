@@ -3,7 +3,7 @@
 #include <set>
 
 namespace std {
-
+/*
 QueryEvaluator::QueryEvaluator() {
 	// TODO Auto-generated constructor stub
 
@@ -406,6 +406,6 @@ vector<int>  QueryEvaluator::getUsesSResult(Field* field1, Field* field2, vector
 
 	return lines;
 }
-
+*/
 
 } /* namespace std */

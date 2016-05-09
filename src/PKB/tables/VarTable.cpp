@@ -35,3 +35,9 @@ string VarTable::getVarName(int id){
 	return variables[id];
 }
 
+void VarTable::writeAll(){
+	for(int i = 0; i < variables.size() ; i++){
+		cout << i <<" "<<variables[i]<<endl;
+	}
+}
+

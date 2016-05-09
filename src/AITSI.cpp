@@ -8,6 +8,9 @@
 #include <map>
 #include <iterator>
 #include <stack>
+
+using namespace std;
+#include "types.h"
 #include "PQL/tree_util.hh"
 #include "PQL/PQLNode.h"
 #include "PQL/PQLTree.h"
@@ -15,7 +18,8 @@
 #include "Validator/Validator.h"
 #include "PQL/PQL.h"
 
-using namespace std;
+
+
 bool debug = true;
 
 string toLower(string str) {
@@ -193,6 +197,10 @@ int main(int argc, char** args) {
 				cout << "**********************************************************\n";
 				cout << "***********USES**\n";
 				pkb->getUses()->writeAll();
+				cout << "**********************************************************\n";
+
+				cout << "***********WARIABLES**\n";
+				pkb->varTable->writeAll();
 				cout << "**********************************************************\n";
 			} catch (RuntimeException &ex) {
 				ex.print();

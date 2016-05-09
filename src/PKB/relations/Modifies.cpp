@@ -50,7 +50,7 @@ void Modifies::writeAll() {
 			iter != varModificationsLines.end(); ++iter) {
 		vector<int> tempVec = (*iter).second;
 		int key = (*iter).first;
-		cout << key << " :";
+		cout << pkb->varTable->getVarName(key) << " :";
 		for (unsigned i = 0; i < tempVec.size(); i++) {
 			cout << " " << tempVec[i];
 		}
