@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include "ast/tree_util.hh"
+
 #include "ast/ASTNode.h"
 #include "ast/ASTTree.h"
 #include "tables/VarTable.h"
@@ -66,7 +67,6 @@ public:
 	void setASTTree(ASTTree * tree2){
 		tree = tree2;
 	}
-
 private:
 	Modifies* modifies = NULL;
 	Uses* uses = NULL;

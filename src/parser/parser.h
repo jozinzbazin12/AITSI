@@ -8,6 +8,8 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
+#include "../globalVars.h"
+
 class Parser {
 private:
 	bool debug;
@@ -94,8 +96,10 @@ public:
 
 	void parse() {
 		string line;
+		LinesTable * linesTable = pkb -> getLineTable();
 		do {
 			getline(stream, line);
+			linesTable -> addLine(line);
 			count++;
 			parseLine(line);
 		} while (!stream.eof());
