@@ -20,12 +20,12 @@ public:
 	virtual ~LinesTable();
 	int getLinesCount();
 	vector<int> getAssignLines();
-	vector<int> getAllLines();
+	map<int, string> getAllLines();
 	vector<int> getCallLines();
 	vector<int> getWhileLines();
 	vector<int> getIfLines();
-	map<int, vector<int> > getWhileHeaderLines(); // w pierwszym parametrze nr tej linijki z napisem while, a w vectorze pozosta³e liniie while
-	map<int, vector<int>> getIfHeaderLines();
+	map<int, vector<int> > getWhileBodyLines(); // w pierwszym parametrze nr tej linijki z napisem while, a w vectorze pozosta³e liniie while
+	map<int, vector<int>> getIfBodyLines();
 	// jak bêd¹ potrzebowali stmt to chyba mog¹ sobie zrobic assign i while zamiast pobierac stmt
 	string getLineString(int lineNumber); // zwraca test który byl w linii o tym numerze
 	void addWhileLine(int loopLine,int stmtLine);

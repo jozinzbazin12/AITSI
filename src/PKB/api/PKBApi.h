@@ -22,8 +22,15 @@ public:
 	bool uses(int lineNumber, string varName);
 	bool parent(int parentLine, int kidLine);
 	bool follows(int lineNum, int followerLineNum);
+
+	int getLinesCount();
 	vector<int> getAssignLines();
-	map<int, vector<int> > getWhileLines(); // w pierwszym parametrze nr tej linijki z napisem while, a w vectorze pozosta³e liniie while
+	map<int, string> getAllLines();
+	vector<int> getCallLines();
+	vector<int> getWhileLines();
+	vector<int> getIfLines();
+	map<int, vector<int> > getWhileBodyLines(); // w pierwszym parametrze nr tej linijki z napisem while, a w vectorze pozosta³e liniie while
+	map<int, vector<int>> getIfBodyLines();
 	// jak bêd¹ potrzebowali stmt to chyba mog¹ sobie zrobic assign i while zamiast pobierac stmt
 	string getLineString(int lineNumber);
 };

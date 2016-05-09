@@ -20,7 +20,7 @@ int LinesTable::getLinesCount(){
 	return linesCount;
 }
 
-vector<int> LinesTable::getAllLines(){
+map<int, string> LinesTable::getAllLines(){
 	return lines;
 }
 
@@ -44,7 +44,7 @@ vector<int> LinesTable::getIfLines(){
 	return v;
 }
 
-map<int, vector<int>> LinesTable::getIfHeaderLines(){
+map<int, vector<int>> LinesTable::getIfBodyLines(){
 	return ifLines;
 }
 
@@ -52,7 +52,7 @@ vector<int> LinesTable::getAssignLines(){
 	return assignLines;
 }
 
-map<int,vector<int>> LinesTable::getWhileHeaderLines(){
+map<int,vector<int>> LinesTable::getWhileBodyLines(){
 	return whileLines;
 }
 
