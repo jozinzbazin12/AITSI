@@ -17,7 +17,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 	string result;
 	vector<int> lines;
 	set<int> setLines;
-	string searchResult;
+	string selectValue;
 	tree<tree_node_<PQLNode*>*>::iterator begin = Tree->Tree->begin();
 	tree<tree_node_<PQLNode*>*>::iterator end = Tree->Tree->end();
 		while (begin != end) {
@@ -31,26 +31,33 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					    // tzn. tego co szukamy zeby przekazac potem do metod
 						case str2int("assign"):
 								lines = pkb -> getLineTable() -> getAssignLines();
+						        selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case str2int("string"):
+								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case str2int("while"):
 								lines = pkb -> getLineTable() -> getWhileLines();
+								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case str2int("variable"):
 								//varNames = pkb -> /..cos tam../getLineTable() -> getVarNames();
+								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case str2int("prog_line"):
 								//lines = pkb -> getLineTable() -> getProgLines();
+								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case str2int("procedure"):
 							//	lines = pkb -> getLineTable() -> getProgLines();
+								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case str2int("stmt#"):
 								setLines = pkb -> getLineTable() -> getAssignLines();
 								setLines = pkb -> getLineTable() -> getWhileLines();
 							//	setLines = pkb -> getLineTable() -> getCallLines();
 							//	setLines = pkb -> getLineTable() -> getIfLines();
+								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case str2int("any"):
 								break;
@@ -59,19 +66,19 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 				if(((*begin)->data->getType())=="suchNode"){
 					//Sprawdzanie czy wyst¹pi³a relacja Modifiles
 					if((*begin)->data->getNodeType()=="modifies"){
-						lines = getModifiesResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
+						lines = getModifiesResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines, selectValue);
 						cout<<"Modifies"<<endl;
 					}
 					//Sprawdzanie czy wyst¹pi³a relacja Parent lub Parent*
 					if((*begin)->data->getNodeType()=="parent"){
 						//*
 						if((*begin)->data->isStar()){
-							lines = getParentSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
+							lines = getParentSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines, selectValue);
 							cout<<"Parent*"<<endl;
 						}
 						//zwyk³y Parent
 						else{
-							lines = getParentResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
+							lines = getParentResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines, selectValue);
 						    cout<<"Parent"<<endl;
 						}
 					}
@@ -79,12 +86,12 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					if((*begin)->data->getNodeType()=="follows"){
 						//*
 						if((*begin)->data->isStar()){
-							lines = getFollowsSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
+							lines = getFollowsSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines,selectValue);
 							cout<<"Follows*"<<endl;
 						}
 						//zwyk³y Follows
 						else{
-							lines = getFollowsResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines,searchResult);
+							lines = getFollowsResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines,selectValue);
 							cout<<"Follows"<<endl;
 						}
 					}
@@ -92,12 +99,12 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					if((*begin)->data->getNodeType()=="uses"){
 						//*
 						if((*begin)->data->isStar()){
-							lines = getUsesSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
+							lines = getUsesSResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines, selectValue);
 							cout<<"Uses*"<<endl;
 						}
 						//zwyk³y Follows
 						else{
-							lines = getUsesResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines);
+							lines = getUsesResult((*begin)->data->getField1(),(*begin)->data->getField2(),lines, selectValue);
 						    cout<<"Uses"<<endl;
 						}
 					}
@@ -113,7 +120,7 @@ constexpr unsigned int QueryEvaluator::str2int(const char* str, int h = 0)
     return !str[h] ? 5381 : (str2int(str, h+1) * 33) ^ str[h];
 }
 
-vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vector<int> lines){
+vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vector<int> lines, string selectValue){
 	set<int> setLines;
 	// "any", "assign", "procedure", "while", "constant", "variable", "prog_line", "stmt"
 	//if(field1->getType() == "any"){ 1st argument Modifies nigdy nie bedzie ' _ '
@@ -231,12 +238,12 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 	return lines;
 }
 
-vector<int> QueryEvaluator::getParentSResult(Field* field1, Field* field2, vector<int> lines){
+vector<int> QueryEvaluator::getParentSResult(Field* field1, Field* field2, vector<int> lines, string selectValue){
 
 	return lines;
 }
 
-vector<int>  QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vector<int> lines, string searchResult){
+vector<int>  QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vector<int> lines, string selectValue){
 	set<int> setLines1;
 	set<int> setLines2;
 
@@ -361,15 +368,15 @@ vector<int>  QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vect
 		for(set<int>::iterator l1 = setLines1.begin() ; l1 < setLines1.end() ; ++l1) {
 			for(set<int>::iterator l2 = setLines2.begin() ; l2 < setLines2.end() ; ++l2) {
 				if(pkb -> follows(l1,l2) == true) {
-					if(searchResult == field1->getValue() && searchResult == field2->getValue()) {
+					if(selectValue == field1->getValue() && selectValue == field2->getValue()) {
 						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 						return nullptr;
 					}
-					else if(searchResult == field1->getValue() && find(lines.begin(), lines.end(),l1) != lines.end()) {
+					else if(selectValue == field1->getValue() && find(lines.begin(), lines.end(),l1) != lines.end()) {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 						resultPart.push_back(*l1);
 					}
-					else if(searchResult == field2->getValue() && find(lines.begin(), lines.end(),l2) != lines.end()) {
+					else if(selectValue == field2->getValue() && find(lines.begin(), lines.end(),l2) != lines.end()) {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 						resultPart.push_back(*l2);
 					} else {
@@ -384,18 +391,18 @@ vector<int>  QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vect
 	return lines;
 }
 
-vector<int>  QueryEvaluator::getFollowsSResult(Field* field1, Field* field2, vector<int> lines){
+vector<int>  QueryEvaluator::getFollowsSResult(Field* field1, Field* field2, vector<int> lines, string selectValue){
 	return lines;
 }
 
 
 
 
-vector<int>  QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<int> lines){
+vector<int>  QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<int> lines, string selectValue){
 	return lines;
 }
 
-vector<int>  QueryEvaluator::getUsesSResult(Field* field1, Field* field2, vector<int> lines){
+vector<int>  QueryEvaluator::getUsesSResult(Field* field1, Field* field2, vector<int> lines, string selectValue){
 
 	return lines;
 }

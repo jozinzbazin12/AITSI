@@ -11,13 +11,13 @@ public:
 	virtual ~QueryEvaluator();
 	string getResult(PQLTree* tree);
 	constexpr unsigned int str2int(const char* str, int h = 0);
-	vector<int> getModifiesResult(Field* field1, Field* field2, vector<int> lines);
-	vector<int> getUsesResult(Field* field1, Field* field2, vector<int> lines);
-	vector<int> getFollowsResult(Field* field1, Field* field2, vector<int> lines, string searchResult);
-	vector<int> getParentResult(Field* field1, Field* field2, vector<int> lines);
-	vector<int> getUsesSResult(Field* field1, Field* field2, vector<int> lines);
-	vector<int> getFollowsSResult(Field* field1, Field* field2, vector<int> lines);
-	vector<int> getParentSResult(Field* field1, Field* field2, vector<int> lines);
+	vector<int> getModifiesResult(Field* field1, Field* field2, vector<int> lines, string selectValue);
+	vector<int> getUsesResult(Field* field1, Field* field2, vector<int> lines, string selectValue);
+	vector<int> getFollowsResult(Field* field1, Field* field2, vector<int> lines, string selectValue);
+	vector<int> getParentResult(Field* field1, Field* field2, vector<int> lines, string selectValue);
+	vector<int> getUsesSResult(Field* field1, Field* field2, vector<int> lines, string selectValue);
+	vector<int> getFollowsSResult(Field* field1, Field* field2, vector<int> lines, string selectValue);
+	vector<int> getParentSResult(Field* field1, Field* field2, vector<int> lines, string selectValue);
 };
 
 } /* namespace std */
