@@ -247,7 +247,7 @@ void DesignExtractor::setIfLines() {
 								(*tmp)->data->lineNumber);
 
 				}
-				for (int i = 0; i < ASTtree->getNumberOfChildren(elsetmt); //stmts under if
+				for (int i = 0; i < ASTtree->getNumberOfChildren(elsetmt); //stmts under else
 						i++) {
 					if (i == 0) {
 						tmp = elsetmt.node->first_child;
@@ -279,7 +279,6 @@ void DesignExtractor::setCallLines() {
 			if (!(*begin)->data) {
 				cout << "error <set call's>" << endl;
 			} else {
-				cout << "CALL --" << endl;
 				linesTable->addCallLine((*begin)->data->lineNumber);
 			}
 		}
