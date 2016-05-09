@@ -3,7 +3,7 @@
 #include <set>
 
 namespace std {
-/*
+
 QueryEvaluator::QueryEvaluator() {
 	// TODO Auto-generated constructor stub
 
