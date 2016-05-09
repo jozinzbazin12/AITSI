@@ -89,3 +89,24 @@ void LinesTable::writeAll() {
 		cout << (*iter).first << " : " << (*iter).second << endl;
 	}
 }
+
+void LinesTable::writeCallLines(){
+	for (vector<int>::iterator iter = callLines.begin();
+				iter != callLines.end(); ++iter) {
+			cout << (*iter)<< endl;
+		}
+}
+
+
+void LinesTable::writeIfLines() {
+	for (map<int, vector<int> >::iterator iter = ifLines.begin();
+				iter != ifLines.end(); ++iter) {
+			vector<int> tempVec = (*iter).second;
+			int key = (*iter).first;
+			cout << key << " :";
+			for (unsigned i = 0; i < tempVec.size(); i++) {
+				cout << " " << tempVec[i];
+			}
+			cout << endl;
+		}
+}

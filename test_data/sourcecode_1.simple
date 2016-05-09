@@ -1,3 +1,6 @@
+procedure TestProcedure_2{
+	r = 3; }
+
 procedure TestProcedure {
 	t = 1;
 	t = 1;
@@ -6,6 +9,15 @@ procedure TestProcedure {
 	while d {
 		d = t + 2; }
 	t = 1;
+	if a then{
+		a = 1;
+		t = 4 + 2;}
+	else{
+		a = t + 2;
+		d = a + 4;}
 	a = t + 10;
 	d = t + a + 2;
+	call TestProcedure_2;
 	c = t + k + d; }
+	
+

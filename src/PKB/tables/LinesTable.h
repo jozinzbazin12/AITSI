@@ -34,6 +34,8 @@ public:
 	void addAssignLine(int assignLine);
 	void addLine(string text);
 	void writeAll();
+	void writeIfLines();
+	void writeCallLines();
 
 
 private:

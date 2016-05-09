@@ -22,6 +22,8 @@ void DesignExtractor::start() {
 	setAssignTable();
 	setModifiesRelations();
 	setUsesRelations();
+	setIfLines();
+	setCallLines();
 }
 
 void DesignExtractor::setFollowRelations() {
@@ -158,6 +160,7 @@ void DesignExtractor::setModifiesRelations() {
 
 	}
 }
+
 void DesignExtractor::setUsesRelations() {
 	Uses * uses = pkb->getUses();
 	ASTTree * ASTtree = pkb->getASTTree();
@@ -171,7 +174,7 @@ void DesignExtractor::setUsesRelations() {
 
 	while (begin != end) {
 		if (ASTtree->isValid(begin)) {
-			if ((*begin)->data->type == "ASSIGN") {                                                   //if assign only value
+			if ((*begin)->data->type == "ASSIGN") {       //if assign only value
 				firstChildOfAssign = begin.node->first_child;
 				secondChildOfAssign = firstChildOfAssign.node->next_sibling;
 				if (ASTtree->isValid(secondChildOfAssign)
@@ -181,26 +184,26 @@ void DesignExtractor::setUsesRelations() {
 					if (varId != -1)
 						uses->add(varId, (*begin)->data->lineNumber);
 					/*else
-						uses->add(varTable->addVar((*secondChildOfAssign)->data->value),
-								(*begin)->data->lineNumber);*/
+					 uses->add(varTable->addVar((*secondChildOfAssign)->data->value),
+					 (*begin)->data->lineNumber);*/
 
 				}
-			} else if ((*begin)->data->type == "WHILE") {                                            //in loop
+			} else if ((*begin)->data->type == "WHILE") {              //in loop
 				int varId = varTable->getVarId((*begin)->data->value);
 				if (varId != -1)
 					uses->add(varId, (*begin)->data->lineNumber);
 				/*else
-					uses->add(varTable->addVar((*begin)->data->value),
-							(*begin)->data->lineNumber);*/
-			} else if ((*begin)->data->type == "OPERAND") {                                           //under Expression
+				 uses->add(varTable->addVar((*begin)->data->value),
+				 (*begin)->data->lineNumber);*/
+			} else if ((*begin)->data->type == "OPERAND") {   //under Expression
 				tmp = begin.node->parent;
 				if ((*tmp)->data->type == "EXPR") {
 					int varId = varTable->getVarId((*begin)->data->value);
 					if (varId != -1)
 						uses->add(varId, (*begin)->data->lineNumber);
 					/*else
-						uses->add(varTable->addVar((*begin)->data->value),
-								(*begin)->data->lineNumber);*/
+					 uses->add(varTable->addVar((*begin)->data->value),
+					 (*begin)->data->lineNumber);*/
 				}
 
 			}
@@ -208,4 +211,80 @@ void DesignExtractor::setUsesRelations() {
 		++begin;
 
 	}
+
 }
+
+void DesignExtractor::setIfLines() {
+
+	ASTTree * ASTtree = pkb->getASTTree();
+	LinesTable * linesTable = pkb->getLineTable();
+
+	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
+	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
+
+	tree<tree_node_<ASTNode*>*>::iterator ifstmt;
+	tree<tree_node_<ASTNode*>*>::iterator elsetmt;
+
+	while (begin != end) {
+		if (ASTtree->isValid(begin) && (*begin)->data->type == "IF") {
+			if (!(*begin)->data) {
+				cout << "error <set If's>" << endl;
+			} else {
+
+				ifstmt = begin;
+				elsetmt = begin.node->next_sibling;
+
+				for (int i = 0; i < ASTtree->getNumberOfChildren(ifstmt); //stmts under if
+						i++) {
+					if (i == 0) {
+						tmp = ifstmt.node->first_child;
+					} else {
+						tmp = tmp.node->next_sibling;
+					}
+					if (ASTtree->isValid(tmp))
+						linesTable->addIfLine((*begin)->data->lineNumber,
+								(*tmp)->data->lineNumber);
+
+				}
+				for (int i = 0; i < ASTtree->getNumberOfChildren(elsetmt); //stmts under if
+						i++) {
+					if (i == 0) {
+						tmp = elsetmt.node->first_child;
+					} else {
+						tmp = tmp.node->next_sibling;
+					}
+					if (ASTtree->isValid(tmp))
+						linesTable->addIfLine((*begin)->data->lineNumber,
+								(*tmp)->data->lineNumber);
+
+				}
+
+			}
+		}
+
+		++begin;
+	}
+}
+void DesignExtractor::setCallLines() {
+
+	ASTTree * ASTtree = pkb->getASTTree();
+	LinesTable * linesTable = pkb->getLineTable();
+
+	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
+	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
+
+	while (begin != end) {
+		if (ASTtree->isValid(begin) && (*begin)->data->type == "CALL") {
+			if (!(*begin)->data) {
+				cout << "error <set call's>" << endl;
+			} else {
+				cout << "CALL --" << endl;
+				linesTable->addCallLine((*begin)->data->lineNumber);
+			}
+		}
+		++begin;
+	}
+
+}
+

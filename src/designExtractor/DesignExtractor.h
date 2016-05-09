@@ -21,6 +21,9 @@ private:
 	void setAssignTable();
 	void setModifiesRelations();
 	void setUsesRelations();
+
+	void setIfLines();
+	void setCallLines();
 };
 
 #endif /* SRC_DESIGNEXTRACTOR_DESIGNEXTRACTOR_H_ */
