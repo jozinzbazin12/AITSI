@@ -67,14 +67,13 @@ public:
 	void setASTTree(ASTTree * tree2){
 		tree = tree2;
 	}
-	VarTable * varTable = NULL;
 private:
 	Modifies* modifies = NULL;
 	Uses* uses = NULL;
 	Parent* parent = NULL;
 	Follows* follows = NULL;
 	ASTTree * tree = NULL;
-
+	VarTable * varTable = NULL;
 	LinesTable * lineTable = NULL;
 };
 

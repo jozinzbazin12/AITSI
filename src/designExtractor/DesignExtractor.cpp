@@ -180,27 +180,27 @@ void DesignExtractor::setUsesRelations() {
 							(*secondChildOfAssign)->data->value);
 					if (varId != -1)
 						uses->add(varId, (*begin)->data->lineNumber);
-					else
+					/*else
 						uses->add(varTable->addVar((*secondChildOfAssign)->data->value),
-								(*begin)->data->lineNumber);
+								(*begin)->data->lineNumber);*/
 
 				}
 			} else if ((*begin)->data->type == "WHILE") {                                            //in loop
 				int varId = varTable->getVarId((*begin)->data->value);
 				if (varId != -1)
 					uses->add(varId, (*begin)->data->lineNumber);
-				else
+				/*else
 					uses->add(varTable->addVar((*begin)->data->value),
-							(*begin)->data->lineNumber);
+							(*begin)->data->lineNumber);*/
 			} else if ((*begin)->data->type == "OPERAND") {                                           //under Expression
 				tmp = begin.node->parent;
 				if ((*tmp)->data->type == "EXPR") {
 					int varId = varTable->getVarId((*begin)->data->value);
 					if (varId != -1)
 						uses->add(varId, (*begin)->data->lineNumber);
-					else
+					/*else
 						uses->add(varTable->addVar((*begin)->data->value),
-								(*begin)->data->lineNumber);
+								(*begin)->data->lineNumber);*/
 				}
 
 			}

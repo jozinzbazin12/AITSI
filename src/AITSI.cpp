@@ -199,8 +199,12 @@ int main(int argc, char** args) {
 				pkb->getUses()->writeAll();
 				cout << "**********************************************************\n";
 
-				cout << "***********WARIABLES**\n";
-				pkb->varTable->writeAll();
+				cout << "***********VARIABLES**\n";
+				pkb->getVarTable()->writeAll();
+				cout << "**********************************************************\n";
+
+				cout << "***********LINES**\n";
+				pkb->getLineTable()->writeAll();
 				cout << "**********************************************************\n";
 			} catch (RuntimeException &ex) {
 				ex.print();
