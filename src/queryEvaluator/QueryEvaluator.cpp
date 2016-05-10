@@ -41,11 +41,11 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case str2int("prog_line"):
-								//lines = pkb -> getLineTable() -> getProgLines();
+								lines = pkb -> getLineTable() -> getAllLines();
 								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case str2int("procedure"):
-							//	lines = pkb -> getLineTable() -> getProgLines();
+								lines = pkb -> getLineTable() -> getAllLines();
 								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case str2int("stmt"):
@@ -53,19 +53,19 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 								setLines = pkb -> getLineTable() -> getAssignLines();
 								tmp = pkb -> getLineTable() -> getWhileLines();
 								setLines.insert(tmp.begin(),tmp.end());
-							/*	tmp  = pkb -> getLineTable() -> getCallLines();
+								tmp  = pkb -> getLineTable() -> getCallLines();
 								setLines.insert(tmp.begin(),tmp.end());
 								tmp  = pkb -> getLineTable() -> getIfLines();
-								setLines.insert(tmp.begin(),tmp.end());*/
+								setLines.insert(tmp.begin(),tmp.end());
 								lines=setLines;
 								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case str2int("if"):
-								//lines = pkb -> getLineTable() -> getIfLines();
+								lines = pkb -> getLineTable() -> getIfLines();
 								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 						case  str2int("call"):
-								//lines = pkb -> getLineTable() -> getCallLines();
+								lines = pkb -> getLineTable() -> getCallLines();
 								selectValue = (*begin)->data->getField1()->getValue();
 								break;
 					}
@@ -152,9 +152,8 @@ vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vect
 	else if(field1->getType() == "stmt"){
 		setLines = pkb -> getLineTable() -> getAssignLines();
 		setLines = pkb -> getLineTable() -> getWhileLines();
-		//setLines = pkb -> getLineTable() -> getIfLines();
-		//setLines = pkb -> getLineTable() -> getCallLines();
-
+		setLines = pkb -> getLineTable() -> getIfLines();
+		setLines = pkb -> getLineTable() -> getCallLines();
 	}
 	else if(field1->getType() == "variable"){
 
@@ -178,20 +177,19 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
         	setLines2 = pkb -> getLineTable() -> getAssignLines();
         	set<int> tmp = pkb -> getLineTable() -> getWhileLines();
         	setLines2.insert(tmp.begin(), tmp.end());
-        	//Dodac tak jak wy¿ej
-        	/*tmp = pkb -> getLineTable() -> getIfLines();
+        	tmp = pkb -> getLineTable() -> getIfLines();
         	setLines2.insert(tmp.begin(), tmp.end());
         	tmp  = pkb -> getLineTable() -> getCallLines();
-        	setLines2.insert(tmp.begin(), tmp.end());*/
+        	setLines2.insert(tmp.begin(), tmp.end());
         }
         else if(field2->getType() == "while") {
         	setLines2 = pkb -> getLineTable() -> getWhileLines();
         }
         else if(field2->getType() == "if"){
-        	//setLines2 = pkb -> getLineTable() -> getIfLines();
+        	setLines2 = pkb -> getLineTable() -> getIfLines();
         }
         else if(field2->getType() == "call"){
-        	//setLines2 = pkb -> getLineTable() -> getCallLines();
+        	setLines2 = pkb -> getLineTable() -> getCallLines();
         }
         else if(field2->getType() == "assign"){
         	setLines2 = pkb -> getLineTable() -> getAssignLines();
@@ -203,14 +201,14 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 		setLines2.insert(param);
 		if(field1->getType() == "stmt"){
 			setLines1 = pkb -> getLineTable() -> getWhileLines();
-			/*set<int> tmp = pkb -> getLineTable() -> getIfLines();
-			setLines1.insert(tmp.begin(),tmp.end());*/
+			set<int> tmp = pkb -> getLineTable() -> getIfLines();
+			setLines1.insert(tmp.begin(),tmp.end());
 		}
 		else if(field1->getType() == "while"){
 			setLines1 = pkb ->getLineTable() -> getWhileLines();
 		}
 		else if(field1->getType() == "if"){
-			//setLines1 = pkb ->getLineTable() ->getIfLines();
+			setLines1 = pkb ->getLineTable() ->getIfLines();
 		}
 	}
 	else if(field1->getType() == "constant" && field2->getType() == "constant"){
@@ -225,34 +223,33 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 	else{
 		if(field1->getType() == "stmt"){
 			setLines1 = pkb -> getLineTable() -> getWhileLines();
-			/*set<int> tmp = pkb -> getLineTable() -> getIfLines();
-			setLines1.insert(tmp.begin(),tmp.end()); */
-
+			set<int> tmp = pkb -> getLineTable() -> getIfLines();
+			setLines1.insert(tmp.begin(),tmp.end());
 		}
 		else if(field1->getType() == "while"){
 			setLines1 = pkb ->getLineTable() -> getWhileLines();
 		}
 		else if(field1->getType() == "if"){
-			//setLines1 = pkb ->getLineTable() ->getIfLines();
+			setLines1 = pkb ->getLineTable() ->getIfLines();
 		}
 		if(field2->getType() == "stmt" ||  field2->getType() == "prog_line"
 				|| field2->getType() == "any"){
 			set<int> tmp = pkb -> getLineTable() -> getWhileLines();
 			setLines2 = pkb -> getLineTable() -> getAssignLines();
 			setLines2.insert(tmp.begin(),tmp.end());
-			/*tmp = pkb -> getLineTable() -> getIfLines();
+			tmp = pkb -> getLineTable() -> getIfLines();
 			setLines2.insert(tmp.begin(),tmp.end());
 			tmp = pkb -> getLineTable() -> getCallLines();
-			setLines2.insert(tmp.begin(),tmp.end());*/
+			setLines2.insert(tmp.begin(),tmp.end());
 		}
 		else if(field2->getType() == "while"){
 			setLines2 = pkb -> getLineTable() -> getWhileLines();
 		}
 		else if(field2->getType() == "if"){
-			//setLines2 = pkb -> getLineTable() -> getIfLines();
+			setLines2 = pkb -> getLineTable() -> getIfLines();
 		}
 		else if(field2->getType() == "call"){
-			//setLines2 = pkb -> getLineTable() -> getCallLines();
+			setLines2 = pkb -> getLineTable() -> getCallLines();
 		}
 		else if(field2->getType() == "assign"){
 			setLines2 = pkb -> getLineTable() -> getAssignLines();
@@ -307,19 +304,19 @@ vector<int>  QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vect
 			setLines2 = pkb -> getLineTable() -> getAssignLines();
 			set<int> pom = pkb -> getLineTable() -> getWhileLines();
 			setLines2.insert(pom.begin(), pom.end());
-
-			//Dodac tak jak wy¿ej
-			//setLines2 = pkb -> getLineTable() -> getIfLines();
-			//setLines2 = pkb -> getLineTable() -> getCallLines();
+			pom = pkb -> getLineTable() -> getIfLines();
+			setLines2.insert(pom.begin(), pom.end());
+			pom = pkb -> getLineTable() -> getCallLines();
+			setLines2.insert(pom.begin(), pom.end());
 		}
 		else if(field2->getType() == "while") {
 			setLines2 = pkb -> getLineTable() -> getWhileLines();
 		}
 		else if(field2->getType() == "if"){
-			//setLines2 = pkb -> getLineTable() -> getIfLines();
+			setLines2 = pkb -> getLineTable() -> getIfLines();
 		}
 		else if(field2->getType() == "call"){
-			//setLines2 = pkb -> getLineTable() -> getCallLines();
+			setLines2 = pkb -> getLineTable() -> getCallLines();
 		}
 		else if(field2->getType() == "assign"){
 			setLines2 = pkb -> getLineTable() -> getAssignLines();
@@ -335,19 +332,19 @@ vector<int>  QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vect
 			setLines1 = pkb -> getLineTable() -> getAssignLines();
 			set<int> pom = pkb -> getLineTable() -> getWhileLines();
 			setLines1.insert(pom.begin(), pom.end());
-
-			//Dodac tak jak wy¿ej
-			//setLines1 = pkb -> getLineTable() -> getIfLines();
-			//setLines1 = pkb -> getLineTable() -> getCallLines();
+			pom = pkb -> getLineTable() -> getIfLines();
+			setLines1.insert(pom.begin(), pom.end());
+			pom = pkb -> getLineTable() -> getCallLines();
+			setLines1.insert(pom.begin(), pom.end());
 		}
 		else if(field1->getType() == "while") {
 			setLines1 = pkb -> getLineTable() -> getWhileLines();
 		}
 		else if(field1->getType() == "if"){
-			//setLines1 = pkb -> getLineTable() -> getIfLines();
+			setLines1 = pkb -> getLineTable() -> getIfLines();
 		}
 		else if(field1->getType() == "call"){
-			//setLines1 = pkb -> getLineTable() -> getCallLines();
+			setLines1 = pkb -> getLineTable() -> getCallLines();
 		}
 		else if(field1->getType() == "assign"){
 			setLines1 = pkb -> getLineTable() -> getAssignLines();
@@ -369,42 +366,41 @@ vector<int>  QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vect
 			setLines1 = pkb -> getLineTable() -> getAssignLines();
 			set<int> pom = pkb -> getLineTable() -> getWhileLines();
 			setLines1.insert(pom.begin(), pom.end());
-
-			//Dodac tak jak wy¿ej
-			//setLines1 = pkb -> getLineTable() -> getIfLines();
-			//setLines1 = pkb -> getLineTable() -> getCallLines();
+			pom = pkb -> getLineTable() -> getIfLines();
+			setLines1.insert(pom.begin(), pom.end());
+			pom = pkb -> getLineTable() -> getCallLines();
+			setLines1.insert(pom.begin(), pom.end());
 		}
 		else if(field1->getType() == "while") {
 			setLines1 = pkb -> getLineTable() -> getWhileLines();
 		}
 		else if(field1->getType() == "if"){
-			//setLines1 = pkb -> getLineTable() -> getIfLines();
+			setLines1 = pkb -> getLineTable() -> getIfLines();
 		}
 		else if(field1->getType() == "call"){
-			//setLines1 = pkb -> getLineTable() -> getCallLines();
+			setLines1 = pkb -> getLineTable() -> getCallLines();
 		}
 		else if(field1->getType() == "assign"){
 			setLines1 = pkb -> getLineTable() -> getAssignLines();
 		}
-
 		// Pobranie listy dla drugiego parametru
 		if(field2->getType() == "stmt" || field2->getType() == "any") {
 			setLines2 = pkb -> getLineTable() -> getAssignLines();
 			set<int> pom = pkb -> getLineTable() -> getWhileLines();
 			setLines2.insert(pom.begin(), pom.end());
-
-			//Dodac tak jak wy¿ej
-			//setLines2 = pkb -> getLineTable() -> getIfLines();
-			//setLines2 = pkb -> getLineTable() -> getCallLines();
+			pom = pkb -> getLineTable() -> getIfLines();
+			setLines2.insert(pom.begin(), pom.end());
+			pom = pkb -> getLineTable() -> getCallLines();
+			setLines2.insert(pom.begin(), pom.end());
 		}
 		else if(field2->getType() == "while") {
 			setLines2 = pkb -> getLineTable() -> getWhileLines();
 		}
 		else if(field2->getType() == "if"){
-			//setLines2 = pkb -> getLineTable() -> getIfLines();
+			setLines2 = pkb -> getLineTable() -> getIfLines();
 		}
 		else if(field2->getType() == "call"){
-			//setLines2 = pkb -> getLineTable() -> getCallLines();
+			setLines2 = pkb -> getLineTable() -> getCallLines();
 		}
 		else if(field2->getType() == "assign"){
 			setLines2 = pkb -> getLineTable() -> getAssignLines();
@@ -455,6 +451,6 @@ vector<int>  QueryEvaluator::getUsesSResult(Field* field1, Field* field2, vector
 
 	return lines;
 }
-*/
+
 
 } /* namespace std */
