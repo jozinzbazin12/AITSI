@@ -70,7 +70,7 @@ void DesignExtractor::setParentRelations() {
 				cout << "error <fillParents>" << endl;
 			} else {
 				tmp = begin.node->parent;
-				if (ASTtree->isValid(tmp) && (*tmp)->data->type != "procedure"
+				if (ASTtree->isValid(tmp) && (*tmp)->data->type != "PROCEDURE"
 						&& (*tmp)->data->type != "PROGRAM") {
 					if ((*begin)->data->lineNumber
 							!= (*tmp)->data->lineNumber) {
