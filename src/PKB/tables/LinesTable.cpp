@@ -79,8 +79,8 @@ void LinesTable::addAssignLine(int assignLine) {
 }
 
 void LinesTable::addLine(string text){
-	lines[linesCount] = text;
 	linesCount ++;
+	lines[linesCount] = text;
 }
 
 void LinesTable::writeAll() {
