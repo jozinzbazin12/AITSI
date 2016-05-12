@@ -20,6 +20,7 @@ public:
 	virtual int addProc(string name);
 	virtual int getProcId(string name);
 	virtual string getProcName(int id);
+	virtual void writeProcLines();
 
 private:
 	vector<string> procedures;

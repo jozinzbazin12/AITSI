@@ -15,6 +15,7 @@
 #include "ast/ASTTree.h"
 #include "tables/VarTable.h"
 #include "tables/LinesTable.h"
+#include "tables/ProcTable.h"
 
 #include "relations/Parent.h"
 #include "relations/Follows.h"
@@ -32,6 +33,7 @@ public:
 		follows = new Follows();
 		varTable = new VarTable();
 		lineTable = new LinesTable();
+		procTable = new ProcTable();
 	}
 
 	virtual ~PKB();
@@ -64,6 +66,10 @@ public:
 		return lineTable;
 	}
 
+	ProcTable* getProcTable(){
+		return procTable;
+	}
+
 	void setASTTree(ASTTree * tree2){
 		tree = tree2;
 	}
@@ -75,6 +81,7 @@ private:
 	ASTTree * tree = NULL;
 	VarTable * varTable = NULL;
 	LinesTable * lineTable = NULL;
+	ProcTable * procTable = NULL;
 };
 
 #endif /* SRC_PKB_PKB_H_ */

@@ -229,6 +229,11 @@ int main(int argc, char** args) {
 				cout
 						<< "**********************************************************\n";
 
+				cout << "***********PROC LINES**\n";
+				pkb->getProcTable()->writeProcLines();
+				cout
+						<< "**********************************************************\n";
+
 				cout << "***********LINES**\n";
 				pkb->getLineTable()->writeAll();
 				cout

@@ -6,7 +6,7 @@
  */
 
 #include "ProcTable.h"
-
+#include <iostream>
 ProcTable::ProcTable() {
 	procId = 0;
 }
@@ -33,4 +33,9 @@ int ProcTable::getProcId(string name){
 string ProcTable::getProcName(int id){
 	return procedures[id];
 }
-
+void ProcTable::writeProcLines(){
+	for (vector<string>::iterator iter = procedures.begin();
+				iter != procedures.end(); ++iter) {
+			cout << (*iter)<< endl;
+		}
+}

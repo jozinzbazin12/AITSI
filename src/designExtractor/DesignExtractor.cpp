@@ -24,6 +24,7 @@ void DesignExtractor::start() {
 	setUsesRelations();
 	setIfLines();
 	setCallLines();
+	setProcTable();
 }
 
 void DesignExtractor::setFollowRelations() {
@@ -156,10 +157,55 @@ void DesignExtractor::setModifiesRelations() {
 				modifies->add(varTable->addVar((*tmp)->data->value),
 						(*begin)->data->lineNumber);
 		}
+
+		if (ASTtree->isValid(begin) && (*begin)->data->type == "IF") {
+			//get all childs
+
+			for (int i = 0; i < ASTtree->getNumberOfChildren(begin); i++) {
+				tmp = ASTtree->getChild(begin, i);
+				if ((*tmp)->data->type == "ASSIGN") {
+					int varId = varTable->getVarId(
+							tmp.node->first_child->data->data->value);
+					if (varId != -1)
+						modifies->add(varId, (*begin)->data->lineNumber);
+				}
+				else if ((*tmp)->data->type == "IF" || (*tmp)->data->type == "ELSE" ){
+					//recur(tmp,begin,modifies,varTable);
+				}
+
+				//get else
+			}
+
+			//else
+		}
+
 		++begin;
 
 	}
+
 }
+/*void DesignExtractor::recur(tree<tree_node_<ASTNode*>*>::iterator current,
+		tree<tree_node_<ASTNode*>*>::iterator ifNode, Modifies * modifies,
+		VarTable * varTable) {
+
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
+	ASTTree * ASTtree = pkb->getASTTree();
+
+	if ((*current)->data->type == "ASSIGN") {
+		tmp = current.node->first_child;
+		int varId = varTable->getVarId((*tmp)->data->value);
+		if (varId != -1)
+			modifies->add(varId, (*ifNode)->data->lineNumber);
+	}
+	for (int i = 0; i < ASTtree->getNumberOfChildren(current); i++) {
+		tmp = ASTtree->getChild(current, i);
+		if (ASTtree->isValid(tmp)
+				&& ((*tmp)->data->type == "IF" || (*tmp)->data->type == "ELSE"))
+			recur(ASTtree->getChild(current, i), ifNode, modifies, varTable);
+	}
+
+}
+*/
 
 void DesignExtractor::setUsesRelations() {
 	Uses * uses = pkb->getUses();
@@ -285,5 +331,25 @@ void DesignExtractor::setCallLines() {
 		++begin;
 	}
 
+}
+
+void DesignExtractor::setProcTable() {
+
+	ASTTree * ASTtree = pkb->getASTTree();
+	ProcTable * procTable = pkb->getProcTable();
+
+	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
+	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
+
+	while (begin != end) {
+		if (ASTtree->isValid(begin) && (*begin)->data->type == "PROCEDURE") {
+			if (!(*begin)->data) {
+				cout << "error <set procedures's>" << endl;
+			} else {
+				procTable->addProc(((*begin)->data->value));
+			}
+		}
+		++begin;
+	}
 }
 
