@@ -11,7 +11,19 @@ procedure TestProcedure {
 	t = 1;
 	if a then{
 		a = 1;
-		t = 4 + 2;}
+		t = 4 + 2;
+		if d then{
+			c = 1;
+			t = 4 + 2;}
+		else{
+			a = t + 2;
+			d = a + 4;
+			if d then{
+ 				c = 1;
+ 				t = 4 + 2;}
+			else{
+				a = t + 2;
+ 				r = a + 4;}}}
 	else{
 		a = t + 2;
 		d = a + 4;}
