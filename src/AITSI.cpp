@@ -205,10 +205,7 @@ int main(int argc, char** args) {
 				pkb->getParent()->writeAll();
 				cout
 						<< "**********************************************************\n";
-				cout << "***********MODIFIES**\n";
-				pkb->getModifies()->writeAll();
-				cout
-						<< "**********************************************************\n";
+
 				cout << "***********USES**\n";
 				pkb->getUses()->writeAll();
 				cout
@@ -233,7 +230,10 @@ int main(int argc, char** args) {
 				pkb->getProcTable()->writeProcLines();
 				cout
 						<< "**********************************************************\n";
-
+				cout << "***********MODIFIES**\n";
+				pkb->getModifies()->writeAll();
+				cout
+						<< "**********************************************************\n";
 				cout << "***********LINES**\n";
 				pkb->getLineTable()->writeAll();
 				cout
