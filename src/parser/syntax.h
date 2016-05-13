@@ -71,26 +71,45 @@ protected:
 		int position = 0;
 		int newPosition = 0;
 		if (semicolon) {
-			int semicolonPos = str.find(";");
 			int bracePos = str.find("}");
+			int semicolonPos = str.find(";");
 			if (semicolonPos == string::npos) {
 				throwException("no semicolon found");
 			} else if (bracePos != string::npos && bracePos > semicolonPos) {
-				string end = str.substr(semicolonPos);
+				string end = str.substr(semicolonPos + 1);
 				removeWhitespaces(end);
 				braces = count(end.begin(), end.end(), '}');
-				string bracesStr(braces, '}');
-				int bracePos2 = end.find('}');
-				int semicolonPos2 = end.find(';');
-				if (semicolonPos2 + bracePos2 + bracesStr.length() != end.length() || end.find(bracesStr) == string::npos) {
+				string bracesStr = str.substr(bracePos, str.length() - 1);
+				if (braces != end.length()) {
 					throwException("denied characters after semicolon");
 				}
-				str.erase(bracePos, bracesStr.length());
+				str.erase(remove(str.begin(), str.end(), '}'), str.end());
 			} else if (semicolonPos != (int) str.length() - 1) {
 				throwException("denied characters after semicolon");
 			}
 			str.erase(semicolonPos, 1);
 		}
+		if (multiLine) {
+			bool nextNoBrace = str.back() != '{' && str.back() != '}';
+			if (noBrace && nextNoBrace) {
+				throwException("missing brace!", true);
+			}
+			noBrace = nextNoBrace;
+			if (!noBrace) {
+				int bracePos = max((int) str.find('}'), (int) str.find('{'));
+				string end = str.substr(bracePos);
+				removeWhitespaces(end);
+				string str2 = str;
+				removeWhitespaces(str2);
+				if (count(end.begin(), end.end(), end[0]) == end.size() && end.size() == str2.size()) {
+					throwException(end, false);
+				}
+			}
+			if (!nextNoBrace) {
+				str.pop_back();
+			}
+		}
+
 		for (vector<Matcher>::iterator it = syntax.begin(); it != syntax.end(); ++it) {
 			if (it != syntax.end() - 1) {
 				vector<Matcher>::iterator it2 = next(it, 1);
@@ -120,6 +139,7 @@ public:
 	vector<Syntax*> possibleChildren;
 	static map<string, Syntax*> allSynstax;
 	static int currLine;
+	static bool noBrace;
 	string keyWord;
 	virtual ASTTree* parseLine(string str)=0;
 	virtual ~Syntax() {
@@ -128,6 +148,7 @@ public:
 string Syntax::anyWord = "*";
 string Syntax::any = "**";
 int Syntax::currLine = 0;
+bool Syntax::noBrace = false;
 map<string, Syntax*> Syntax::allSynstax;
 
 class RecursiveSyntax: public Syntax {
@@ -186,7 +207,8 @@ protected:
 public:
 	ProcedureSyntax() {
 		keyWord = Keywords::PROCEDURE;
-		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::anyWord), Matcher("{")};
+		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::anyWord)};
+		multiLine = true;
 		semicolon = false;
 	}
 
@@ -256,7 +278,6 @@ public:
 		semicolon = false;
 		keyWord = expr;
 		syntax = {Matcher(Matcher::anyWord), Matcher(keyWord, Matcher::anyWord, Matcher::anyWord, strict), Matcher(Matcher::any)};
-		multiLine = true;
 		parsers.push_back(allSynstax["op"]);
 	}
 
@@ -287,7 +308,6 @@ public:
 	AssingmentSyntax() {
 		keyWord = Keywords::ASSIGN;
 		syntax = {Matcher(Matcher::anyWord), Matcher(keyWord), Matcher(any)};
-		multiLine = true;
 		parsers.push_back(allSynstax["op"]);
 	}
 
@@ -319,14 +339,14 @@ class WhileSyntax: public Syntax {
 public:
 	WhileSyntax() {
 		keyWord = Keywords::WHILE;
-		syntax = {Matcher(keyWord, Matcher::any, Matcher::space), Matcher(anyWord), Matcher("{")};
+		syntax = {Matcher(keyWord, Matcher::any, Matcher::space), Matcher(anyWord)};
 		multiLine = true;
 		semicolon = false;
 	}
 
 	ASTTree* parseLine(string str) {
 		vector < string > splitStr = split(str);
-		if (str.find(splitStr[0]) == string::npos) {
+		if (str.find(keyWord) == string::npos) {
 			return NULL;
 		}
 		vector < string > args = match(str);
@@ -345,7 +365,6 @@ public:
 		keyWord = Keywords::CALL;
 		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::anyWord)};
 		semicolon = true;
-		multiLine = false;
 	}
 
 	ASTTree* parseLine(string str) {
@@ -355,10 +374,10 @@ public:
 		}
 		vector < string > args = match(str);
 		if (!procedures[args[0]]) {
-			throwException("procedure " + args[0] + " does not exist!", true);
+			//throwException("procedure " + args[0] + " does not exist!", true); potrzebne?
 		}
 		ASTTree* node = NodeUtil::createCallNode(args[0], currLine);
-		procedures[args[0]] = *(node->getRoot());
+		(*(node->getRoot()))->data->closed = getBrace();
 		return node;
 	}
 };
@@ -368,7 +387,7 @@ public:
 	IfSyntax() {
 		keyWord = Keywords::IF;
 		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::space),
-			Matcher("then",Matcher::space, Matcher::anyWord), Matcher("{")};
+			Matcher("then")};
 		semicolon = false;
 		multiLine = true;
 	}
@@ -391,7 +410,7 @@ class ElseSyntax: public Syntax {
 public:
 	ElseSyntax() {
 		keyWord = Keywords::ELSE;
-		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::anyWord), Matcher("{")};
+		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::anyWord)};
 		semicolon = false;
 		multiLine = true;
 	}
@@ -410,6 +429,32 @@ public:
 		n = t->getPrevSibling(n);
 		if ((*n)->data->type != NodeName::IF) {
 			throwException("else node could be placed only after if node!", true);
+		}
+	}
+};
+
+class EmptySyntax: public Syntax {
+public:
+	EmptySyntax() {
+		syntax = {};
+		keyWord = NodeName::FAKE_OPEN;
+		semicolon = false;
+		multiLine = true;
+	}
+
+	ASTTree* parseLine(string str) {
+		vector < string > splitStr = split(str);
+		string name="";
+		try {
+			match(str);
+		} catch(Exception &e) {
+			name=e.msg;
+		}
+		if(name[0]=='}') {
+			return NodeUtil::createFakeCloseNode(name.length());
+		} else {
+			return NodeUtil::createFakeOpenNode();
+
 		}
 	}
 };

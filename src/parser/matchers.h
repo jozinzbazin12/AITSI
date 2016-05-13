@@ -12,9 +12,6 @@ class Matcher {
 private:
 	int getEnd(int pos, string str) {
 		int len = str.length() - pos;
-		if (!pos) {
-			len--;
-		}
 		return len;
 	}
 

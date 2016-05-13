@@ -116,6 +116,8 @@ void initSyntax() {
 	Syntax::allSynstax[yiff->keyWord] = yiff;
 	Syntax* elze = new ElseSyntax();
 	Syntax::allSynstax[elze->keyWord] = elze;
+	Syntax* empty = new EmptySyntax();
+	Syntax::allSynstax[empty->keyWord] = empty;
 
 	RecursiveSyntax* ass = new AssingmentSyntax();
 	Syntax::allSynstax[ass->keyWord] = ass;

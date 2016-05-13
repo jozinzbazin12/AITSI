@@ -42,21 +42,24 @@ private:
 				s = *it;
 				node = s->parseLine(str);
 				if (node) {
-					tree<tree_node_<ASTNode*>*>::iterator pos = NodeUtil::appendChild(root, openedNodes.top(), node);
-					if (s->keyWord == Keywords::ELSE) {
-						((ElseSyntax*) s)->validate(root, pos);
-					} else if (s->keyWord == Keywords::PROCEDURE) {
-						((ProcedureSyntax*) s)->validate(root, pos);
+					string type = (*node->getRoot())->data->type;
+					if (type != NodeName::FAKE_OPEN && type != NodeName::FAKE_CLOSE) {
+						tree<tree_node_<ASTNode*>*>::iterator pos = NodeUtil::appendChild(root, openedNodes.top(), node);
+						if (s->keyWord == Keywords::ELSE) {
+							((ElseSyntax*) s)->validate(root, pos);
+						} else if (s->keyWord == Keywords::PROCEDURE) {
+							((ProcedureSyntax*) s)->validate(root, pos);
+						}
+						if ((*node->getRoot())->data->newLevel) {
+							openedNodes.push(pos);
+						}
+						closed = (*node->getRoot())->data->closed;
+						while (closed > 0) {
+							openedNodes.pop();
+							closed--;
+						}
+						break;
 					}
-					if ((*node->getRoot())->data->newLevel) {
-						openedNodes.push(pos);
-					}
-					closed = (*node->getRoot())->data->closed;
-					while (closed > 0) {
-						openedNodes.pop();
-						closed--;
-					}
-					break;
 				}
 			} catch (Exception &e) {
 				if (e.runtime) {
@@ -65,6 +68,13 @@ private:
 				if (debug) {
 					e.print();
 				}
+			}
+		}
+		if (node && (*node->getRoot())->data->type == NodeName::FAKE_CLOSE) {
+			closed = (*node->getRoot())->data->closed;
+			while (closed > 0) {
+				openedNodes.pop();
+				closed--;
 			}
 		}
 		if (!node) {
@@ -91,6 +101,7 @@ public:
 			parsers.push_back(Syntax::allSynstax[Keywords::CALL]);
 			parsers.push_back(Syntax::allSynstax[Keywords::IF]);
 			parsers.push_back(Syntax::allSynstax[Keywords::ELSE]);
+			parsers.push_back(Syntax::allSynstax[NodeName::FAKE_OPEN]);
 		}
 	}
 
@@ -102,6 +113,7 @@ public:
 			linesTable -> addLine(line);
 			count++;
 			parseLine(line);
+//			root->printTree();
 		} while (!stream.eof());
 		if (openedNodes.size() != 1) {
 			stringstream ss;

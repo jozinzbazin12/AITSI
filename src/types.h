@@ -20,6 +20,8 @@ public:
 	static string OPERAND;
 	static string IF;
 	static string ELSE;
+	static string FAKE_OPEN;
+	static string FAKE_CLOSE;
 	//, STM_LIST, STMT, CALL, WHILE, IF, EXPR, TERM, FACTOR, VAR_NAME, PROC_NAME, CONST_NAME
 };
 string NodeName::OPERAND = "OPERAND";
@@ -32,6 +34,8 @@ string NodeName::WHILE = "WHILE";
 string NodeName::CALL = "CALL";
 string NodeName::IF = "IF";
 string NodeName::ELSE = "ELSE";
+string NodeName::FAKE_OPEN = "FAKE_OPEN";
+string NodeName::FAKE_CLOSE = "FAKE_CLOSE";
 
 class Keywords {
 public:

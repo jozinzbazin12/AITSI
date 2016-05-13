@@ -69,6 +69,17 @@ public:
 		return createTree(node);
 	}
 
+	static ASTTree* createFakeOpenNode() {
+		ASTNode* node = new ASTNode(0, NodeName::FAKE_OPEN, 0, NodeName::FAKE_OPEN);
+		return createTree(node);
+	}
+
+	static ASTTree* createFakeCloseNode(int closed) {
+		ASTNode* node = new ASTNode(0, NodeName::FAKE_CLOSE, 0, NodeName::FAKE_CLOSE);
+		node->closed = closed;
+		return createTree(node);
+	}
+
 	static tree<tree_node_<ASTNode*>*>::iterator appendChild(ASTTree* t, tree<tree_node_<ASTNode*>*>::iterator parent,
 			tree_node_<ASTNode*>* child) {
 		return t->appendChild(parent, child);
