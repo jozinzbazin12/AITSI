@@ -25,7 +25,14 @@
 
 class PKB {
 public:
-
+		Modifies* modifies = NULL;
+		Uses* uses = NULL;
+		Parent* parent = NULL;
+		Follows* follows = NULL;
+		ASTTree * tree = NULL;
+		VarTable * varTable = NULL;
+		LinesTable * lineTable = NULL;
+		ProcTable * procTable = NULL;
 	PKB(){
 		modifies = new Modifies();
 		uses = new Uses();
@@ -74,14 +81,7 @@ public:
 		tree = tree2;
 	}
 private:
-	Modifies* modifies = NULL;
-	Uses* uses = NULL;
-	Parent* parent = NULL;
-	Follows* follows = NULL;
-	ASTTree * tree = NULL;
-	VarTable * varTable = NULL;
-	LinesTable * lineTable = NULL;
-	ProcTable * procTable = NULL;
+
 };
 
 #endif /* SRC_PKB_PKB_H_ */

@@ -7,10 +7,6 @@
 
 #ifndef SRC_DESIGNEXTRACTOR_DESIGNEXTRACTOR_H_
 #define SRC_DESIGNEXTRACTOR_DESIGNEXTRACTOR_H_
-#include "../PKB/AST/tree.hh"
-#include "../PKB/AST/ASTNode.h"
-#include "../PKB/relations/Modifies.h"
-#include "../PKB/tables/VarTable.h"
 
 class DesignExtractor {
 public:
@@ -26,8 +22,8 @@ private:
 	void setModifiesRelations();
 	void setUsesRelations();
 	void setProcTable();
-	void recur(tree<tree_node_<ASTNode*>*>::iterator current,tree<tree_node_<ASTNode*>*>::iterator ifNode, Modifies * modifies,
-			VarTable * varTable);
+	//void recur(tree<tree_node_<ASTNode*>*>::iterator current,tree<tree_node_<ASTNode*>*>::iterator ifNode, Modifies * modifies,
+	//		VarTable * varTable);
 
 	void setIfLines();
 	void setCallLines();

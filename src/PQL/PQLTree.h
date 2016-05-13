@@ -9,6 +9,12 @@
 #define SRC_PQL_PQLTREE_H_
 
 #include "PQLNode.h"
+#ifndef tree_hh_
+#include "tree.hh"
+#endif
+#ifndef _GLIBCXX_IOSTREAM
+#include <iostream>
+#endif
 
 using namespace std;
 
@@ -16,13 +22,15 @@ class PQLTree
 {
 private:
 	//static PQLTree *Ptree;
-	PQLTree() {
-		Tree = new tree<tree_node_<PQLNode*>*>();
-	}
+
 
 public:
 
 	tree<tree_node_<PQLNode*>*> *Tree;
+
+	PQLTree() {
+		Tree = new tree<tree_node_<PQLNode*>*>();
+	}
 
 	static PQLTree* getInstance()
 	{

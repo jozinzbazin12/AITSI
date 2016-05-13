@@ -23,9 +23,22 @@ int LinesTable::getLinesCount(){
 map<int, string> LinesTable::getAllLines(){
 	return lines;
 }
+vector<int> LinesTable::getLines() {
+	vector<int> v;
+	for(map<int, string>::iterator it = lines.begin(); it != lines.end(); ++it) {
+		v.push_back(it->first);
+	}
+	return v;
+}
 
 vector<int> LinesTable::getCallLines(){
 	return callLines;
+}
+
+set<int> LinesTable::getOrderedCallLines() {
+	set<int> result;
+	result.insert(callLines.begin(), callLines.end());
+	return result;
 }
 
 vector<int> LinesTable::getWhileLines(){
@@ -36,12 +49,27 @@ vector<int> LinesTable::getWhileLines(){
 	return v;
 }
 
+set<int> LinesTable::getOrderedWhileLines() {
+	set<int> result;
+	for(map<int, vector<int>>::iterator it = whileLines.begin(); it != whileLines.end(); ++it) {
+		result.insert(it->first);
+	}
+	return result;
+}
+
 vector<int> LinesTable::getIfLines(){
 	vector<int> v;
 	for(map<int, vector<int>>::iterator it = ifLines.begin(); it != ifLines.end(); ++it) {
 		v.push_back(it->first);
 	}
 	return v;
+}
+set<int> LinesTable::getOrderedIfLines() {
+	set<int> result;
+	for(map<int, vector<int>>::iterator it = ifLines.begin(); it != ifLines.end(); ++it) {
+		result.insert(it->first);
+	}
+	return result;
 }
 
 map<int, vector<int>> LinesTable::getIfBodyLines(){
@@ -50,6 +78,11 @@ map<int, vector<int>> LinesTable::getIfBodyLines(){
 
 vector<int> LinesTable::getAssignLines(){
 	return assignLines;
+}
+set<int> LinesTable::getOrderedAssignLines() {
+	set<int> result;
+	result.insert(assignLines.begin(), assignLines.end());
+	return result;
 }
 
 map<int,vector<int>> LinesTable::getWhileBodyLines(){
