@@ -25,6 +25,7 @@ void DesignExtractor::start() {
 	setIfLines();
 	setCallLines();
 	setProcTable();
+	setCallsRelations();
 }
 
 void DesignExtractor::setFollowRelations() {
@@ -385,6 +386,28 @@ void DesignExtractor::setCallLines() {
 
 }
 
+void DesignExtractor::setCallsRelations(){
+	ASTTree * ASTtree = pkb->getASTTree();
+	ProcTable * procTable = pkb->getProcTable();
+	Calls* calls = pkb -> getCalls();
+
+	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
+	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
+	int procId = -1;
+
+	while (begin != end) {
+		if (ASTtree->isValid(begin) && (*begin)->data) {
+			if ((*begin)->data->type == "PROCEDURE") {
+				procId = procTable -> getProcId((*begin)->data->value);
+			}
+			else if(procId != -1 && (*begin)->data->type == "CALL") {
+				calls -> addCall(procId, procTable -> getProcId((*begin)->data->value));
+			}
+		}
+		++begin;
+	}
+}
+
 void DesignExtractor::setProcTable() {
 
 	ASTTree * ASTtree = pkb->getASTTree();
@@ -398,7 +421,7 @@ void DesignExtractor::setProcTable() {
 			if (!(*begin)->data) {
 				cout << "error <set procedures's>" << endl;
 			} else {
-				procTable->addProc(((*begin)->data->value));
+				procTable->addProc(((*begin)->data->value), ((*begin)->data->lineNumber));
 			}
 		}
 		++begin;

@@ -23,21 +23,16 @@
 #include "relations/Uses.h"
 #include "relations/Modifies.h"
 
+#include "relations/Calls.h"
+
 class PKB {
 public:
-		Modifies* modifies = NULL;
-		Uses* uses = NULL;
-		Parent* parent = NULL;
-		Follows* follows = NULL;
-		ASTTree * tree = NULL;
-		VarTable * varTable = NULL;
-		LinesTable * lineTable = NULL;
-		ProcTable * procTable = NULL;
-	PKB(){
+	PKB() {
 		modifies = new Modifies();
 		uses = new Uses();
 		parent = new Parent();
 		follows = new Follows();
+		calls = new Calls();
 		varTable = new VarTable();
 		lineTable = new LinesTable();
 		procTable = new ProcTable();
@@ -61,27 +56,39 @@ public:
 		return uses;
 	}
 
-	ASTTree* getASTTree(){
+	Calls* getCalls() {
+		return calls;
+	}
+
+	ASTTree* getASTTree() {
 		return tree;
 	}
 
-	VarTable* getVarTable(){
+	VarTable* getVarTable() {
 		return varTable;
 	}
 
-	LinesTable* getLineTable(){
+	LinesTable* getLineTable() {
 		return lineTable;
 	}
 
-	ProcTable* getProcTable(){
+	ProcTable* getProcTable() {
 		return procTable;
 	}
 
-	void setASTTree(ASTTree * tree2){
+	void setASTTree(ASTTree * tree2) {
 		tree = tree2;
 	}
 private:
-
+	Modifies* modifies = NULL;
+	Uses* uses = NULL;
+	Parent* parent = NULL;
+	Follows* follows = NULL;
+	Calls* calls = NULL;
+	ASTTree * tree = NULL;
+	VarTable * varTable = NULL;
+	LinesTable * lineTable = NULL;
+	ProcTable * procTable = NULL;
 };
 
 #endif /* SRC_PKB_PKB_H_ */

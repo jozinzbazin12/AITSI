@@ -225,7 +225,7 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2,
 			&& field2->getType() == "constant") {
 		int param1 = field1->getIntegerValue();
 		int param2 = field1->getIntegerValue();
-		if (pkb->parent->parent(param1, param2) == true) {
+		if (pkb->getParent()->parent(param1, param2) == true) {
 			return lines;
 		}
 	} else {
@@ -264,7 +264,7 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2,
 				++l1) {
 			for (set<int>::iterator l2 = setLines2.begin();
 					l2 != setLines2.end(); ++l2) {
-				if (pkb->parent->parent(*l1, *l2) == true) {
+				if (pkb->getParent()->parent(*l1, *l2) == true) {
 					if (selectValue == field1->getValue()
 							&& selectValue == field2->getValue()) {
 						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
@@ -353,7 +353,7 @@ vector<int> QueryEvaluator::getFollowsResult(Field* field1, Field* field2,
 			&& field2->getType() == "constant") {
 		int param1 = field1->getIntegerValue();
 		int param2 = field1->getIntegerValue();
-		if (pkb->follows->follows(param1, param2) == true) {
+		if (pkb->getFollows()->follows(param1, param2) == true) {
 			return lines;
 		}
 	} else {
@@ -403,7 +403,7 @@ vector<int> QueryEvaluator::getFollowsResult(Field* field1, Field* field2,
 				++l1) {
 			for (set<int>::iterator l2 = setLines2.begin();
 					l2 != setLines2.end(); ++l2) {
-				if (pkb->follows->follows(*l1, *l2) == true) {
+				if (pkb->getFollows()->follows(*l1, *l2) == true) {
 					if (selectValue == field1->getValue()
 							&& selectValue == field2->getValue()) {
 						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
@@ -453,17 +453,17 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2,
 	int firstProcedureId = -1;
 	int secondProcedureId = -1;
 	if (firstParameterType == "string") {
-		firstProcedureId = pkbApi->getProcedureId(field1->getValue());
+		firstProcedureId = pkb->getProcTable()->getProcId(field1->getValue());
 	} else {
-		firstProcedureId = pkbApi->getProcedureId(field1->getIntegerValue());
+		firstProcedureId = pkb->getProcTable()->getProcId(field1->getIntegerValue());
 	}
 	if (secondParameterType == "string") {
-		secondProcedureId = pkbApi->getProcedureId(field2->getValue());
+		secondProcedureId = pkb->getProcTable()->getProcId(field2->getValue());
 	} else {
-		secondProcedureId = pkbApi->getProcedureId(field2->getIntegerValue());
+		secondProcedureId = pkb->getProcTable()->getProcId(field2->getIntegerValue());
 	}
 
-	if(firstParameterType == secondParameterType == "constant" && pkbApi->calls(firstProcedureId, secondProcedureId)){
+	if (firstParameterType == secondParameterType == "constant" && pkbApi->calls(firstProcedureId, secondProcedureId)){
 		return lines;
 	}
 
