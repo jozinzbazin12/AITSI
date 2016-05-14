@@ -22,17 +22,25 @@ public:
 	bool uses(int lineNumber, string varName);
 	bool parent(int parentLine, int kidLine);
 	bool follows(int lineNum, int followerLineNum);
+	bool calls(int procId1, int procId2);
+	bool callsStar(int procId1, int procId2);
 
 	int getLinesCount();
 	vector<int> getAssignLines();
 	map<int, string> getAllLines();
 	vector<int> getCallLines();
+	vector<int> getAllProcedureId();
 	vector<int> getWhileLines();
 	vector<int> getIfLines();
 	map<int, vector<int> > getWhileBodyLines(); // w pierwszym parametrze nr tej linijki z napisem while, a w vectorze pozosta³e liniie while
 	map<int, vector<int>> getIfBodyLines();
 	// jak bêd¹ potrzebowali stmt to chyba mog¹ sobie zrobic assign i while zamiast pobierac stmt
 	string getLineString(int lineNumber);
+
+	int getProcedureId(string procedureName);
+	int getProcedureId(int lineNumber);
+	string getProcedureName(int procedureId);
+	string getProcedureLineNumber(int procedureId);
 };
 
 #endif /* SRC_PKB_API_PKBAPI_H_ */

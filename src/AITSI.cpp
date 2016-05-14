@@ -16,6 +16,7 @@ using namespace std;
 #include "PQL/PQLTree.h"
 #include "QueryPreProcessor.h"
 #include "Validator/Validator.h"
+#include "queryEvaluator/QueryEvaluator.h"
 #include "PQL/PQL.h"
 
 bool debug = true;
@@ -50,6 +51,7 @@ void mainPQL() {
 	Validator* v = new Validator();
 	QueryPreProcessor* que = new QueryPreProcessor();
 	PQL *pql = new PQL();
+	QueryEvaluator *queryEvaluator = new QueryEvaluator();
 	pql->enterQuery();
 	//pql->processQuery(pql->getQuery());
 	//string a = "assign a; select a such that follows(a,\"a\");";
@@ -90,6 +92,8 @@ void mainPQL() {
 			<< "**** WALIDACJA TESTY - KONIEC****************************************"
 			<< endl;
 /////////////////////////////////////////////////////////////////////////////////////////////////
+	cout << "**** Test queryEvaluator **************************************************" << endl;
+	cout << queryEvaluator->getResult(tree) << endl;
 }
 
 #include "exceptions.h"
@@ -240,7 +244,6 @@ int main(int argc, char** args) {
 				pkb->getLineTable()->writeAll();
 				cout
 						<< "**********************************************************\n";
-
 			} catch (RuntimeException &ex) {
 				ex.print();
 				cout << "FAIL" << endl;

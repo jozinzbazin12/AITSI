@@ -1,6 +1,7 @@
 #ifndef SRC_QUERYEVALUATOR_QUERYEVALUATOR_H_
 #define SRC_QUERYEVALUATOR_QUERYEVALUATOR_H_
 //#include "PQLNode.h"
+#include "../PKB/api/PKBApi.h"
 #include <iterator>
 #ifndef _GLIBCXX_VECTOR
 #include <vector>
@@ -33,9 +34,17 @@ public:
 			vector<int> lines, string selectValue);
 	vector<int> getParentSResult(Field* field1, Field* field2,
 			vector<int> lines, string selectValue);
+	vector<int> getCallResult(Field* field1, Field* field2, vector<int> lines,
+			string selectValue);
+	vector<int> getCallStarResult(Field* field1, Field* field2,
+			vector<int> lines, string selectValue);
 
+private:
+	PKBApi *pkbApi = new PKBApi();
 };
 
 } /* namespace std */
 
 #endif /* SRC_QUERYEVALUATOR_QUERYEVALUATOR_H_ */
+
+//prog_line p; select p such that follows(p,_);

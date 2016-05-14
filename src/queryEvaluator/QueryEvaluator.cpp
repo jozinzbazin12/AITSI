@@ -60,14 +60,13 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 				} else if (s == "if") {
 					lines = pkb->getLineTable()->getIfLines();
 					selectValue = (*begin)->data->getField1()->getValue();
-				} else if (s == "call") {
-					lines = pkb->getLineTable()->getCallLines();
-					selectValue = (*begin)->data->getField1()->getValue();
+				} else if (s == "calls") {
+					//TODO
 				}
 
 			}
 			if (((*begin)->data->getType()) == "suchNode") {
-				//Sprawdzanie czy wystapila relacja Modifiles
+				//Sprawdzanie czy wystapila relacja Modifies
 				if ((*begin)->data->getNodeType() == "modifies") {
 					lines = getModifiesResult((*begin)->data->getField1(),
 							(*begin)->data->getField2(), lines, selectValue);
@@ -116,12 +115,26 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 								selectValue);
 						cout << "Uses*" << endl;
 					}
-					//zwyly Follows
+					//zwykly Uses
 					else {
 						lines = getUsesResult((*begin)->data->getField1(),
 								(*begin)->data->getField2(), lines,
 								selectValue);
 						cout << "Uses" << endl;
+					}
+				}
+				// Call || Call*
+				if ((*begin)->data->getNodeType() == "call") {
+					if ((*begin)->data->isStar()) {
+						result = getCallStarResult((*begin)->data->getField1(),
+								(*begin)->data->getField2(), lines,
+								selectValue);
+						cout << "Call* " << result << endl;
+					} else {
+						result = getCallResult((*begin)->data->getField1(),
+								(*begin)->data->getField2(), lines,
+								selectValue);
+						cout << "Call " << result << endl;
 					}
 				}
 			}
@@ -130,7 +143,6 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 	}
 	return result;
 }
-
 
 vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2,
 		vector<int> lines, string selectValue) {
@@ -414,7 +426,6 @@ vector<int> QueryEvaluator::getFollowsResult(Field* field1, Field* field2,
 			}
 		}
 	}
-	lines = resultPart;
 	return lines;
 }
 
@@ -431,6 +442,43 @@ vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2,
 vector<int> QueryEvaluator::getUsesSResult(Field* field1, Field* field2,
 		vector<int> lines, string selectValue) {
 
+	return lines;
+}
+
+vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2,
+		vector<int> lines, string selectValue) {
+	vector<int> resultPart;
+	string firstParameterType = field1->getType();
+	string secondParameterType = field2->getType();
+	int firstProcedureId = -1;
+	int secondProcedureId = -1;
+	if (firstParameterType == "string") {
+		firstProcedureId = pkbApi->getProcedureId(field1->getValue());
+	} else {
+		firstProcedureId = pkbApi->getProcedureId(field1->getIntegerValue());
+	}
+	if (secondParameterType == "string") {
+		secondProcedureId = pkbApi->getProcedureId(field2->getValue());
+	} else {
+		secondProcedureId = pkbApi->getProcedureId(field2->getIntegerValue());
+	}
+
+	if(firstParameterType == secondParameterType == "constant" && pkbApi->calls(firstProcedureId, secondProcedureId)){
+		return lines;
+	}
+
+	pkbApi->calls(firstProcedureId, secondProcedureId);
+	return lines;
+}
+
+vector<int> QueryEvaluator::getCallStarResult(Field* field1, Field* field2,
+		vector<int> lines, string selectValue) {
+	string firstParameterType = field1->getType();
+	string secondParameterType = field2->getType();
+	int firstProcedureId = -1;
+	int secondProcedureId = -1;
+
+	pkbApi->calls(firstProcedureId, secondProcedureId);
 	return lines;
 }
 

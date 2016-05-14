@@ -28,9 +28,10 @@ public:
 		this->field1 = field1;
 	}
 	// for SuchNode
-	PQLNode(string type, string nodeType, Field* field1, Field* field2, bool star) {
+	PQLNode(string type, string nodeType, Field* field1, Field* field2,
+			bool star) {
 		this->type = type; // type = "suchNode"
-		this->nodeType = nodeType; // nodeType = "modifies" // nodeType = "parent" // nodeType = "follows" // nodeType = "uses" //
+		this->nodeType = nodeType; // nodeType = "modifies" // nodeType = "parent" // nodeType = "follows" // nodeType = "uses" // nodeType = "calls" //
 		this->field1 = field1;
 		this->field2 = field2;
 		this->star = star;
