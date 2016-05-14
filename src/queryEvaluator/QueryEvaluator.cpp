@@ -126,12 +126,12 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 				// Call || Call*
 				if ((*begin)->data->getNodeType() == "call") {
 					if ((*begin)->data->isStar()) {
-						result = getCallStarResult((*begin)->data->getField1(),
+						lines = getCallStarResult((*begin)->data->getField1(),
 								(*begin)->data->getField2(), lines,
 								selectValue);
 						cout << "Call* " << result << endl;
 					} else {
-						result = getCallResult((*begin)->data->getField1(),
+						lines = getCallResult((*begin)->data->getField1(),
 								(*begin)->data->getField2(), lines,
 								selectValue);
 						cout << "Call " << result << endl;
@@ -453,17 +453,17 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2,
 	int firstProcedureId = -1;
 	int secondProcedureId = -1;
 	if (firstParameterType == "string") {
-		firstProcedureId = pkb->getProcTable()->getProcId(field1->getValue());
+		firstProcedureId = pkbApi->getProcId(field1->getValue());
 	} else {
-		firstProcedureId = pkb->getProcTable()->getProcId(field1->getIntegerValue());
+		firstProcedureId = pkbApi->getProcId(field1->getIntegerValue());
 	}
 	if (secondParameterType == "string") {
-		secondProcedureId = pkb->getProcTable()->getProcId(field2->getValue());
+		secondProcedureId = pkbApi->getProcId(field2->getValue());
 	} else {
-		secondProcedureId = pkb->getProcTable()->getProcId(field2->getIntegerValue());
+		secondProcedureId = pkbApi->getProcId(field2->getIntegerValue());
 	}
 
-	if (firstParameterType == secondParameterType == "constant" && pkbApi->calls(firstProcedureId, secondProcedureId)){
+	if (firstParameterType == "constant" && secondParameterType == "constant" && pkbApi->calls(firstProcedureId, secondProcedureId)) {
 		return lines;
 	}
 

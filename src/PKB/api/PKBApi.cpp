@@ -32,11 +32,11 @@ bool PKBApi::follows(int lineNum, int followerLineNum){
 	return pkb -> getFollows() -> follows(lineNum, followerLineNum);
 }
 
-bool calls(int callerId, int calleeId) {
+bool PKBApi::calls(int callerId, int calleeId) {
 	return pkb -> getCalls() -> calls(callerId, calleeId);
 }
 
-bool callsStar(int callerId, int calleeId) {
+bool PKBApi::callsStar(int callerId, int calleeId) {
 	return pkb -> getCalls() -> callsStar(callerId, calleeId);
 }
 
@@ -80,27 +80,27 @@ string PKBApi::getLineString(int lineNumber){
 
 ////////////////////////////////////////////////////////////
 
-int getProcId(string name) {
+int PKBApi::getProcId(string name) {
 	return pkb -> getProcTable() -> getProcId(name);
 }
 
-int getProcId(int startLine) {
+int PKBApi::getProcId(int startLine) {
 	return pkb -> getProcTable() -> getProcId(startLine);
 }
 
-int getMaxProcId() {
+int PKBApi::getMaxProcId() {
 	return pkb -> getProcTable() -> getMaxProcId();
 }
 
-int getProcStartLine(int id) {
+int PKBApi::getProcStartLine(int id) {
 	return pkb -> getProcTable() -> getProcStartLine(id);
 }
 
-int getProcStartLine(string name) {
+int PKBApi::getProcStartLine(string name) {
 	return pkb -> getProcTable() -> getProcStartLine(name);
 }
 
-string getProcName(int id) {
+string PKBApi::getProcName(int id) {
 	return pkb -> getProcTable() -> getProcName(id);
 }
 
