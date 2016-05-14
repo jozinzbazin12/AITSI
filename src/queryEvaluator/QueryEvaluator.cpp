@@ -447,27 +447,36 @@ vector<int> QueryEvaluator::getUsesSResult(Field* field1, Field* field2,
 
 vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2,
 		vector<int> lines, string selectValue) {
+	set<int> candidatesForParameter1;
+	set<int> candidatesForParameter2;
 	vector<int> resultPart;
 	string firstParameterType = field1->getType();
 	string secondParameterType = field2->getType();
 	int firstProcedureId = -1;
 	int secondProcedureId = -1;
+
 	if (firstParameterType == "string") {
-		firstProcedureId = pkbApi->getProcId(field1->getValue());
+		candidatesForParameter1.insert(pkbApi->getProcId(field1->getValue()));
+	} else if (firstParameterType == "constant"){
+		candidatesForParameter1.insert(pkbApi->getProcId(field1->getValue()));
 	} else {
-		firstProcedureId = pkbApi->getProcId(field1->getIntegerValue());
+
 	}
+
 	if (secondParameterType == "string") {
-		secondProcedureId = pkbApi->getProcId(field2->getValue());
+		candidatesForParameter2.insert(pkbApi->getProcId(field2->getValue()));
+	} else if (secondParameterType == "constant"){
+		candidatesForParameter2.insert(pkbApi->getProcId(field2->getIntegerValue()));
 	} else {
-		secondProcedureId = pkbApi->getProcId(field2->getIntegerValue());
+
 	}
 
 	if (firstParameterType == "constant" && secondParameterType == "constant" && pkbApi->calls(firstProcedureId, secondProcedureId)) {
 		return lines;
+	} else if (firstProcedureId == secondProcedureId) {
+		return resultPart;
 	}
 
-	pkbApi->calls(firstProcedureId, secondProcedureId);
 	return lines;
 }
 
