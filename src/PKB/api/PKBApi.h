@@ -22,6 +22,8 @@ public:
 	bool uses(int lineNumber, string varName);
 	bool parent(int parentLine, int kidLine);
 	bool follows(int lineNum, int followerLineNum);
+	bool calls(int callerId, int calleeId);
+	bool callsStar(int callerId, int calleeId);
 
 	int getLinesCount();
 	vector<int> getAssignLines();
@@ -33,6 +35,13 @@ public:
 	map<int, vector<int>> getIfBodyLines();
 	// jak bêd¹ potrzebowali stmt to chyba mog¹ sobie zrobic assign i while zamiast pobierac stmt
 	string getLineString(int lineNumber);
+
+	int getProcId(string name);
+	int getProcId(int startLine);
+	int getMaxProcId();
+	int getProcStartLine(int id);
+	int getProcStartLine(string name);
+	string getProcName(int id);
 };
 
 #endif /* SRC_PKB_API_PKBAPI_H_ */

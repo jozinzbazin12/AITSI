@@ -23,6 +23,8 @@
 #include "relations/Uses.h"
 #include "relations/Modifies.h"
 
+#include "relations/Calls.h"
+
 class PKB {
 public:
 
@@ -31,6 +33,7 @@ public:
 		uses = new Uses();
 		parent = new Parent();
 		follows = new Follows();
+		calls = new Calls();
 		varTable = new VarTable();
 		lineTable = new LinesTable();
 		procTable = new ProcTable();
@@ -52,6 +55,10 @@ public:
 
 	Uses* getUses() {
 		return uses;
+	}
+
+	Calls* getCalls() {
+		return calls;
 	}
 
 	ASTTree* getASTTree(){
@@ -78,6 +85,7 @@ private:
 	Uses* uses = NULL;
 	Parent* parent = NULL;
 	Follows* follows = NULL;
+	Calls* calls = NULL;
 	ASTTree * tree = NULL;
 	VarTable * varTable = NULL;
 	LinesTable * lineTable = NULL;
