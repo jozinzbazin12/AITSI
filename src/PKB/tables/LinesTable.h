@@ -11,6 +11,9 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#ifndef _GLIBCXX_SET
+#include <set>
+#endif
 
 using namespace std;
 
@@ -20,10 +23,15 @@ public:
 	virtual ~LinesTable();
 	int getLinesCount();
 	vector<int> getAssignLines();
+	set<int> getOrderedAssignLines();
 	map<int, string> getAllLines();
+	vector<int> getLines();
 	vector<int> getCallLines();
+	set<int> getOrderedCallLines();
 	vector<int> getWhileLines();
+	set<int> getOrderedWhileLines();
 	vector<int> getIfLines();
+	set<int> getOrderedIfLines();
 	map<int, vector<int> > getWhileBodyLines(); // w pierwszym parametrze nr tej linijki z napisem while, a w vectorze pozosta³e liniie while
 	map<int, vector<int>> getIfBodyLines();
 	// jak bêd¹ potrzebowali stmt to chyba mog¹ sobie zrobic assign i while zamiast pobierac stmt

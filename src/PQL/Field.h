@@ -25,6 +25,7 @@ public:
 	bool isVal();
 	void setVal(bool val);
 	string& getValue();
+	int getIntegerValue();
 	void setValue(string& value);
 	bool isProcName();
 	void setProcName(bool procName);
