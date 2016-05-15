@@ -76,14 +76,14 @@ void DesignExtractor::setParentRelations() {
 				if (ASTtree->isValid(tmp) && (*tmp)->data->type != "PROCEDURE"
 						&& (*tmp)->data->type != "PROGRAM") {
 					/*if ((*tmp)->data->type == "ELSE") {
-						prevSib = tmp.node->prev_sibling;
-						if (ASTtree->isValid(prevSib)) {
-							parent->addParent((*prevSib)->data->lineNumber,
-									(*tmp)->data->lineNumber);
-							parent->addKid((*tmp)->data->lineNumber,
-									(*prevSib)->data->lineNumber);
-						}
-					}*/
+					 prevSib = tmp.node->prev_sibling;
+					 if (ASTtree->isValid(prevSib)) {
+					 parent->addParent((*prevSib)->data->lineNumber,
+					 (*tmp)->data->lineNumber);
+					 parent->addKid((*tmp)->data->lineNumber,
+					 (*prevSib)->data->lineNumber);
+					 }
+					 }*/
 					if ((*begin)->data->lineNumber
 							!= (*tmp)->data->lineNumber) {
 						parent->addParent((*begin)->data->lineNumber,
@@ -170,45 +170,45 @@ void DesignExtractor::setModifiesRelations() {
 		}
 
 		/*else if (ASTtree->isValid(begin) && (*begin)->data->type == "IF") {
-			tmp = ASTtree->getNextSibling(begin);
-			recur(begin, begin, modifies, varTable);
-			recur(tmp, begin, modifies, varTable);
-			//get all childs
+		 tmp = ASTtree->getNextSibling(begin);
+		 recur(begin, begin, modifies, varTable);
+		 recur(tmp, begin, modifies, varTable);
+		 //get all childs
 
-			/*for (int i = 0; i < ASTtree->getNumberOfChildren(begin); i++) {
-			 tmp = ASTtree->getChild(begin, i);
-			 if ((*tmp)->data->type == "ASSIGN") {
+		 /*for (int i = 0; i < ASTtree->getNumberOfChildren(begin); i++) {
+		 tmp = ASTtree->getChild(begin, i);
+		 if ((*tmp)->data->type == "ASSIGN") {
 
-			 int varId = varTable->getVarId(
-			 tmp.node->first_child->data->data->value);
+		 int varId = varTable->getVarId(
+		 tmp.node->first_child->data->data->value);
 
-			 cout << "Node (child of IF) under if assign value : "
-			 << tmp.node->first_child->data->data->value
-			 << " And the id node line : "
-			 << (*begin)->data->lineNumber << " varId : "
-			 << varId << endl;
-			 if (varId != -1)
-			 modifies->add(varId, (*begin)->data->lineNumber);
-			 else {
-			 modifies->add(
-			 varTable->addVar(
-			 tmp.node->first_child->data->data->value),
-			 (*begin)->data->lineNumber);
-			 }
-			 } else if ((*tmp)->data->type == "IF"
-			 || (*tmp)->data->type == "ELSE") {
+		 cout << "Node (child of IF) under if assign value : "
+		 << tmp.node->first_child->data->data->value
+		 << " And the id node line : "
+		 << (*begin)->data->lineNumber << " varId : "
+		 << varId << endl;
+		 if (varId != -1)
+		 modifies->add(varId, (*begin)->data->lineNumber);
+		 else {
+		 modifies->add(
+		 varTable->addVar(
+		 tmp.node->first_child->data->data->value),
+		 (*begin)->data->lineNumber);
+		 }
+		 } else if ((*tmp)->data->type == "IF"
+		 || (*tmp)->data->type == "ELSE") {
 
-			 cout << " ------- IF LINE :  " << (*tmp)->data->lineNumber << endl;
-			 recur(tmp, begin, modifies, varTable);
-			 }
+		 cout << " ------- IF LINE :  " << (*tmp)->data->lineNumber << endl;
+		 recur(tmp, begin, modifies, varTable);
+		 }
 
-			 //get else
-			 //}
-			//first sib of if
-			//else
-		} else if (ASTtree->isValid(begin) && (*begin)->data->type == "WHILE") {
-			recur(begin, begin, modifies, varTable);
-		}*/
+		 //get else
+		 //}
+		 //first sib of if
+		 //else
+		 } else if (ASTtree->isValid(begin) && (*begin)->data->type == "WHILE") {
+		 recur(begin, begin, modifies, varTable);
+		 }*/
 
 		++begin;
 
@@ -216,49 +216,49 @@ void DesignExtractor::setModifiesRelations() {
 
 }
 /*void DesignExtractor::recur(tree<tree_node_<ASTNode*>*>::iterator current,
-		tree<tree_node_<ASTNode*>*>::iterator ifNode, Modifies * modifies,
-		VarTable * varTable) {
+ tree<tree_node_<ASTNode*>*>::iterator ifNode, Modifies * modifies,
+ VarTable * varTable) {
 
-	tree<tree_node_<ASTNode*>*>::iterator tmp;
-	ASTTree * ASTtree = pkb->getASTTree();
-	cout << "Enter recur funct" << endl;
+ tree<tree_node_<ASTNode*>*>::iterator tmp;
+ ASTTree * ASTtree = pkb->getASTTree();
+ cout << "Enter recur funct" << endl;
 
-	for (int i = 0; i < ASTtree->getNumberOfChildren(current); i++) {
+ for (int i = 0; i < ASTtree->getNumberOfChildren(current); i++) {
 
-		tmp = ASTtree->getChild(current, i);
-		cout << "Children of node : " << (*tmp)->data->type << " Line num :  "
-				<< (*tmp)->data->lineNumber << endl;
+ tmp = ASTtree->getChild(current, i);
+ cout << "Children of node : " << (*tmp)->data->type << " Line num :  "
+ << (*tmp)->data->lineNumber << endl;
 
-		if ((*tmp)->data->type == "ASSIGN") {
-			int varId = varTable->getVarId(
-					tmp.node->first_child->data->data->value);
-			if (varId != -1)
-				modifies->add(varId, (*ifNode)->data->lineNumber);
-			else {
-				modifies->add(
-						varTable->addVar(
-								tmp.node->first_child->data->data->value),
-						(*ifNode)->data->lineNumber);
-			}
-			/*cout << "Node in recur ASSIGN under if assign value : "
-			 << tmp.node->first_child->data->data->value
-			 << " And the id node line : "
-			 << tmp.node->first_child->data->data->lineNumber
-			 << " varId : " << varTable->getVarId((*tmp)->data->value) << " IfNode line :  "
-			 << ifNode.node->data->data->lineNumber << endl;
-		}
+ if ((*tmp)->data->type == "ASSIGN") {
+ int varId = varTable->getVarId(
+ tmp.node->first_child->data->data->value);
+ if (varId != -1)
+ modifies->add(varId, (*ifNode)->data->lineNumber);
+ else {
+ modifies->add(
+ varTable->addVar(
+ tmp.node->first_child->data->data->value),
+ (*ifNode)->data->lineNumber);
+ }
+ /*cout << "Node in recur ASSIGN under if assign value : "
+ << tmp.node->first_child->data->data->value
+ << " And the id node line : "
+ << tmp.node->first_child->data->data->lineNumber
+ << " varId : " << varTable->getVarId((*tmp)->data->value) << " IfNode line :  "
+ << ifNode.node->data->data->lineNumber << endl;
+ }
 
-		else if (ASTtree->isValid(tmp)
-				&& ((*tmp)->data->type == "IF" || (*tmp)->data->type == "ELSE"
-						|| (*tmp)->data->type == "WHILE")) {
-			cout << " ------- IF LINE OR WHILE in rec:  "
-					<< (*tmp)->data->lineNumber << endl;
-			recur(tmp, ifNode, modifies, varTable);
-		} else
-			return;
-	}
+ else if (ASTtree->isValid(tmp)
+ && ((*tmp)->data->type == "IF" || (*tmp)->data->type == "ELSE"
+ || (*tmp)->data->type == "WHILE")) {
+ cout << " ------- IF LINE OR WHILE in rec:  "
+ << (*tmp)->data->lineNumber << endl;
+ recur(tmp, ifNode, modifies, varTable);
+ } else
+ return;
+ }
 
-}*/
+ }*/
 
 void DesignExtractor::setUsesRelations() {
 	Uses * uses = pkb->getUses();
@@ -341,9 +341,15 @@ void DesignExtractor::setIfLines() {
 					} else {
 						tmp = tmp.node->next_sibling;
 					}
-					if (ASTtree->isValid(tmp))
-						linesTable->addIfLine((*begin)->data->lineNumber,
-								(*tmp)->data->lineNumber);
+					if (ASTtree->isValid(tmp)) {
+						if ((*tmp)->data->type == "IF"
+								|| (*tmp)->data->type == "ELSE"
+								|| (*tmp)->data->type == "WHILE") {
+							ifRecur(tmp, begin);
+						} else
+							linesTable->addIfLine((*begin)->data->lineNumber,
+									(*tmp)->data->lineNumber);
+					}
 
 				}
 				for (int i = 0; i < ASTtree->getNumberOfChildren(elsetmt); //stmts under else
@@ -353,9 +359,15 @@ void DesignExtractor::setIfLines() {
 					} else {
 						tmp = tmp.node->next_sibling;
 					}
-					if (ASTtree->isValid(tmp))
-						linesTable->addIfLine((*begin)->data->lineNumber,
-								(*tmp)->data->lineNumber);
+					if (ASTtree->isValid(tmp)) {
+						if ((*tmp)->data->type == "IF"
+								|| (*tmp)->data->type == "ELSE"
+								|| (*tmp)->data->type == "WHILE") {
+							ifRecur(tmp, begin);
+						} else
+							linesTable->addIfLine((*begin)->data->lineNumber,
+									(*tmp)->data->lineNumber);
+					}
 
 				}
 
@@ -364,6 +376,34 @@ void DesignExtractor::setIfLines() {
 
 		++begin;
 	}
+}
+void DesignExtractor::ifRecur(tree<tree_node_<ASTNode*>*>::iterator current,
+		tree<tree_node_<ASTNode*>*>::iterator ifNode) {
+
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
+	ASTTree * ASTtree = pkb->getASTTree();
+	LinesTable * linesTable = pkb->getLineTable();
+
+	linesTable->addIfLine((*ifNode)->data->lineNumber,
+			(*current)->data->lineNumber);
+
+	for (int i = 0; i < ASTtree->getNumberOfChildren(current); i++) {
+
+		tmp = ASTtree->getChild(current, i);
+		if (ASTtree->isValid(tmp)) {
+
+			if ((*tmp)->data->type == "IF" || (*tmp)->data->type == "ELSE"
+					|| (*tmp)->data->type == "WHILE") {
+				ifRecur(tmp, ifNode);
+
+			} else {
+				linesTable->addIfLine((*ifNode)->data->lineNumber,
+						(*tmp)->data->lineNumber);
+			}
+
+		}
+	}
+
 }
 void DesignExtractor::setCallLines() {
 
@@ -386,10 +426,10 @@ void DesignExtractor::setCallLines() {
 
 }
 
-void DesignExtractor::setCallsRelations(){
+void DesignExtractor::setCallsRelations() {
 	ASTTree * ASTtree = pkb->getASTTree();
 	ProcTable * procTable = pkb->getProcTable();
-	Calls* calls = pkb -> getCalls();
+	Calls* calls = pkb->getCalls();
 
 	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
 	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
@@ -398,10 +438,10 @@ void DesignExtractor::setCallsRelations(){
 	while (begin != end) {
 		if (ASTtree->isValid(begin) && (*begin)->data) {
 			if ((*begin)->data->type == "PROCEDURE") {
-				procId = procTable -> getProcId((*begin)->data->value);
-			}
-			else if(procId != -1 && (*begin)->data->type == "CALL") {
-				calls -> addCall(procId, procTable -> getProcId((*begin)->data->value));
+				procId = procTable->getProcId((*begin)->data->value);
+			} else if (procId != -1 && (*begin)->data->type == "CALL") {
+				calls->addCall(procId,
+						procTable->getProcId((*begin)->data->value));
 			}
 		}
 		++begin;
@@ -421,7 +461,8 @@ void DesignExtractor::setProcTable() {
 			if (!(*begin)->data) {
 				cout << "error <set procedures's>" << endl;
 			} else {
-				procTable->addProc(((*begin)->data->value), ((*begin)->data->lineNumber));
+				procTable->addProc(((*begin)->data->value),
+						((*begin)->data->lineNumber));
 			}
 		}
 		++begin;
