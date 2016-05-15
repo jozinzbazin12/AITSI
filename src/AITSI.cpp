@@ -63,6 +63,7 @@ void mainPQL() {
 	que->parseQuery(pql->getQuery());
 	tree<tree_node_<PQLNode>>::iterator iter;
 	PQLTree* tree = que->getTree();
+	cout << "Before printTree" << endl << endl;
 	tree->printTree();
 	cout << "**** Test queryEvaluator **************************************************" << endl;
 	cout << queryEvaluator->getResult(tree) << endl;

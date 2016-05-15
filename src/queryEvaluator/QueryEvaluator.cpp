@@ -507,10 +507,10 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 	} else {
 		for (set<int>::iterator parameter1 = candidatesForParameter1.begin(); parameter1 != candidatesForParameter1.end(); ++parameter1) {
 			for (set<int>::iterator parameter2 = candidatesForParameter2.begin(); parameter2 != candidatesForParameter2.end(); ++parameter2) {
-				if (selectValue == field1->getValue() && pkbApi->calls(*parameter1, *parameter2)) {
+				if (selectValue == field1->getValue() && pkbApi->calls(*parameter1, *parameter2) && find(lines.begin(), lines.end(), *parameter1) != lines.end()) {
 					// dodaje mozliwosc z par1 do wyniku gdy call(par1,*) gdzie * = 'any','const','var'
 					resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
-				} else if (selectValue == field2->getValue() && pkbApi->calls(*parameter1, *parameter2)) {
+				} else if (selectValue == field2->getValue() && pkbApi->calls(*parameter1, *parameter2) && find(lines.begin(), lines.end(), *parameter2) != lines.end()) {
 					// dodaje mozliwosc z par2 do wyniku gdy call(*,par2) gdzie * = 'any','const','var'
 					resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
 				} else if (pkbApi->calls(*parameter1, *parameter2)){
@@ -598,9 +598,9 @@ vector<int> QueryEvaluator::getCallStarResult(Field* field1, Field* field2, vect
 		} else {
 			for (set<int>::iterator parameter1 = candidatesForParameter1.begin(); parameter1 != candidatesForParameter1.end(); ++parameter1) {
 				for (set<int>::iterator parameter2 = candidatesForParameter2.begin(); parameter2 != candidatesForParameter2.end(); ++parameter2) {
-					if (selectValue == field1->getValue() && pkbApi->callsStar(*parameter1, *parameter2)) {
+					if (selectValue == field1->getValue() && pkbApi->callsStar(*parameter1, *parameter2) && find(lines.begin(), lines.end(), *parameter1) != lines.end()) {
 						resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
-					} else if (selectValue == field2->getValue() && pkbApi->callsStar(*parameter1, *parameter2)) {
+					} else if (selectValue == field2->getValue() && pkbApi->callsStar(*parameter1, *parameter2) && find(lines.begin(), lines.end(), *parameter2) != lines.end()) {
 						resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
 					} else if (pkbApi->callsStar(*parameter1, *parameter2)){
 						return lines;
