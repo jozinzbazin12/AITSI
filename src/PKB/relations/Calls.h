@@ -21,12 +21,13 @@ public:
 	void addCall(int callerId, int calleeId);
 	bool calls(int callerId, int calleeId);
 	bool callsStar(int callerId, int calleeId);
-	bool callsStarRecur(int callerId, int calleeId, bool visited[]);
 	void writeAll();
 
 private:
 	int maxId;
 	map <int, vector<int> > calleeIds;
+
+	bool callsStarRecur(int callerId, int calleeId, bool visited[]);
 
 };
 

@@ -20,6 +20,7 @@ public:
 	void addParent(int lineNumber, int parentLine);
 	void addKid(int lineNumber, int kidLine);
 	bool parent(int parentLine, int kidLine);
+	bool parentStar(int parentLine, int kidLine);
 	void writeAll();
 	virtual ~Parent();
 

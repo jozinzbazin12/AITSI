@@ -21,7 +21,9 @@ public:
 	bool modifies(int lineNumber, string varName);
 	bool uses(int lineNumber, string varName);
 	bool parent(int parentLine, int kidLine);
+	bool parentStar(int parentLine, int kidLine);
 	bool follows(int lineNum, int followerLineNum);
+	bool followsStar(int lineNum, int followerLineNum);
 	bool calls(int callerId, int calleeId);
 	bool callsStar(int callerId, int calleeId);
 
