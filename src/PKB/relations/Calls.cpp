@@ -8,7 +8,7 @@
 #include "Calls.h"
 
 Calls::Calls() {
-	// TODO Auto-generated constructor stub
+	maxId = -1;
 
 }
 
@@ -17,6 +17,12 @@ Calls::~Calls() {
 }
 
 void Calls::addCall(int callerId, int calleeId){
+
+	if(callerId > maxId)
+		maxId = callerId;
+	if(calleeId > maxId)
+			maxId = calleeId;
+
 	if(calleeIds.count(callerId) > 0){
 		vector<int> temp = calleeIds[callerId];
 		for (vector<int>::iterator iter = temp.begin(); iter != temp.end(); ++iter) {
@@ -65,12 +71,23 @@ bool Calls::calls(int callerId, int calleeId){
 }
 
 bool Calls::callsStar(int callerId, int calleeId){
+	bool visited[maxId+1];
+	for(int i=0; i<maxId+1; i++)
+		visited[i] = false;
+
+	return callsStarRecur(callerId, calleeId, visited);
+}
+
+bool Calls::callsStarRecur(int callerId, int calleeId, bool visited[]){
 	if(calls(callerId, calleeId))
 		return true;
 
 	if(calleeIds.count(callerId) > 0){
 		for (vector<int>::iterator iter = calleeIds[callerId].begin(); iter != calleeIds[callerId].end(); ++iter) {
-			return callsStar((*iter), calleeId);
+			if(!visited[(*iter)]){
+				visited[(*iter)] = true;
+				return callsStarRecur((*iter), calleeId, visited);
+			}
 		}
 	}
 
