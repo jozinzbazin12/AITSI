@@ -453,11 +453,17 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 		// call("SuperProcedura",_)
 		cout << "call(\"SuperProcedura\",_)" << endl;
 		firstProcedureId = pkbApi->getProcId(field1->getValue());
+		if (firstProcedureId == -1) {
+			return resultPart;
+		}
 		candidatesForParameter1.insert(firstProcedureId);
 	} else if (firstParameterType == "constant"){
 		// call(15,_)
 		cout << "call(15,_)" << endl;
 		firstProcedureId = pkbApi->getProcId(field1->getIntegerValue());
+		if (firstProcedureId == -1) {
+			return resultPart;
+		}
 		candidatesForParameter1.insert(firstProcedureId);
 	} else {
 		// call(p,_)
@@ -473,11 +479,17 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 		// call(_,"SuperProcedura")
 		cout << "call(_,\"SuperProcedura\")" << endl;
 		secondProcedureId = pkbApi->getProcId(field2->getValue());
+		if (secondProcedureId == -1) {
+			return resultPart;
+		}
 		candidatesForParameter2.insert(secondProcedureId);
 	} else if (secondParameterType == "constant"){
 		// call(_,123)
 		cout << "call(_,123)" << endl;
 		secondProcedureId = pkbApi->getProcId(field2->getIntegerValue());
+		if (secondProcedureId == -1) {
+			return resultPart;
+		}
 		candidatesForParameter2.insert(secondProcedureId);
 	} else {
 		// call(_,p)
@@ -547,11 +559,17 @@ vector<int> QueryEvaluator::getCallStarResult(Field* field1, Field* field2, vect
 			// call*("SuperProcedura",_)
 			cout << "call*(\"SuperProcedura\",_)" << endl;
 			firstProcedureId = pkbApi->getProcId(field1->getValue());
+			if (firstProcedureId == -1) {
+				return resultPart;
+			}
 			candidatesForParameter1.insert(firstProcedureId);
 		} else if (firstParameterType == "constant"){
 			// call*(15,_)
 			cout << "call*(15,_)" << endl;
 			firstProcedureId = pkbApi->getProcId(field1->getIntegerValue());
+			if (firstProcedureId == -1) {
+				return resultPart;
+			}
 			candidatesForParameter1.insert(firstProcedureId);
 		} else {
 			// call*(p,_)
@@ -567,11 +585,17 @@ vector<int> QueryEvaluator::getCallStarResult(Field* field1, Field* field2, vect
 			// call*(_,"SuperProcedura")
 			cout << "call*(_,\"SuperProcedura\")" << endl;
 			secondProcedureId = pkbApi->getProcId(field2->getValue());
+			if (secondProcedureId == -1) {
+				return resultPart;
+			}
 			candidatesForParameter2.insert(secondProcedureId);
 		} else if (secondParameterType == "constant"){
 			// call*(_,123)
 			cout << "call*(_,123)" << endl;
 			secondProcedureId = pkbApi->getProcId(field2->getIntegerValue());
+			if (secondProcedureId == -1) {
+				return resultPart;
+			}
 			candidatesForParameter2.insert(secondProcedureId);
 		} else {
 			// call*(_,p)
