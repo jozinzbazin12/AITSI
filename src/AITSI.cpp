@@ -64,6 +64,8 @@ void mainPQL() {
 	tree<tree_node_<PQLNode>>::iterator iter;
 	PQLTree* tree = que->getTree();
 	tree->printTree();
+	cout << "**** Test queryEvaluator **************************************************" << endl;
+	cout << queryEvaluator->getResult(tree) << endl;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	cout << endl;
 	cout
@@ -92,8 +94,6 @@ void mainPQL() {
 			<< "**** WALIDACJA TESTY - KONIEC****************************************"
 			<< endl;
 /////////////////////////////////////////////////////////////////////////////////////////////////
-	cout << "**** Test queryEvaluator **************************************************" << endl;
-	cout << queryEvaluator->getResult(tree) << endl;
 }
 
 #include "exceptions.h"

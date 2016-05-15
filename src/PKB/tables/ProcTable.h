@@ -25,6 +25,7 @@ public:
 	virtual int getProcStartLine(string name);
 	virtual string getProcName(int id);
 	virtual void writeProcLines();
+	virtual vector<int> getProceduresLines();
 
 private:
 	vector<string> procedures;

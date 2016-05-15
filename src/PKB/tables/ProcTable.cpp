@@ -67,3 +67,7 @@ void ProcTable::writeProcLines(){
 		}
 	cout<<endl;
 }
+
+vector<int> ProcTable::getProceduresLines(){
+	return proceduresStartLines;
+}

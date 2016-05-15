@@ -51,7 +51,7 @@ public:
 
 	vector<string> getTokensList()
 	{
-		return {"assign","stmtlst","stmt","while","variable","constant","prog_line","if","call"};
+		return {"assign","stmtlst","stmt","while","variable","constant","prog_line","if","call","procedure"};
 		//plus, minus, times - brakuje
 	}
 

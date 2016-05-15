@@ -46,5 +46,3 @@ private:
 } /* namespace std */
 
 #endif /* SRC_QUERYEVALUATOR_QUERYEVALUATOR_H_ */
-
-//prog_line p; select p such that follows(p,_);

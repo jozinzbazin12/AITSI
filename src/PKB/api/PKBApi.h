@@ -33,6 +33,7 @@ public:
 	vector<int> getIfLines();
 	map<int, vector<int> > getWhileBodyLines(); // w pierwszym parametrze nr tej linijki z napisem while, a w vectorze pozosta³e liniie while
 	map<int, vector<int>> getIfBodyLines();
+	vector<int> getProceduresLines();
 	// jak bêd¹ potrzebowali stmt to chyba mog¹ sobie zrobic assign i while zamiast pobierac stmt
 	string getLineString(int lineNumber);
 	int getProcId(string name);

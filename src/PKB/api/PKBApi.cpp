@@ -74,6 +74,10 @@ map<int, vector<int> > PKBApi::getWhileBodyLines(){
 	return pkb -> getLineTable() -> getWhileBodyLines();
 }
 
+vector<int> PKBApi::getProceduresLines(){
+	return pkb -> getProcTable() -> getProceduresLines();
+}
+
 string PKBApi::getLineString(int lineNumber){
 	return pkb -> getLineTable() -> getLineString(lineNumber);
 }
