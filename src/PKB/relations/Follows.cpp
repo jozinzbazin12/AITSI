@@ -24,10 +24,21 @@ void Follows::addPrev(int lineNum,int prevLineNum){
 	varPrevFollowers[lineNum] = prevLineNum;
 }
 
-bool Follows::follows(int lineNum,int followerLineNum){
+bool Follows::follows(int lineNum, int followerLineNum){
 	if(varNextFollowers.count(lineNum)>0){
 		return varNextFollowers.at(lineNum) == followerLineNum;
 	}
+	return false;
+}
+
+bool Follows::followsStar(int lineNum,int followerLineNum){
+	if(follows(lineNum, followerLineNum))
+		return true;
+
+	if(varNextFollowers.count(lineNum)>0){
+		return followsStar(varNextFollowers[lineNum], followerLineNum);
+	}
+
 	return false;
 }
 
@@ -36,9 +47,9 @@ void Follows::writeAll(){
 		cout << (*iter).first << " --> " << (*iter).second <<endl;
 	}
 
-	cout << endl;
+/*	cout << endl;
 
 	for (map<int, int>::iterator iter = varPrevFollowers.begin(); iter != varPrevFollowers.end(); ++iter) {
 		cout << (*iter).first << " <-- " << (*iter).second <<endl;
-	}
+	}*/
 }

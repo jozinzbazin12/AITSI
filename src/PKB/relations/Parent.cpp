@@ -25,9 +25,21 @@ void Parent::addKid(int lineNumber, int kidLine) {
 }
 
 bool Parent::parent(int parentLine, int kidLine) {
-	if (lineParent.count(parentLine) > 0){
-		return lineParent.at(parentLine) == kidLine;
+	if (lineParent.count(kidLine) > 0){
+		return lineParent.at(kidLine) == parentLine;
 	}
+	return false;
+}
+
+bool Parent::parentStar(int parentLine, int kidLine) {
+	if (parent(parentLine, kidLine)){
+		return true;
+	}
+
+	if (lineParent.count(kidLine) > 0) {
+		return parentStar(parentLine, lineParent.at(kidLine));
+	}
+
 	return false;
 }
 
@@ -43,13 +55,13 @@ void Parent::writeAll() {
 		cout << endl;
 	}
 
-	cout << "\nparents\n";
+/*	cout << "\nparents\n";
 
 	for (map<int, int>::iterator iter = lineParent.begin();
 			iter != lineParent.end(); ++iter) {
 		int value = (*iter).second;
 		int key = (*iter).first;
 		cout << key << " : " << value << endl;
-	}
+	}*/
 }
 

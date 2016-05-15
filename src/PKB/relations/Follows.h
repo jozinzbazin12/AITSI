@@ -20,6 +20,7 @@ public:
 	void addNext(int lineNum, int followerLineNum);
 	void addPrev(int lineNum, int prevLineNum);
 	bool follows(int lineNum, int followerLineNum);
+	bool followsStar(int lineNum, int followerLineNum);
 	void writeAll();
 private:
 	map <int, int > varNextFollowers;
