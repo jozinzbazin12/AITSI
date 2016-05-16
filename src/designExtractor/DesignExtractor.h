@@ -28,8 +28,11 @@ private:
 	void setProcTable();
 	void setCallsRelations();
 	/*void recur(tree<tree_node_<ASTNode*>*>::iterator current,tree<tree_node_<ASTNode*>*>::iterator ifNode, Modifies * modifies,
-			VarTable * varTable);*/
-	void ifRecur(tree<tree_node_<ASTNode*>*>::iterator current,tree<tree_node_<ASTNode*>*>::iterator ifNode);
+	 VarTable * varTable);*/
+	void ifRecur(tree<tree_node_<ASTNode*>*>::iterator current,
+			tree<tree_node_<ASTNode*>*>::iterator ifNode);
+	void whileRecur(tree<tree_node_<ASTNode*>*>::iterator current,
+			tree<tree_node_<ASTNode*>*>::iterator whileNode);
 	void setIfLines();
 	void setCallLines();
 };

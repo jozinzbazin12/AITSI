@@ -105,30 +105,62 @@ void DesignExtractor::setLoopsTable() {
 
 	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
 	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
-	tree<tree_node_<ASTNode*>*>::iterator stmtlst;
-	tree<tree_node_<ASTNode*>*>::iterator sib;
-
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
 	while (begin != end) {
-		if (ASTtree->isValid(begin) && (*begin)->data->type == "LOOP") {
+		if (ASTtree->isValid(begin) && (*begin)->data->type == "WHILE") {
 			if (!(*begin)->data) {
 				cout << "error <fillLoops>" << endl;
 			} else {
-				stmtlst = begin.node->first_child;  //stmtlst    //
-				sib = stmtlst; //first child of stmtlist   //7  //THERE IS NO STMTLST
-				linesTable->addWhileLine((*begin)->data->lineNumber,
-						(*sib)->data->lineNumber);
-				for (int i = 0; i < ASTtree->getNumberOfChildren(stmtlst);
+				for (int i = 0; i < ASTtree->getNumberOfChildren(begin);
 						i++) {
-					sib = sib.node->next_sibling;
-					if (ASTtree->isValid(sib))
-						linesTable->addWhileLine((*begin)->data->lineNumber,
-								(*sib)->data->lineNumber);
+					if (i == 0) {
+						tmp = begin.node->first_child;
+					} else {
+						tmp = tmp.node->next_sibling;
+					}
+					if (ASTtree->isValid(tmp)) {
+						if ((*tmp)->data->type == "IF"
+								|| (*tmp)->data->type == "ELSE"
+								|| (*tmp)->data->type == "WHILE") {
+							whileRecur(tmp, begin);
+						} else
+							linesTable->addWhileLine((*begin)->data->lineNumber,
+									(*tmp)->data->lineNumber);
+					}
 				}
 
 			}
 		}
 
 		++begin;
+	}
+
+}
+void DesignExtractor::whileRecur(tree<tree_node_<ASTNode*>*>::iterator current,
+		tree<tree_node_<ASTNode*>*>::iterator whileNode) {
+
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
+	ASTTree * ASTtree = pkb->getASTTree();
+	LinesTable * linesTable = pkb->getLineTable();
+
+	linesTable->addWhileLine((*whileNode)->data->lineNumber,
+			(*current)->data->lineNumber);
+
+	for (int i = 0; i < ASTtree->getNumberOfChildren(current); i++) {
+
+		tmp = ASTtree->getChild(current, i);
+		if (ASTtree->isValid(tmp)) {
+
+			if ((*tmp)->data->type == "IF" || (*tmp)->data->type == "ELSE"
+					|| (*tmp)->data->type == "WHILE") {
+				whileRecur(tmp, whileNode);
+
+			} else {
+				linesTable->addWhileLine((*whileNode)->data->lineNumber,
+						(*tmp)->data->lineNumber);
+			}
+
+		}
 	}
 
 }

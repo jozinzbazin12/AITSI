@@ -110,3 +110,15 @@ void LinesTable::writeIfLines() {
 			cout << endl;
 		}
 }
+void LinesTable::writeWhileLines() {
+	for (map<int, vector<int> >::iterator iter = whileLines.begin();
+				iter != whileLines.end(); ++iter) {
+			vector<int> tempVec = (*iter).second;
+			int key = (*iter).first;
+			cout << key << " :";
+			for (unsigned i = 0; i < tempVec.size(); i++) {
+				cout << " " << tempVec[i];
+			}
+			cout << endl;
+		}
+}

@@ -223,6 +223,11 @@ int main(int argc, char** args) {
 				cout
 						<< "**********************************************************\n";
 
+				cout << "***********WHILE LINES**\n";
+				pkb->getLineTable()->writeWhileLines();
+				cout
+						<< "**********************************************************\n";
+
 				cout << "***********CALL LINES**\n";
 				pkb->getLineTable()->writeCallLines();
 				cout

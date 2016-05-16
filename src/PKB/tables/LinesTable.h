@@ -36,6 +36,7 @@ public:
 	void writeAll();
 	void writeIfLines();
 	void writeCallLines();
+	void writeWhileLines();
 
 
 private:
