@@ -72,19 +72,18 @@ void DesignExtractor::setParentRelations() {
 			if (!(*begin)->data) {
 				cout << "error <fillParents>" << endl;
 			} else {
-				tmp = begin.node->parent;
+				tmp = begin.node->parent;                      //tmp = parent    begin - child
 				if (ASTtree->isValid(tmp) && (*tmp)->data->type != "PROCEDURE"
 						&& (*tmp)->data->type != "PROGRAM") {
-					/*if ((*tmp)->data->type == "ELSE") {
-					 prevSib = tmp.node->prev_sibling;
-					 if (ASTtree->isValid(prevSib)) {
-					 parent->addParent((*prevSib)->data->lineNumber,
-					 (*tmp)->data->lineNumber);
-					 parent->addKid((*tmp)->data->lineNumber,
-					 (*prevSib)->data->lineNumber);
-					 }
-					 }*/
-					if ((*begin)->data->lineNumber
+					if ((*tmp)->data->type == "ELSE") {
+						prevSib = tmp.node->prev_sibling;  //getting if node
+						if (ASTtree->isValid(prevSib)) {
+							parent->addParent((*begin)->data->lineNumber,
+									(*prevSib)->data->lineNumber);
+							parent->addKid((*prevSib)->data->lineNumber,
+									(*begin)->data->lineNumber);
+						}
+					} else if ((*begin)->data->lineNumber
 							!= (*tmp)->data->lineNumber) {
 						parent->addParent((*begin)->data->lineNumber,
 								(*tmp)->data->lineNumber);
@@ -111,8 +110,7 @@ void DesignExtractor::setLoopsTable() {
 			if (!(*begin)->data) {
 				cout << "error <fillLoops>" << endl;
 			} else {
-				for (int i = 0; i < ASTtree->getNumberOfChildren(begin);
-						i++) {
+				for (int i = 0; i < ASTtree->getNumberOfChildren(begin); i++) {
 					if (i == 0) {
 						tmp = begin.node->first_child;
 					} else {
