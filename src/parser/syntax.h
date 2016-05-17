@@ -90,8 +90,14 @@ protected:
 			str.erase(semicolonPos, 1);
 		}
 		if (multiLine) {
+			int ocount = count(str.begin(), str.end(), '{');
+			int ccount = count(str.begin(), str.end(), '}');
+			if (max(ocount, ccount) != ocount + ccount) {
+				throwException("invalid braces!", true);
+			}
+			int bracePos = max((int) str.find_last_of('{'), (int) str.find_last_of('}'));
 			bool nextNoBrace = str.back() != '{' && str.back() != '}';
-			if (noBrace && nextNoBrace) {
+			if (noBrace && nextNoBrace || bracePos != str.length() - 1 && bracePos != string::npos) {
 				throwException("missing brace!", true);
 			}
 			noBrace = nextNoBrace;
@@ -451,6 +457,9 @@ public:
 		try {
 			match(str);
 		} catch(Exception &e) {
+			if(e.runtime) {
+				throw e;
+			}
 			name=e.msg;
 		}
 		if(name[0]=='}') {
