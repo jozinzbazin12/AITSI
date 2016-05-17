@@ -19,7 +19,7 @@ using namespace std;
 #include "queryEvaluator/QueryEvaluator.h"
 #include "PQL/PQL.h"
 
-bool debug = true;
+bool debug = false;
 
 string toLower(string str) {
 	transform(str.begin(), str.end(), str.begin(), ::tolower);
@@ -27,14 +27,11 @@ string toLower(string str) {
 }
 
 void ltrim(string &s) {
-	s.erase(s.begin(),
-			find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace))));
+	s.erase(s.begin(), find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace))));
 }
 
 void rtrim(string &s) {
-	s.erase(
-			find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(),
-			s.end());
+	s.erase(find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(), s.end());
 }
 
 void trim(string &s) {
@@ -43,8 +40,7 @@ void trim(string &s) {
 }
 
 void removeWhitespaces(string &str) {
-	str.erase(remove_if(str.begin(), str.end(), ptr_fun<int, int>(isspace)),
-			str.end());
+	str.erase(remove_if(str.begin(), str.end(), ptr_fun<int, int>(isspace)), str.end());
 }
 
 void mainPQL() {
@@ -54,11 +50,9 @@ void mainPQL() {
 	pql->enterQuery();
 	//pql->processQuery(pql->getQuery());
 	//string a = "procedure p; select p such that parent(p,3) with p;";
-	cout << "**** ZAPYTANIE **************************************************"
-			<< endl;
+	cout << "**** ZAPYTANIE **************************************************" << endl;
 	cout << pql->getQuery() << endl << endl;
-	cout << "**** DRZEWO *****************************************************"
-			<< endl;
+	cout << "**** DRZEWO *****************************************************" << endl;
 	que->parseQuery(pql->getQuery());
 
 	//que->parseQuery(a);
@@ -66,20 +60,16 @@ void mainPQL() {
 	PQLTree* tree = que->getTree();
 	tree->printTree();
 
-    /*
-	for(int i = 0 ; i < que->getFields().size() ; i++)
-	{
-		cout << que->getFields()[i].printField();
-	}
-	*/
+	/*
+	 for(int i = 0 ; i < que->getFields().size() ; i++)
+	 {
+	 cout << que->getFields()[i].printField();
+	 }
+	 */
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	cout << endl;
-	cout
-			<< "**** KONIEC DRZEWA*****************************************************"
-			<< endl;
-	cout
-			<< "**** WALIDACJA TESTY - KRZYSIEK****************************************"
-			<< endl;
+	cout << "**** KONIEC DRZEWA*****************************************************" << endl;
+	cout << "**** WALIDACJA TESTY - KRZYSIEK****************************************" << endl;
 	cout << v->checkSelect("select dgdd 4 23") << endl;
 	cout << v->checkSelect("select select dgdd 4 23") << endl;
 	vector<Field> entities;
@@ -96,9 +86,7 @@ void mainPQL() {
 	cout << v->checkRelationship("modifies(stmt,variable)") << endl;
 	cout << v->checkRelationship2("modifies(s,v)") << endl;
 	cout << v->checkAttribute("constant.value") << endl;
-	cout
-			<< "**** WALIDACJA TESTY - KONIEC****************************************"
-			<< endl;
+	cout << "**** WALIDACJA TESTY - KONIEC****************************************" << endl;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -207,49 +195,39 @@ int main(int argc, char** args) {
 				pkb->setASTTree(parser.root);
 				designExtractor->start();
 
-				cout
-						<< "**********************************************************\n";
+				cout << "**********************************************************\n";
 				cout << "***********FOLLOWS**\n";
 				pkb->getFollows()->writeAll();
-				cout
-						<< "**********************************************************\n";
+				cout << "**********************************************************\n";
 				cout << "***********PARENTS**\n";
 				pkb->getParent()->writeAll();
-				cout
-						<< "**********************************************************\n";
+				cout << "**********************************************************\n";
 
 				cout << "***********USES**\n";
 				pkb->getUses()->writeAll();
-				cout
-						<< "**********************************************************\n";
+				cout << "**********************************************************\n";
 
 				cout << "***********VARIABLES**\n";
 				pkb->getVarTable()->writeAll();
-				cout
-						<< "**********************************************************\n";
+				cout << "**********************************************************\n";
 
 				cout << "***********IF LINES**\n";
 				pkb->getLineTable()->writeIfLines();
-				cout
-						<< "**********************************************************\n";
+				cout << "**********************************************************\n";
 
 				cout << "***********CALL LINES**\n";
 				pkb->getLineTable()->writeCallLines();
-				cout
-						<< "**********************************************************\n";
+				cout << "**********************************************************\n";
 
 				cout << "***********PROC LINES**\n";
 				pkb->getProcTable()->writeProcLines();
-				cout
-						<< "**********************************************************\n";
+				cout << "**********************************************************\n";
 				cout << "***********MODIFIES**\n";
 				pkb->getModifies()->writeAll();
-				cout
-						<< "**********************************************************\n";
+				cout << "**********************************************************\n";
 				cout << "***********LINES**\n";
 				pkb->getLineTable()->writeAll();
-				cout
-						<< "**********************************************************\n";
+				cout << "**********************************************************\n";
 
 			} catch (RuntimeException &ex) {
 				ex.print();
