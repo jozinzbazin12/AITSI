@@ -104,7 +104,7 @@ private:
 					if (tmp[i].find(tokens[j]) < tmp[i].length()) {
 						vector<Field> tmpFields = makeFieldType(tokens[j],tmp[i]);
 						for (size_t j = 0; j < tmpFields.size(); j++) {
-							cout << tmpFields[j].getType() << " " << tmpFields[j].getValue() << endl;
+							//cout << tmpFields[j].getType() << " " << tmpFields[j].getValue() << endl;
 							fields.push_back(tmpFields[j]);
 						}
 
@@ -158,6 +158,10 @@ private:
 			if(matcher->checkTokens(elems[i],"such that")) {
 				queryMainTokens.push_back("such that");
 			}
+
+			if(matcher->checkTokens(elems[i],"with")) {
+				queryMainTokens.push_back("with");
+			}
 		}
 
 		//writeVector(queryMainTokens);
@@ -180,63 +184,86 @@ private:
 				case 2:
 					makeSuchNode(queryParts[i]);
 					break;
+				case 3:
+					makeWithNode(queryParts[i]);
+					break;
 			}
 		}
 
 		tree<tree_node_<PQLNode*>*>::iterator iter;
-		PQLTree* tree;
-		tree = tree->getInstance();
 		PQLNode* node;
 		tree_node_<PQLNode*>* treeNode;
 
+		PqlTree = new PQLTree();
+
 		node = new PQLNode("queryNode");
 		treeNode = new tree_node_<PQLNode*>(node);
-		iter = tree->appendRoot(treeNode);
+		iter = PqlTree->appendRoot(treeNode);
 
 		if(selectNodes.size() > 0)
 		{
 			node = new PQLNode("resultMainNode");
 			treeNode = new tree_node_<PQLNode*>(node);
-			iter = tree->appendChild(iter, treeNode);
+			iter = PqlTree->appendChild(iter, treeNode);
 
 			node = selectNodes[0];
 			treeNode = new tree_node_<PQLNode*>(node);
-			iter = tree->appendChild(iter, treeNode);
+			iter = PqlTree->appendChild(iter, treeNode);
 
 			for(size_t i = 1 ; i < selectNodes.size() ; i ++)
 			{
 				node = selectNodes[i];
 				treeNode = new tree_node_<PQLNode*>(node);
-				iter = tree->appendSibling(iter, treeNode);
+				iter = PqlTree->appendSibling(iter, treeNode);
 			}
 		}
 
-		if(selectNodes.size() > 0)
+		if(suchNodes.size() > 0)
 		{
-			iter = tree->getRoot();
+			iter = PqlTree->getRoot();
 
 			node = new PQLNode("suchMainNode");
 			treeNode = new tree_node_<PQLNode*>(node);
-			iter = tree->appendChild(iter, treeNode);
+			iter = PqlTree->appendChild(iter, treeNode);
 
 			node = suchNodes[0];
 			treeNode = new tree_node_<PQLNode*>(node);
-			iter = tree->appendChild(iter, treeNode);
+			iter = PqlTree->appendChild(iter, treeNode);
 
 			for(size_t i = 1 ; i < suchNodes.size() ; i ++)
 			{
 				node = suchNodes[i];
 				treeNode = new tree_node_<PQLNode*>(node);
-				iter = tree->appendSibling(iter, treeNode);
+				iter = PqlTree->appendSibling(iter, treeNode);
+			}
+		}
+
+		if(withNodes.size() > 0)
+		{
+			iter = PqlTree->getRoot();
+
+			node = new PQLNode("withMainNode");
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = PqlTree->appendChild(iter, treeNode);
+
+			node = withNodes[0];
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = PqlTree->appendChild(iter, treeNode);
+
+			for(size_t i = 1 ; i < withNodes.size() ; i ++)
+			{
+				node = withNodes[i];
+				treeNode = new tree_node_<PQLNode*>(node);
+				iter = PqlTree->appendSibling(iter, treeNode);
 			}
 		}
 
 		//tree->printTree();
-		PqlTree = tree;
 	}
 
 	vector<PQLNode*> selectNodes;
 	vector<PQLNode*> suchNodes;
+	vector<PQLNode*> withNodes;
 
 	void makeSelectNode(string selectPart)
 	{
@@ -259,28 +286,42 @@ private:
 			{
 				dotPos = selectParts[i].find(".");
 				aktField = findField(selectParts[i].substr(0,dotPos));
-				if(matcher->checkProcName(selectParts[i])) {
-					aktField->setProcName(true);
-				}
+				if(aktField != nullptr)
+				{
+					if(matcher->checkProcName(selectParts[i])) {
+						aktField->setProcName(true);
+					}
 
-				if (matcher->checkVarName(selectParts[i])) {
-					aktField->setVarName(true);
-				}
+					if (matcher->checkVarName(selectParts[i])) {
+						aktField->setVarName(true);
+					}
 
-				if (matcher->checkStmt_(selectParts[i])) {
-					aktField->setStmt(true);
-				}
+					if (matcher->checkStmt_(selectParts[i])) {
+						aktField->setStmt(true);
+					}
 
-				if (matcher->checkValue(selectParts[i])) {
-					aktField->setVal(true);
+					if (matcher->checkValue(selectParts[i])) {
+						aktField->setVal(true);
+					}
+					selectNodes.push_back(new PQLNode("resultNode", aktField));
 				}
-				selectNodes.push_back(new PQLNode("resultNode", aktField));
+				else
+				{
+					exc->throwUnexpectedSelectPart();
+				}
 				//selectNodes.push_back(new Field(aktField->getType(),aktField->getValue(),aktField->isProcName(),aktField->isVarName(),aktField->isVal(),aktField->isStmt()));
 			}
 			else
 			{
 				aktField = findField(selectParts[i]);
-				selectNodes.push_back(new PQLNode("resultNode", aktField));
+				if(aktField != nullptr)
+				{
+					selectNodes.push_back(new PQLNode("resultNode", aktField));
+				}
+				else
+				{
+					exc->throwUnexpectedSelectPart();
+				}
 			}
 		}
 
@@ -304,7 +345,7 @@ private:
 		//writeVector(suchParts);
 
 		string suchType;
-		vector<Field> attr;
+		vector<Field*> attr;
 		bool star;
 
 		for(size_t i = 0 ; i < suchParts.size() ; i ++)
@@ -319,7 +360,7 @@ private:
 
 			if(attr.size() == 2)
 			{
-				suchNodes.push_back(new PQLNode("suchNode", suchType,&attr[0],&attr[1],star));
+				suchNodes.push_back(new PQLNode("suchNode", suchType, attr[0], attr[1], star));
 			}
 			else
 			{
@@ -335,9 +376,9 @@ private:
 		}
 	}
 
-	vector<Field> makeSuchNodeAttributes(string suchtype, bool star, string suchPart)
+	vector<Field*> makeSuchNodeAttributes(string suchtype, bool star, string suchPart)
 	{
-		vector<Field> attr;
+		vector<Field*> attr;
 		vector<string> attrParts;
 		int pos = suchtype.length() + star;
 		suchPart = suchPart.substr(pos);
@@ -359,7 +400,7 @@ private:
 				{
 					attrParts[i].erase(matcher->getPosition(attrParts[i],"\""),1);
 					attrParts[i].erase(matcher->getPosition(attrParts[i],"\""),1);
-					attr.push_back(Field("string",attrParts[i]));
+					attr.push_back(new Field("string",attrParts[i]));
 				}
 				else
 				{
@@ -367,15 +408,122 @@ private:
 					if(field == nullptr)
 					{
 						if(matcher->is_(attrParts[i]))
-							attr.push_back(Field("any","_"));
+							attr.push_back(new Field("any","_"));
 						else if(matcher->isNumber(attrParts[i]))
-							attr.push_back(Field("constant",attrParts[i]));
+							attr.push_back(new Field("constant",attrParts[i]));
 						else
 							exc->throwInvalidTypeOfArguments();
 					}
 					else
 					{
-						attr.push_back(Field(field->getType(),field->getValue(),field->isProcName(),field->isVarName(),field->isVal(),field->isStmt()));
+						attr.push_back(new Field(field->getType(),field->getValue(),field->isProcName(),field->isVarName(),field->isVal(),field->isStmt()));
+					}
+				}
+			}
+		}
+		else
+		{
+			exc->throwToMuchArguments();
+		}
+
+		return attr;
+	}
+
+	void makeWithNode(string withPart)
+	{
+		string type = "with";
+		int startPos = withPart.find(type);
+		//cout << suchPart << endl;
+		withPart = withPart.substr(startPos+type.length());
+		//cout << suchPart << endl;
+		vector<string> withParts = split(withPart,"and");
+
+		//writeVector(withParts);
+
+		vector<Field*> attr;
+
+		for(size_t i = 0 ; i < withParts.size() ; i++)
+		{
+			withParts[i].erase(remove_if(withParts[i].begin(), withParts[i].end(), ptr_fun<int, int>(isspace)), withParts[i].end());
+
+			attr = makeWithNodeAttributes(withParts[i]);
+
+			if(attr.size() == 2)
+			{
+				withNodes.push_back(new PQLNode("withNode", attr[0], attr[1]));
+			}
+			else
+			{
+				exc->throwInvalidNumberOfArguments();
+			}
+
+			/*
+			for(size_t i = 0 ; i < attr.size() ; i ++)
+			{
+				cout << "!!! " << attr[i]->printField();
+			}
+			*/
+		}
+	}
+
+	vector<Field*> makeWithNodeAttributes(string withPart)
+	{
+		vector<Field*> attr;
+		vector<string> attrParts;
+		//cout << suchPart << endl;
+		int dotPos;
+		if(matcher->withHasTwoElem(withPart))
+		{
+			attrParts = split(withPart,'=');
+			//writeVector(attrParts);
+
+			for(size_t i = 0; i < attrParts.size() ; i ++)
+			{
+				attrParts[i].erase(remove_if(attrParts[i].begin(), attrParts[i].end(), ptr_fun<int, int>(isspace)), attrParts[i].end());
+				if(matcher->isString(attrParts[i]))
+				{
+					attrParts[i].erase(matcher->getPosition(attrParts[i],"\""),1);
+					attrParts[i].erase(matcher->getPosition(attrParts[i],"\""),1);
+					attr.push_back(new Field("string",attrParts[i]));
+				}
+				else
+				{
+					dotPos = attrParts[i].find('.');
+
+					if(dotPos < attrParts[i].length())
+					{
+						Field* field = findField(attrParts[i].substr(0,dotPos));
+						if(field == nullptr)
+						{
+							if(matcher->isNumber(attrParts[i]))
+								attr.push_back(new Field("constant",attrParts[i]));
+							else
+								exc->throwInvalidWithStatement();
+						}
+						else
+						{
+							attr.push_back(new Field(field->getType(),
+													field->getValue(),
+													matcher->checkProcName(attrParts[i]),
+													matcher->checkVarName(attrParts[i]),
+													matcher->checkValue(attrParts[i]),
+													matcher->checkStmt_(attrParts[i])));
+						}
+					}
+					else
+					{
+						Field* field = findField(attrParts[i]);
+						if(field == nullptr)
+						{
+							if(matcher->isNumber(attrParts[i]))
+								attr.push_back(new Field("constant",attrParts[i]));
+							else
+								exc->throwInvalidWithStatement();
+						}
+						else
+						{
+							attr.push_back(new Field(field->getType(),field->getValue()));
+						}
 					}
 				}
 			}
@@ -404,6 +552,7 @@ private:
 
 		if(queryPart.find("select") < queryPart.length()) return 1; //select
 		if(queryPart.find("such that") < queryPart.length()) return 2; //such that
+		if(queryPart.find("with") < queryPart.length()) return 3; //with
 
 		return 0;
 	}

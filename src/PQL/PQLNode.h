@@ -27,6 +27,12 @@ public:
 		this->type = type; // type = "resultNode"
 		this->field1 = field1;
 	}
+	// for WithNode
+	PQLNode(string type, Field* field1, Field* field2) {
+		this->type = type; // type = "withNode"
+		this->field1 = field1;
+		this->field2 = field2;
+	}
 	// for SuchNode
 	PQLNode(string type, string nodeType, Field* field1, Field* field2,
 			bool star) {
@@ -85,9 +91,11 @@ private:
 	string nodeType;
 	// for Result Node - field
 	// for Such Node - field (attributte 1 in relations)
+	// for With Node - field (attribute before '=')
 	Field* field1;
 	// for Result Node - empty
-	// only for Such Node - field (attributte 2 in relations)
+	// for Such Node - field (attributte 2 in relations)
+	// for With Node - field (attribute after '=')
 	Field* field2;
 	// only for Such Field - relations with star or not
 	bool star;

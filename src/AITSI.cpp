@@ -51,22 +51,27 @@ void mainPQL() {
 	Validator* v = new Validator();
 	QueryPreProcessor* que = new QueryPreProcessor();
 	PQL *pql = new PQL();
-	QueryEvaluator *queryEvaluator = new QueryEvaluator();
 	pql->enterQuery();
 	//pql->processQuery(pql->getQuery());
-	//string a = "assign a; select a such that follows(a,\"a\");";
+	//string a = "procedure p; select p such that parent(p,3) with p;";
 	cout << "**** ZAPYTANIE **************************************************"
 			<< endl;
 	cout << pql->getQuery() << endl << endl;
 	cout << "**** DRZEWO *****************************************************"
 			<< endl;
 	que->parseQuery(pql->getQuery());
+
+	//que->parseQuery(a);
 	tree<tree_node_<PQLNode>>::iterator iter;
 	PQLTree* tree = que->getTree();
-	cout << "Before printTree" << endl << endl;
 	tree->printTree();
-	cout << "**** Test queryEvaluator **************************************************" << endl;
-	cout << queryEvaluator->getResult(tree) << endl;
+
+    /*
+	for(int i = 0 ; i < que->getFields().size() ; i++)
+	{
+		cout << que->getFields()[i].printField();
+	}
+	*/
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	cout << endl;
 	cout
@@ -245,6 +250,7 @@ int main(int argc, char** args) {
 				pkb->getLineTable()->writeAll();
 				cout
 						<< "**********************************************************\n";
+
 			} catch (RuntimeException &ex) {
 				ex.print();
 				cout << "FAIL" << endl;

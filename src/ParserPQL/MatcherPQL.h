@@ -98,6 +98,17 @@ public:
 			return false;
 	}
 
+	bool withHasTwoElem(string elem)
+	{
+		int pos1 = elem.find("=");
+		int pos2 = elem.find("=",pos1+1);
+
+		if(pos1 < elem.length() && pos2 > elem.length())
+			return true;
+		else
+			return false;
+	}
+
 	bool isBracket(string elem)
 	{
 		int pos1 = elem.find("(");
