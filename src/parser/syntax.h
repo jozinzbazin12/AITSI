@@ -60,7 +60,7 @@ protected:
 		} else {
 			e = Exception();
 		}
-		e.line = currLine;
+		e.line = realLine;
 		e.parser = keyWord;
 		e.msg = msg;
 		throw e;
@@ -139,6 +139,7 @@ public:
 	vector<Syntax*> possibleChildren;
 	static map<string, Syntax*> allSynstax;
 	static int currLine;
+	static int realLine;
 	static bool noBrace;
 	string keyWord;
 	virtual ASTTree* parseLine(string str)=0;
@@ -148,6 +149,7 @@ public:
 string Syntax::anyWord = "*";
 string Syntax::any = "**";
 int Syntax::currLine = 0;
+int Syntax::realLine = 0;
 bool Syntax::noBrace = false;
 map<string, Syntax*> Syntax::allSynstax;
 
@@ -187,7 +189,7 @@ protected:
 		}
 		if (!node) {
 			RuntimeException e = RuntimeException();
-			e.line = currLine;
+			e.line = realLine;
 			e.parser = keyWord;
 			e.msg = "could not parse string " + str;
 			throw e;

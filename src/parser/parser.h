@@ -16,6 +16,7 @@ private:
 	fstream stream;
 	vector<Syntax*> parsers;
 	int count = 0;
+	int lines = 1;
 	stack<tree<tree_node_<ASTNode*>*>::iterator> openedNodes;
 
 	void throwException(string msg) {
@@ -29,7 +30,8 @@ private:
 	void parseLine(string str) {
 		string str2 = str;
 		ASTTree* node = NULL;
-		Syntax::currLine = count;
+		Syntax::currLine = lines;
+		Syntax::realLine = count;
 		string line;
 		Syntax* s;
 		int closed;
@@ -44,6 +46,9 @@ private:
 				if (node) {
 					string type = (*node->getRoot())->data->type;
 					if (type != NodeName::FAKE_OPEN && type != NodeName::FAKE_CLOSE) {
+						if (type != NodeName::PROCEDURE && type != NodeName::ELSE) {
+							lines++;
+						}
 						tree<tree_node_<ASTNode*>*>::iterator pos = NodeUtil::appendChild(root, openedNodes.top(), node);
 						if (s->keyWord == Keywords::ELSE) {
 							((ElseSyntax*) s)->validate(root, pos);
@@ -107,10 +112,10 @@ public:
 
 	void parse() {
 		string line;
-		LinesTable * linesTable = pkb -> getLineTable();
+		LinesTable * linesTable = pkb->getLineTable();
 		do {
 			getline(stream, line);
-			linesTable -> addLine(line);
+			linesTable->addLine(line);
 			count++;
 			parseLine(line);
 //			root->printTree();
