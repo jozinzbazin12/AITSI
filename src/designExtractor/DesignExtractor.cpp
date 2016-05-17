@@ -72,7 +72,7 @@ void DesignExtractor::setParentRelations() {
 			if (!(*begin)->data) {
 				cout << "error <fillParents>" << endl;
 			} else {
-				tmp = begin.node->parent;                      //tmp = parent    begin - child
+				tmp = begin.node->parent;        //tmp = parent    begin - child
 				if (ASTtree->isValid(tmp) && (*tmp)->data->type != "PROCEDURE"
 						&& (*tmp)->data->type != "PROGRAM") {
 					if ((*tmp)->data->type == "ELSE") {
@@ -364,42 +364,46 @@ void DesignExtractor::setIfLines() {
 				ifstmt = begin;
 				elsetmt = begin.node->next_sibling;
 
-				for (int i = 0; i < ASTtree->getNumberOfChildren(ifstmt); //stmts under if
-						i++) {
-					if (i == 0) {
-						tmp = ifstmt.node->first_child;
-					} else {
-						tmp = tmp.node->next_sibling;
-					}
-					if (ASTtree->isValid(tmp)) {
-						if ((*tmp)->data->type == "IF"
-								|| (*tmp)->data->type == "ELSE"
-								|| (*tmp)->data->type == "WHILE") {
-							ifRecur(tmp, begin);
-						} else
-							linesTable->addIfLine((*begin)->data->lineNumber,
-									(*tmp)->data->lineNumber);
-					}
+				if (ASTtree->isValid(ifstmt))
+					for (int i = 0; i < ASTtree->getNumberOfChildren(ifstmt); //stmts under if
+							i++) {
+						if (i == 0) {
+							tmp = ifstmt.node->first_child;
+						} else {
+							tmp = tmp.node->next_sibling;
+						}
+						if (ASTtree->isValid(tmp)) {
+							if ((*tmp)->data->type == "IF"
+									|| (*tmp)->data->type == "ELSE"
+									|| (*tmp)->data->type == "WHILE") {
+								ifRecur(tmp, begin);
+							} else
+								linesTable->addIfLine(
+										(*begin)->data->lineNumber,
+										(*tmp)->data->lineNumber);
+						}
 
-				}
-				for (int i = 0; i < ASTtree->getNumberOfChildren(elsetmt); //stmts under else
-						i++) {
-					if (i == 0) {
-						tmp = elsetmt.node->first_child;
-					} else {
-						tmp = tmp.node->next_sibling;
 					}
-					if (ASTtree->isValid(tmp)) {
-						if ((*tmp)->data->type == "IF"
-								|| (*tmp)->data->type == "ELSE"
-								|| (*tmp)->data->type == "WHILE") {
-							ifRecur(tmp, begin);
-						} else
-							linesTable->addIfLine((*begin)->data->lineNumber,
-									(*tmp)->data->lineNumber);
-					}
+				if (ASTtree->isValid(elsetmt))
+					for (int i = 0; i < ASTtree->getNumberOfChildren(elsetmt); //stmts under else
+							i++) {
+						if (i == 0) {
+							tmp = elsetmt.node->first_child;
+						} else {
+							tmp = tmp.node->next_sibling;
+						}
+						if (ASTtree->isValid(tmp)) {
+							if ((*tmp)->data->type == "IF"
+									|| (*tmp)->data->type == "ELSE"
+									|| (*tmp)->data->type == "WHILE") {
+								ifRecur(tmp, begin);
+							} else
+								linesTable->addIfLine(
+										(*begin)->data->lineNumber,
+										(*tmp)->data->lineNumber);
+						}
 
-				}
+					}
 
 			}
 		}
