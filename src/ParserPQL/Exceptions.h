@@ -46,6 +46,18 @@ public:
 		cout << "Clause has invalid type of arguments.";
 		exit(1);
 	}
+
+	void throwInvalidWithStatement()
+	{
+		cout << "Clause has invalid with part.";
+		exit(1);
+	}
+
+	void throwUnexpectedSelectPart()
+	{
+		cout << "Clause has undeclared select part.";
+		exit(1);
+	}
 };
 
 #endif /* SRC_PARSERPQL_EXCEPTIONS_H_ */

@@ -1,0 +1,11 @@
+¯eby prawid³owo zbudowaæ projekt, po zaimportowaniu do Eclipsa nale¿y:
+
+1. ustawiæ GCC C++ Compiler -> Dialect na ISO C++ 11
+2. ustawiæ GCC C++ Compiler -> Optimization na None
+3. ustawiæ Binary Parser na PE Windows Parser
+4. W zak³adce C/C++ General -> Path and Symbols -> Symbols -> GNU C++ dodaæ
+__GXX_EXPERIMENTAL_CXX_0X__
+_GLIBCXX_USE_C99
+__cplusplus = 201103L
+
+5. Bajlando

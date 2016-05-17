@@ -28,16 +28,8 @@ bool PKBApi::parent(int parentLine, int kidLine){
 	return pkb -> getParent() -> parent(parentLine, kidLine);
 }
 
-bool PKBApi::parentStar(int parentLine, int kidLine) {
-	return pkb -> getParent() -> parentStar(parentLine, kidLine);
-}
-
 bool PKBApi::follows(int lineNum, int followerLineNum){
 	return pkb -> getFollows() -> follows(lineNum, followerLineNum);
-}
-
-bool PKBApi::followsStar(int lineNum, int followerLineNum) {
-	return pkb -> getFollows() -> followsStar(lineNum, followerLineNum);
 }
 
 bool PKBApi::calls(int callerId, int calleeId) {
@@ -74,16 +66,16 @@ vector<int> PKBApi::getIfLines(){
 	return pkb -> getLineTable() -> getIfLines();
 }
 
-vector<int> PKBApi::getProceduresLines(){
-	return pkb -> getProcTable() -> getProceduresLines();
-}
-
 map<int, vector<int>> PKBApi::getIfBodyLines(){
 	return pkb -> getLineTable() -> getIfBodyLines();
 }
 
 map<int, vector<int> > PKBApi::getWhileBodyLines(){
 	return pkb -> getLineTable() -> getWhileBodyLines();
+}
+
+vector<int> PKBApi::getProceduresLines(){
+	return pkb -> getProcTable() -> getProceduresLines();
 }
 
 string PKBApi::getLineString(int lineNumber){

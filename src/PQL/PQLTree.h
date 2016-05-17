@@ -9,6 +9,12 @@
 #define SRC_PQL_PQLTREE_H_
 
 #include "PQLNode.h"
+#ifndef tree_hh_
+#include "tree.hh"
+#endif
+#ifndef _GLIBCXX_IOSTREAM
+#include <iostream>
+#endif
 
 using namespace std;
 
@@ -16,13 +22,15 @@ class PQLTree
 {
 private:
 	//static PQLTree *Ptree;
-	PQLTree() {
-		Tree = new tree<tree_node_<PQLNode*>*>();
-	}
+
 
 public:
 
 	tree<tree_node_<PQLNode*>*> *Tree;
+
+	PQLTree() {
+		Tree = new tree<tree_node_<PQLNode*>*>();
+	}
 
 	static PQLTree* getInstance()
 	{
@@ -110,6 +118,14 @@ public:
 			for (int i = 0; i<Tree->depth(begin); ++i)
 				cout << "    |";
 				cout << " \\ " << ((*begin)->data->getType());
+				/*
+				if((*begin)->data->getType() == "suchNode")
+					cout << "[" << (*begin)->data->getField1()->printField() << "," << (*begin)->data->getField2()->printField() << "]";
+				if((*begin)->data->getType() == "resultNode")
+					cout << "[" << (*begin)->data->getField1()->printField() << "]";
+				if((*begin)->data->getType() == "withNode")
+					cout << "[" << (*begin)->data->getField1()->printField() << "," << (*begin)->data->getField2()->printField() << "]";
+				*/
 			cout << endl;
 			++begin;
 		}

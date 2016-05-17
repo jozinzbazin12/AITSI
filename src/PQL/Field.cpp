@@ -5,6 +5,9 @@
  *      Author: Popek
  */
 
+#ifndef _STDLIB_H_
+#include <stdlib.h>
+#endif
 #include <iostream>
 #include <sstream>
 #include "Field.h"
@@ -65,6 +68,10 @@ void Field::setVal(bool val) {
 
 string& Field::getValue() {
 	return value;
+}
+
+int Field::getIntegerValue() {
+	return std::stoi(value);
 }
 
 void Field::setValue(string& value) {

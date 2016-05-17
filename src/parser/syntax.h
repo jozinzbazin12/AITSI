@@ -365,6 +365,7 @@ public:
 		keyWord = Keywords::CALL;
 		syntax = {Matcher(keyWord,Matcher::anyWord, Matcher::space), Matcher(Matcher::anyWord,Matcher::space, Matcher::anyWord)};
 		semicolon = true;
+		multiLine = false;
 	}
 
 	ASTTree* parseLine(string str) {

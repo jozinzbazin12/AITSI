@@ -26,6 +26,8 @@ void QueryPreProcessor::parseQuery(string query) {
 	vector<string> result_part;
 	vector<string> query_part;
 
+	//writeVector(first_split);
+
 	MatcherPQL* m = new MatcherPQL();
 	for(size_t i = 0 ; i < first_split.size() ; i ++)
 	{
@@ -53,8 +55,10 @@ void QueryPreProcessor::parseQuery(string query) {
 	//writeVector(query_part);
 
 	makeTree(query_part);
+
 	/*
 	for (int j = 0; j < fields.size(); j++) {
 		cout << fields[j].getType() << " " << fields[j].getValue() << endl;
-	}*/
+	}
+	*/
 }
