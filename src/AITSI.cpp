@@ -17,6 +17,7 @@ using namespace std;
 #include "QueryPreProcessor.h"
 #include "Validator/Validator.h"
 #include "PQL/PQL.h"
+#include "queryEvaluator/QueryEvaluator.h"
 
 bool debug = false;
 
@@ -57,10 +58,17 @@ void mainPQL() {
 	tree<tree_node_<PQLNode>>::iterator iter;
 	PQLTree* tree = que->getTree();
 	tree->printTree();
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	cout << endl;
 	cout << "**** KONIEC DRZEWA*****************************************************" << endl;
+
+	cout<< "**** EVALUATOR *****************************************************" << endl;
+
+	QueryEvaluator* queEva = new QueryEvaluator();
+	cout << queEva->getResult(tree) << endl;
+
+	cout<< "**** KONIEC EVALUATORA *****************************************************" << endl;
+
 	cout << "**** WALIDACJA TESTY - KRZYSIEK****************************************" << endl;
 	cout << v->checkSelect("select dgdd 4 23") << endl;
 	cout << v->checkSelect("select select dgdd 4 23") << endl;

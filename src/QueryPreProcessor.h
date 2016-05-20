@@ -390,7 +390,7 @@ private:
 				suchPart.erase(matcher->getPosition(suchPart,"("),1);
 				suchPart.erase(matcher->getPosition(suchPart,")"),1);
 			}
-			cout << "PreProcessor " << suchPart << endl;
+			//cout << "PreProcessor " << suchPart << endl;
 			attrParts = split(suchPart,',');
 			//writeVector(attrParts);
 

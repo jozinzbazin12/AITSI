@@ -141,6 +141,15 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 		}
 		++begin;
 	}
+
+	if(!lines.empty())
+		for(int i = 0 ; i < lines.size() ; i++)
+		{
+			cout << lines[i] << endl;
+		}
+	else
+		cout << "NONE" << endl;
+
 	return result;
 }
 
@@ -344,7 +353,7 @@ vector<int> QueryEvaluator::getFollowsResult(Field* field1, Field* field2,
 		}
 	} else if (field1->getType() == "constant" && field2->getType() == "constant") {
 		int param1 = field1->getIntegerValue();
-		int param2 = field1->getIntegerValue();
+		int param2 = field2->getIntegerValue();
 		if (pkb->getFollows()->follows(param1, param2) == true) {
 			return lines;
 		}
@@ -388,30 +397,45 @@ vector<int> QueryEvaluator::getFollowsResult(Field* field1, Field* field2,
 		}
 	}
 
+	/*
+	for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1)
+		cout << *l1 << " ";
+	cout << endl;
+	for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2)
+		cout << *l2 << " ";
+	cout << endl;
+	*/
+
 	vector<int> resultPart;
 	// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
-	if (setLines1.empty() && setLines2.empty()) {
+	if (!setLines1.empty() && !setLines2.empty()) {
 		for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 			for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 				if (pkb->getFollows()->follows(*l1, *l2) == true) {
+					//cout << "FOLLOWS TRUE" << endl;
 					if (selectValue == field1->getValue() && selectValue == field2->getValue()) {
 						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
+						//cout << "-" << endl;
 						return resultPart;
 					} else if (selectValue == field1->getValue() && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
+						//cout << "L1 " << *l1 << endl;
 						resultPart.push_back(*l1);
 					} else if (selectValue == field2->getValue() && find(lines.begin(), lines.end(), *l2) != lines.end()) {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
+						//cout << "L2 " << *l2 << endl;
 						resultPart.push_back(*l2);
 					} else {
 						// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
+						//cout << "ALL" << endl;
 						return lines;
 					}
 				}
 			}
 		}
 	}
-	return lines;
+
+	return resultPart;
 }
 
 vector<int> QueryEvaluator::getFollowsSResult(Field* field1, Field* field2,

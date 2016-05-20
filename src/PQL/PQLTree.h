@@ -125,7 +125,7 @@ public:
 					cout << "[" << (*begin)->data->getField1()->printField() << "]";
 				if((*begin)->data->getType() == "withNode")
 					cout << "[" << (*begin)->data->getField1()->printField() << "," << (*begin)->data->getField2()->printField() << "]";
-				*/
+				 */
 			cout << endl;
 			++begin;
 		}
