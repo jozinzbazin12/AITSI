@@ -28,7 +28,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 	tree<tree_node_<PQLNode*>*>::iterator end = Tree->Tree->end();
 
 	while (begin != end) {
-		for (int i = 0; i < Tree->Tree->depth(begin); ++i) {
+		//for (int i = 0; i < Tree->Tree->depth(end); ++i) {
 
 			if (((*begin)->data->getType()) == "resultNode") {
 				string s = (*begin)->data->getField1()->getType();
@@ -49,15 +49,57 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					selectValue = (*begin)->data->getField1()->getValue();
 				} else if (s == "stmt") {
 					set<int> tmp;
-					setLines = pkb->getLineTable()->getOrderedAssignLines();
-					tmp = pkb->getLineTable()->getOrderedWhileLines();
-					setLines.insert(tmp.begin(), tmp.end());
-					tmp = pkb->getLineTable()->getOrderedCallLines();
-					setLines.insert(tmp.begin(), tmp.end());
-					tmp = pkb->getLineTable()->getOrderedIfLines();
-					setLines.insert(tmp.begin(), tmp.end());
-					std::copy(setLines.begin(), setLines.end(), lines.begin());
-					// lines = setLines;
+					vector<int> tmp2;
+					tmp2 = pkb->getLineTable()->getAssignLines();
+					//cout << "TMP 1 - assign ";
+					//for (int ii = 0 ; ii < tmp2.size() ; ii++)
+					//	cout << tmp2[ii] << " ";
+					//cout << endl << "SETLINES ";
+					setLines.insert(tmp2.begin(),tmp2.end());
+					//std::copy(setLines.begin(), setLines.end(), tmp2.begin() );
+					//for (set<int>::iterator l2 = setLines.begin(); l2 != setLines.end(); ++l2)
+					//	cout << *l2 << " ";
+					//cout << endl;
+
+
+					tmp2 = pkb->getLineTable()->getWhileLines();
+					//cout << "TMP 2 - while ";
+					//for (int ii = 0 ; ii < tmp2.size() ; ii++)
+					//	cout << tmp2[ii] << " ";
+					//cout << endl;
+					//std::copy(setLines.begin(), setLines.end(), std::inserter( tmp2, tmp2.end() ) );
+					setLines.insert(tmp2.begin(),tmp2.end());
+					//for (set<int>::iterator l2 = setLines.begin(); l2 != setLines.end(); ++l2)
+					//	cout << *l2 << " ";
+					//cout << endl;
+
+					tmp2 = pkb->getLineTable()->getCallLines();
+					//cout << "TMP 3 - call ";
+					//for (int ii = 0 ; ii < tmp2.size() ; ii++)
+					//	cout << tmp2[ii] << " ";
+					//cout << endl;
+					//std::copy(setLines.begin(), setLines.end(), std::inserter( tmp2, tmp2.end() ) );
+					setLines.insert(tmp2.begin(),tmp2.end());
+					//for (set<int>::iterator l2 = setLines.begin(); l2 != setLines.end(); ++l2)
+					//	cout << *l2 << " ";
+					//cout << endl;
+
+					tmp2 = pkb->getLineTable()->getIfLines();
+					//cout << "TMP 4 - if ";
+					//for (int ii = 0 ; ii < tmp2.size() ; ii++)
+					//	cout << tmp2[ii] << " ";
+					//cout << endl;
+					//std::copy(setLines.begin(), setLines.end(), std::inserter( tmp2, tmp2.end() ) );
+					setLines.insert(tmp2.begin(),tmp2.end());
+					//for (set<int>::iterator l2 = setLines.begin(); l2 != setLines.end(); ++l2)
+					//	cout << *l2 << " ";
+					//cout << endl;
+
+					//setLines.insert(pkb->getLineTable()->getOrderedAssignLines().begin(),pkb->getLineTable()->getOrderedAssignLines().end());
+					//setLines.insert(pkb->getLineTable()->getOrderedWhileLines().begin(), pkb->getLineTable()->getOrderedWhileLines().end());
+					//setLines.insert(pkb->getLineTable()->getOrderedCallLines().begin(),pkb->getLineTable()->getOrderedCallLines().end());
+					//setLines.insert(pkb->getLineTable()->getOrderedIfLines().begin(),pkb->getLineTable()->getOrderedIfLines().end());
+					std::copy(setLines.begin(), setLines.end(), std::inserter( lines, lines.end() ) );
 					selectValue = (*begin)->data->getField1()->getValue();
 				} else if (s == "if") {
 					lines = pkb->getLineTable()->getIfLines();
@@ -138,17 +180,20 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					}
 				}
 			}
-		}
+		//}
 		++begin;
 	}
 
+	cout << "WYNIK: " ;
 	if(!lines.empty())
 		for(int i = 0 ; i < lines.size() ; i++)
 		{
-			cout << lines[i] << endl;
+			cout << lines[i] << " ";
 		}
 	else
-		cout << "NONE" << endl;
+		cout << "NONE";
+
+	cout << endl;
 
 	return result;
 }
@@ -304,6 +349,11 @@ vector<int> QueryEvaluator::getFollowsResult(Field* field1, Field* field2,
 		vector<int> lines, string selectValue) {
 	set<int> setLines1;
 	set<int> setLines2;
+
+	//cout << "LINES" << endl;
+	//for (int i = 0; i < lines.size(); i++)
+	//	cout << lines[i] << " ";
+	//cout << endl;
 
 	//Sprawdzanie pierwszego parametru (Filed1) w relacji Follows
 	if (field1->getType() == "constant" && field2->getType() != "constant") {

@@ -65,7 +65,7 @@ void mainPQL() {
 	cout<< "**** EVALUATOR *****************************************************" << endl;
 
 	QueryEvaluator* queEva = new QueryEvaluator();
-	cout << queEva->getResult(tree) << endl;
+	queEva->getResult(tree);
 
 	cout<< "**** KONIEC EVALUATORA *****************************************************" << endl;
 
