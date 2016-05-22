@@ -31,12 +31,14 @@ void QueryPreProcessor::parseQuery(string query) {
 	MatcherPQL* m = new MatcherPQL();
 	for(size_t i = 0 ; i < first_split.size() ; i ++)
 	{
-		if(!m->checkTokens(first_split[i], "select"))
+		if(!m->checkTokens(first_split[i], "Select"))
 			result_part.push_back(first_split[i]);
 		else
 			query_part.push_back(first_split[i]);
 	}
 	delete m;
+
+	//writeVector(result_part);
 
 	if(query_part.size() == 0) {
 		exc->throwException();

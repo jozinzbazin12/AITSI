@@ -56,13 +56,13 @@ public:
 	}
 
 	string checkSuchThatType(string suchThatPart) {
-		if(checkTokens(suchThatPart,"parent")) return "parent";
-		if(checkTokens(suchThatPart,"follows")) return "follows";
-		if(checkTokens(suchThatPart,"modifies")) return "modifies";
-		if(checkTokens(suchThatPart,"uses")) return "uses";
-		if(checkTokens(suchThatPart,"calls")) return "calls";
-		if(checkTokens(suchThatPart,"next")) return "next";
-		if(checkTokens(suchThatPart,"affects")) return "affects";
+		if(checkTokens(suchThatPart,"Parent")) return "parent";
+		if(checkTokens(suchThatPart,"Follows")) return "follows";
+		if(checkTokens(suchThatPart,"Modifies")) return "modifies";
+		if(checkTokens(suchThatPart,"Uses")) return "uses";
+		if(checkTokens(suchThatPart,"Calls")) return "calls";
+		if(checkTokens(suchThatPart,"Next")) return "next";
+		if(checkTokens(suchThatPart,"Affects")) return "affects";
 
 		return "";
 	}

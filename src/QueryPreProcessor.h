@@ -148,7 +148,7 @@ private:
 		vector<string> queryMainTokens;
 		for(size_t i = 0 ; i < elems.size() ; i ++)
 		{
-			if(matcher->checkTokens(elems[i],"select")) {
+			if(matcher->checkTokens(elems[i],"Select")) {
 				//queryMainTokens.push_back("select");
 			}
 			else {
@@ -267,7 +267,7 @@ private:
 
 	void makeSelectNode(string selectPart)
 	{
-		string type = "select";
+		string type = "Select";
 		int startPos = selectPart.find(type);
 		//cout << selectPart << endl;
 		selectPart = selectPart.substr(startPos+type.length());
@@ -550,7 +550,7 @@ private:
 		//cout << "[1] " << queryPart.find("select") << endl;
 		//cout << "[2] " << queryPart.find("such that") << endl;
 
-		if(queryPart.find("select") < queryPart.length()) return 1; //select
+		if(queryPart.find("Select") < queryPart.length()) return 1; //select
 		if(queryPart.find("such that") < queryPart.length()) return 2; //such that
 		if(queryPart.find("with") < queryPart.length()) return 3; //with
 

@@ -24,6 +24,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 	vector<int> lines;
 	set<int> setLines;
 	string selectValue;
+	string resultType;
 	tree<tree_node_<PQLNode*>*>::iterator begin = Tree->Tree->begin();
 	tree<tree_node_<PQLNode*>*>::iterator end = Tree->Tree->end();
 
@@ -32,6 +33,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 
 			if (((*begin)->data->getType()) == "resultNode") {
 				string s = (*begin)->data->getField1()->getType();
+				resultType = s;
 				if (s == "assign") {
 					lines = pkb->getLineTable()->getAssignLines();
 					selectValue = (*begin)->data->getField1()->getValue();
@@ -188,7 +190,13 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 	if(!lines.empty())
 		for(int i = 0 ; i < lines.size() ; i++)
 		{
-			cout << lines[i] << " ";
+			if(resultType == "procedure")
+			{
+				string name = pkbApi -> getProcName(pkbApi -> getProcId(lines[i]));
+				cout << name << " ";
+			}
+			else
+				cout << lines[i] << " ";
 		}
 	else
 		cout << "NONE";
@@ -640,27 +648,28 @@ vector<int> QueryEvaluator::getUsesSResult(Field* field1, Field* field2,
 }
 
 vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<int> lines, string selectValue) {
-	cout << "getCallResult" << endl;
+	//cout << "getCallResult" << endl;
 	set<int> candidatesForParameter1;
 	set<int> candidatesForParameter2;
 	vector<int> resultPart;
-	cout << "getCallResult before getting fields types" << endl;
+	//cout << "getCallResult before getting fields types" << endl;
 	if(field1 == nullptr || field2 == nullptr){
-		cout << "One of the fields is nullptr" << endl;
+		//cout << "One of the fields is nullptr" << endl;
+		return resultPart;
 	} else {
-		cout << "Both fields are != nullptr" << endl;
+		//cout << "Both fields are != nullptr" << endl;
 	}
 	string firstParameterType = field1->getType();
 	string secondParameterType = field2->getType();
-	cout << "getCallResult after getting fields types" << endl;
+	//cout << "getCallResult after getting fields types: " << firstParameterType << " " << secondParameterType << endl;
 	int firstProcedureId = -1;
 	int secondProcedureId = -1;
 
 	// tworze liste z mozliwymi wartosciami parametru pierwszego
-	cout << "firstParameterType" << endl;
+	//cout << "firstParameterType" << endl;
 	if (firstParameterType == "string") {
 		// call("SuperProcedura",_)
-		cout << "call(\"SuperProcedura\",_)" << endl;
+		//cout << "call(\"SuperProcedura\",_)" << endl;
 		firstProcedureId = pkbApi->getProcId(field1->getValue());
 		if (firstProcedureId == -1) {
 			return resultPart;
@@ -668,7 +677,7 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 		candidatesForParameter1.insert(firstProcedureId);
 	} else if (firstParameterType == "constant"){
 		// call(15,_)
-		cout << "call(15,_)" << endl;
+		//cout << "call(15,_)" << endl;
 		firstProcedureId = pkbApi->getProcId(field1->getIntegerValue());
 		if (firstProcedureId == -1) {
 			return resultPart;
@@ -676,17 +685,17 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 		candidatesForParameter1.insert(firstProcedureId);
 	} else {
 		// call(p,_)
-		cout << "call(p,_)" << endl;
+		//cout << "call(p,_)" << endl;
 		for( int i = 0; i < pkbApi->getMaxProcId(); i++){
 			candidatesForParameter1.insert(i);
 		}
 	}
 
 	// tworze liste z mozliwymi wartosciami parametru drugiego
-	cout << "secondParameterType" << endl;
+	//cout << "secondParameterType" << endl;
 	if (secondParameterType == "string") {
 		// call(_,"SuperProcedura")
-		cout << "call(_,\"SuperProcedura\")" << endl;
+		//cout << "call(_,\"SuperProcedura\")" << endl;
 		secondProcedureId = pkbApi->getProcId(field2->getValue());
 		if (secondProcedureId == -1) {
 			return resultPart;
@@ -694,7 +703,7 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 		candidatesForParameter2.insert(secondProcedureId);
 	} else if (secondParameterType == "constant"){
 		// call(_,123)
-		cout << "call(_,123)" << endl;
+		//cout << "call(_,123)" << endl;
 		secondProcedureId = pkbApi->getProcId(field2->getIntegerValue());
 		if (secondProcedureId == -1) {
 			return resultPart;
@@ -702,13 +711,13 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 		candidatesForParameter2.insert(secondProcedureId);
 	} else {
 		// call(_,p)
-		cout << "call(_,p)" << endl;
+		//cout << "call(_,p)" << endl;
 		for( int i = 0; i < pkbApi->getMaxProcId(); i++){
 			candidatesForParameter2.insert(i);
 		}
 	}
 
-	cout << "candidatesForParameter1: " << candidatesForParameter1.size() << "candidatesForParameter2: " << candidatesForParameter2.size() << endl;
+	//cout << "candidatesForParameter1: " << candidatesForParameter1.size() << " candidatesForParameter2: " << candidatesForParameter2.size() << endl;
 
 	if (firstParameterType == "constant" && secondParameterType == "constant") {
 		if (pkbApi->calls(firstProcedureId, secondProcedureId)) {
@@ -728,10 +737,10 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 	} else {
 		for (set<int>::iterator parameter1 = candidatesForParameter1.begin(); parameter1 != candidatesForParameter1.end(); ++parameter1) {
 			for (set<int>::iterator parameter2 = candidatesForParameter2.begin(); parameter2 != candidatesForParameter2.end(); ++parameter2) {
-				if (selectValue == field1->getValue() && pkbApi->calls(*parameter1, *parameter2) && find(lines.begin(), lines.end(), *parameter1) != lines.end()) {
+			    if (selectValue == field1->getValue() && pkbApi->calls(*parameter1, *parameter2)) {
 					// dodaje mozliwosc z par1 do wyniku gdy call(par1,*) gdzie * = 'any','const','var'
 					resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
-				} else if (selectValue == field2->getValue() && pkbApi->calls(*parameter1, *parameter2) && find(lines.begin(), lines.end(), *parameter2) != lines.end()) {
+				} else if (selectValue == field2->getValue() && pkbApi->calls(*parameter1, *parameter2)) {
 					// dodaje mozliwosc z par2 do wyniku gdy call(*,par2) gdzie * = 'any','const','var'
 					resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
 				} else if (pkbApi->calls(*parameter1, *parameter2)){
@@ -746,103 +755,114 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 }
 
 vector<int> QueryEvaluator::getCallStarResult(Field* field1, Field* field2, vector<int> lines, string selectValue) {
-	cout << "getCallStarResult" << endl;
-		set<int> candidatesForParameter1;
-		set<int> candidatesForParameter2;
-		vector<int> resultPart;
-		cout << "getCallResult before getting fields types" << endl;
-		if(field1 == nullptr || field2 == nullptr){
-			cout << "One of the fields is nullptr" << endl;
-		} else {
-			cout << "Both fields are != nullptr" << endl;
-		}
-		string firstParameterType = field1->getType();
-		string secondParameterType = field2->getType();
-		cout << "getCallResult after getting fields types" << endl;
-		int firstProcedureId = -1;
-		int secondProcedureId = -1;
+	//cout << "getCallStarResult" << endl;
+	set<int> candidatesForParameter1;
+	set<int> candidatesForParameter2;
+	vector<int> resultPart;
+	//cout << "getCallResult before getting fields types" << endl;
+	if(field1 == nullptr || field2 == nullptr){
+		//cout << "One of the fields is nullptr" << endl;
+		return resultPart;
+	} else {
+		//cout << "Both fields are != nullptr" << endl;
+	}
+	string firstParameterType = field1->getType();
+	string secondParameterType = field2->getType();
+	//cout << "getCallResult after getting fields types: " << firstParameterType << " " << secondParameterType << endl;
+	int firstProcedureId = -1;
+	int secondProcedureId = -1;
 
-		// tworze liste z mozliwymi wartosciami parametru pierwszego
-		cout << "firstParameterType" << endl;
-		if (firstParameterType == "string") {
-			// call*("SuperProcedura",_)
-			cout << "call*(\"SuperProcedura\",_)" << endl;
-			firstProcedureId = pkbApi->getProcId(field1->getValue());
-			if (firstProcedureId == -1) {
-				return resultPart;
-			}
-			candidatesForParameter1.insert(firstProcedureId);
-		} else if (firstParameterType == "constant"){
-			// call*(15,_)
-			cout << "call*(15,_)" << endl;
-			firstProcedureId = pkbApi->getProcId(field1->getIntegerValue());
-			if (firstProcedureId == -1) {
-				return resultPart;
-			}
-			candidatesForParameter1.insert(firstProcedureId);
-		} else {
-			// call*(p,_)
-			cout << "call*(p,_)" << endl;
-			for( int i = 0; i < pkbApi->getMaxProcId(); i++){
-				candidatesForParameter1.insert(i);
-			}
-		}
-
-		// tworze liste z mozliwymi wartosciami parametru drugiego
-		cout << "secondParameterType" << endl;
-		if (secondParameterType == "string") {
-			// call*(_,"SuperProcedura")
-			cout << "call*(_,\"SuperProcedura\")" << endl;
-			secondProcedureId = pkbApi->getProcId(field2->getValue());
-			if (secondProcedureId == -1) {
-				return resultPart;
-			}
-			candidatesForParameter2.insert(secondProcedureId);
-		} else if (secondParameterType == "constant"){
-			// call*(_,123)
-			cout << "call*(_,123)" << endl;
-			secondProcedureId = pkbApi->getProcId(field2->getIntegerValue());
-			if (secondProcedureId == -1) {
-				return resultPart;
-			}
-			candidatesForParameter2.insert(secondProcedureId);
-		} else {
-			// call*(_,p)
-			cout << "call*(_,p)" << endl;
-			for( int i = 0; i < pkbApi->getMaxProcId(); i++){
-				candidatesForParameter2.insert(i);
-			}
-		}
-
-		cout << "candidatesForParameter1: " << candidatesForParameter1.size() << "candidatesForParameter2: " << candidatesForParameter2.size() << endl;
-
-		if (firstParameterType == "constant" && secondParameterType == "constant") {
-			if (pkbApi->callsStar(firstProcedureId, secondProcedureId)) {
-				return lines;
-			}
+	// tworze liste z mozliwymi wartosciami parametru pierwszego
+	//cout << "firstParameterType" << endl;
+	if (firstParameterType == "string") {
+		// call*("SuperProcedura",_)
+		//cout << "call*(\"SuperProcedura\",_)" << endl;
+		firstProcedureId = pkbApi->getProcId(field1->getValue());
+		if (firstProcedureId == -1) {
 			return resultPart;
-		} else if (firstParameterType == "any" && secondParameterType == "any"){
-			if (pkbApi->callsStar(firstProcedureId, secondProcedureId)){
-				return lines;
-			}
+		}
+		candidatesForParameter1.insert(firstProcedureId);
+	} else if (firstParameterType == "constant"){
+		// call*(15,_)
+		//cout << "call*(15,_)" << endl;
+		firstProcedureId = pkbApi->getProcId(field1->getIntegerValue());
+		if (firstProcedureId == -1) {
 			return resultPart;
-		} else if (selectValue == field1->getValue() && selectValue == field2->getValue()){
+		}
+		candidatesForParameter1.insert(firstProcedureId);
+	} else {
+		// call*(p,_)
+		//cout << "call*(p,_)" << endl;
+		for( int i = 0; i < pkbApi->getMaxProcId(); i++){
+			candidatesForParameter1.insert(i);
+		}
+	}
+
+	// tworze liste z mozliwymi wartosciami parametru drugiego
+	//cout << "secondParameterType" << endl;
+	if (secondParameterType == "string") {
+		// call*(_,"SuperProcedura")
+		//cout << "call*(_,\"SuperProcedura\")" << endl;
+		secondProcedureId = pkbApi->getProcId(field2->getValue());
+		if (secondProcedureId == -1) {
 			return resultPart;
-		} else {
-			for (set<int>::iterator parameter1 = candidatesForParameter1.begin(); parameter1 != candidatesForParameter1.end(); ++parameter1) {
-				for (set<int>::iterator parameter2 = candidatesForParameter2.begin(); parameter2 != candidatesForParameter2.end(); ++parameter2) {
-					if (selectValue == field1->getValue() && pkbApi->callsStar(*parameter1, *parameter2) && find(lines.begin(), lines.end(), *parameter1) != lines.end()) {
-						resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
-					} else if (selectValue == field2->getValue() && pkbApi->callsStar(*parameter1, *parameter2) && find(lines.begin(), lines.end(), *parameter2) != lines.end()) {
-						resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
-					} else if (pkbApi->callsStar(*parameter1, *parameter2)){
-						return lines;
-					}
+		}
+		candidatesForParameter2.insert(secondProcedureId);
+	} else if (secondParameterType == "constant"){
+		// call*(_,123)
+		//cout << "call*(_,123)" << endl;
+		secondProcedureId = pkbApi->getProcId(field2->getIntegerValue());
+		if (secondProcedureId == -1) {
+			return resultPart;
+		}
+		candidatesForParameter2.insert(secondProcedureId);
+	} else {
+		// call*(_,p)
+		//cout << "call*(_,p)" << endl;
+		for( int i = 0; i < pkbApi->getMaxProcId(); i++){
+			candidatesForParameter2.insert(i);
+		}
+	}
+
+	//cout << "candidatesForParameter1: " << candidatesForParameter1.size() << " candidatesForParameter2: " << candidatesForParameter2.size() << endl;
+	/*
+	for (set<int>::iterator parameter1 = candidatesForParameter1.begin(); parameter1 != candidatesForParameter1.end(); ++parameter1) {
+		cout << *parameter1 << " ";
+	}
+	cout << endl;
+	for (set<int>::iterator parameter1 = candidatesForParameter2.begin(); parameter1 != candidatesForParameter2.end(); ++parameter1) {
+		cout << *parameter1 << " ";
+	}
+	cout << endl;
+	*/
+
+	if (firstParameterType == "constant" && secondParameterType == "constant") {
+		if (pkbApi->callsStar(firstProcedureId, secondProcedureId)) {
+			return lines;
+		}
+		return resultPart;
+	} else if (firstParameterType == "any" && secondParameterType == "any"){
+		if (pkbApi->callsStar(firstProcedureId, secondProcedureId)){
+			return lines;
+		}
+		return resultPart;
+	} else if (selectValue == field1->getValue() && selectValue == field2->getValue()){
+		return resultPart;
+	} else {
+		for (set<int>::iterator parameter1 = candidatesForParameter1.begin(); parameter1 != candidatesForParameter1.end(); ++parameter1) {
+			for (set<int>::iterator parameter2 = candidatesForParameter2.begin(); parameter2 != candidatesForParameter2.end(); ++parameter2) {
+				if (selectValue == field1->getValue() && pkbApi->callsStar(*parameter1, *parameter2)) {
+					resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
+				} else if (selectValue == field2->getValue() && pkbApi->callsStar(*parameter1, *parameter2)) {
+					resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
+				} else if (pkbApi->callsStar(*parameter1, *parameter2)){
+					return lines;
 				}
 			}
 		}
+	}
 
-		return resultPart;
+	return resultPart;
 }
 
 } /* namespace std */
