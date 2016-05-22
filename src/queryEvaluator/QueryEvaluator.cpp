@@ -49,7 +49,7 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 				} else if (s == "procedure") {
 					lines = pkbApi->getProceduresLines();
 					selectValue = (*begin)->data->getField1()->getValue();
-				} else if (s == "stmt") {
+				} else if (s == "stmt" || s == "boolean") {
 					set<int> tmp;
 					vector<int> tmp2;
 					tmp2 = pkb->getLineTable()->getAssignLines();
@@ -148,19 +148,29 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 	cout << "WYNIK: " ;
 	if(!lines.empty())
 	{
-		for(int i = 0 ; i < lines.size() ; i++)
+		if(resultType == "boolean")
+			cout << "TRUE";
+		else
 		{
-			if(resultType == "procedure")
+			for(int i = 0 ; i < lines.size() ; i++)
 			{
-				string name = pkbApi -> getProcName(pkbApi -> getProcId(lines[i]));
-				cout << name << " ";
+				if(resultType == "procedure")
+				{
+					string name = pkbApi -> getProcName(pkbApi -> getProcId(lines[i]));
+					cout << name << " ";
+				}
+				else
+					cout << lines[i] << " ";
 			}
-			else
-				cout << lines[i] << " ";
 		}
 	}
 	else
-		cout << "NONE";
+	{
+		if(resultType == "boolean")
+			cout << "FALSE";
+		else
+			cout << "NONE";
+	}
 
 	cout << endl;
 
@@ -286,14 +296,14 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 		for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 			for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 				if (pkb->getParent()->parent(*l1, *l2) == true) {
-					if (selectValue == field1->getValue() && selectValue == field2->getValue()) {
+					if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
 						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 						//return nullptr;
 						return resultPart;
-					} else if (selectValue == field1->getValue() && find(lines.begin(), lines.end(), *l1) != lines.end()) {
+					} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 						resultPart.push_back(*l1);
-					} else if (selectValue == field2->getValue() && find(lines.begin(), lines.end(), *l2) != lines.end()) {
+					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 						resultPart.push_back(*l2);
 					} else {
@@ -389,14 +399,14 @@ vector<int> QueryEvaluator::getParentSResult(Field* field1, Field* field2,
 			for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 				for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 					if (pkb->getParent()->parentStar(*l1, *l2) == true) {
-						if (selectValue == field1->getValue() && selectValue == field2->getValue()) {
+						if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
 							// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 							//return nullptr;
 							return resultPart;
-						} else if (selectValue == field1->getValue() && find(lines.begin(), lines.end(), *l1) != lines.end()) {
+						} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 							// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 							resultPart.push_back(*l1);
-						} else if (selectValue == field2->getValue() && find(lines.begin(), lines.end(), *l2) != lines.end()) {
+						} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
 							// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 							resultPart.push_back(*l2);
 						} else {
@@ -518,15 +528,15 @@ vector<int> QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vecto
 		for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 			for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 				if (pkb->getFollows()->follows(*l1, *l2) == true) {
-					if (selectValue == field1->getValue() && selectValue == field2->getValue()) {
+					if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
 						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 						//cout << "-" << endl;
 						return resultPart;
-					} else if (selectValue == field1->getValue() && find(lines.begin(), lines.end(), *l1) != lines.end()) {
+					} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 						//cout << "L1 " << *l1 << endl;
 						resultPart.push_back(*l1);
-					} else if (selectValue == field2->getValue() && find(lines.begin(), lines.end(), *l2) != lines.end()) {
+					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 						//cout << "L2 " << *l2 << endl;
 						resultPart.push_back(*l2);
@@ -660,15 +670,15 @@ vector<int> QueryEvaluator::getFollowsSResult(Field* field1, Field* field2, vect
 			for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 				if (pkb->getFollows()->followsStar(*l1, *l2) == true) {
 					//cout << "FOLLOWS TRUE" << endl;
-					if (selectValue == field1->getValue() && selectValue == field2->getValue()) {
+					if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
 						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 						//cout << "-" << endl;
 						return resultPart;
-					} else if (selectValue == field1->getValue() && find(lines.begin(), lines.end(), *l1) != lines.end()) {
+					} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 						//cout << "L1 " << *l1 << endl;
 						resultPart.push_back(*l1);
-					} else if (selectValue == field2->getValue() && find(lines.begin(), lines.end(), *l2) != lines.end()) {
+					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 						//cout << "L2 " << *l2 << endl;
 						resultPart.push_back(*l2);
@@ -780,22 +790,25 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 		}
 		// jesli nie spelnia to wszystkie zle, nie ma procedur  w programie hahahah :D
 		return resultPart;
-	} else if (selectValue == field1->getValue() && selectValue == field2->getValue()){
+	} else if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean"){
 		// w zapytaniu dwie takie same wartosci, a nie sa to any wiec zwracam pusta, bo nie mozna wywolywac rekurencyjnie
 		return resultPart;
 	} else {
 		for (set<int>::iterator parameter1 = candidatesForParameter1.begin(); parameter1 != candidatesForParameter1.end(); ++parameter1) {
 			for (set<int>::iterator parameter2 = candidatesForParameter2.begin(); parameter2 != candidatesForParameter2.end(); ++parameter2) {
-			    if (selectValue == field1->getValue() && pkbApi->calls(*parameter1, *parameter2)) {
-					// dodaje mozliwosc z par1 do wyniku gdy call(par1,*) gdzie * = 'any','const','var'
-					resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
-				} else if (selectValue == field2->getValue() && pkbApi->calls(*parameter1, *parameter2)) {
-					// dodaje mozliwosc z par2 do wyniku gdy call(*,par2) gdzie * = 'any','const','var'
-					resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
-				} else if (pkbApi->calls(*parameter1, *parameter2)){
-					// zwracam wszystkie czy call(1,_) lub call(_,1)
-					return lines;
-				}
+			    if(pkbApi->calls(*parameter1, *parameter2))
+			    {
+			    	if (selectValue == field1->getValue() && selectValue != "boolean") {
+						// dodaje mozliwosc z par1 do wyniku gdy call(par1,*) gdzie * = 'any','const','var'
+						resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
+					} else if (selectValue == field2->getValue() && selectValue != "boolean") {
+						// dodaje mozliwosc z par2 do wyniku gdy call(*,par2) gdzie * = 'any','const','var'
+						resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
+					} else {
+						// zwracam wszystkie czy call(1,_) lub call(_,1)
+						return lines;
+					}
+			    }
 			}
 		}
 	}
@@ -895,17 +908,23 @@ vector<int> QueryEvaluator::getCallStarResult(Field* field1, Field* field2, vect
 			return lines;
 		}
 		return resultPart;
-	} else if (selectValue == field1->getValue() && selectValue == field2->getValue()){
+	} else if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean"){
 		return resultPart;
 	} else {
 		for (set<int>::iterator parameter1 = candidatesForParameter1.begin(); parameter1 != candidatesForParameter1.end(); ++parameter1) {
 			for (set<int>::iterator parameter2 = candidatesForParameter2.begin(); parameter2 != candidatesForParameter2.end(); ++parameter2) {
-				if (selectValue == field1->getValue() && pkbApi->callsStar(*parameter1, *parameter2)) {
-					resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
-				} else if (selectValue == field2->getValue() && pkbApi->callsStar(*parameter1, *parameter2)) {
-					resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
-				} else if (pkbApi->callsStar(*parameter1, *parameter2)){
-					return lines;
+				if(pkbApi->callsStar(*parameter1, *parameter2))
+				{
+					if (selectValue == field1->getValue() && selectValue != "boolean") {
+						// dodaje mozliwosc z par1 do wyniku gdy call(par1,*) gdzie * = 'any','const','var'
+						resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
+					} else if (selectValue == field2->getValue() && selectValue != "boolean") {
+						// dodaje mozliwosc z par2 do wyniku gdy call(*,par2) gdzie * = 'any','const','var'
+						resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
+					} else {
+						// zwracam wszystkie czy call(1,_) lub call(_,1)
+						return lines;
+					}
 				}
 			}
 		}

@@ -118,14 +118,14 @@ public:
 			for (int i = 0; i<Tree->depth(begin); ++i)
 				cout << "    |";
 				cout << " \\ " << ((*begin)->data->getType());
-				/*
+
 				if((*begin)->data->getType() == "suchNode")
 					cout << "[" << (*begin)->data->getField1()->printField() << "," << (*begin)->data->getField2()->printField() << "]";
 				if((*begin)->data->getType() == "resultNode")
 					cout << "[" << (*begin)->data->getField1()->printField() << "]";
 				if((*begin)->data->getType() == "withNode")
 					cout << "[" << (*begin)->data->getField1()->printField() << "," << (*begin)->data->getField2()->printField() << "]";
-				 */
+
 			cout << endl;
 			++begin;
 		}

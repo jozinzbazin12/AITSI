@@ -42,8 +42,12 @@ public:
 		return (elem.find(".value") < elem.length());
 	}
 
+	bool checkBOOLEAN(string elem) {
+		return (elem.find("BOOLEAN") < elem.length());
+	}
+
 	bool checkAll(string elem) {
-		if (!checkVarName(elem) && !checkProcName(elem) && !checkStmt_(elem) && !checkValue(elem))
+		if (!checkVarName(elem) && !checkProcName(elem) && !checkStmt_(elem) && !checkValue(elem) && !checkBOOLEAN(elem))
 			return false;
 		else
 			return true;

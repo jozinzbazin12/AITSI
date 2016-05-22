@@ -284,25 +284,37 @@ private:
 		{
 			if(matcher->checkAll(selectParts[i]))
 			{
-				dotPos = selectParts[i].find(".");
-				aktField = findField(selectParts[i].substr(0,dotPos));
-				if(aktField != nullptr)
+				if(!matcher->checkBOOLEAN(selectParts[i]))
 				{
-					if(matcher->checkProcName(selectParts[i])) {
-						aktField->setProcName(true);
-					}
+					dotPos = selectParts[i].find(".");
+					aktField = findField(selectParts[i].substr(0,dotPos));
+					if(aktField != nullptr)
+					{
+						if(matcher->checkProcName(selectParts[i])) {
+							aktField->setProcName(true);
+						}
 
-					if (matcher->checkVarName(selectParts[i])) {
-						aktField->setVarName(true);
-					}
+						if (matcher->checkVarName(selectParts[i])) {
+							aktField->setVarName(true);
+						}
 
-					if (matcher->checkStmt_(selectParts[i])) {
-						aktField->setStmt(true);
-					}
+						if (matcher->checkStmt_(selectParts[i])) {
+							aktField->setStmt(true);
+						}
 
-					if (matcher->checkValue(selectParts[i])) {
-						aktField->setVal(true);
+						if (matcher->checkValue(selectParts[i])) {
+							aktField->setVal(true);
+						}
+						selectNodes.push_back(new PQLNode("resultNode", aktField));
 					}
+					else
+					{
+						exc->throwUnexpectedSelectPart();
+					}
+				}
+				else if(matcher->checkBOOLEAN(selectParts[i]))
+				{
+					aktField = new Field("boolean","boolean");
 					selectNodes.push_back(new PQLNode("resultNode", aktField));
 				}
 				else
