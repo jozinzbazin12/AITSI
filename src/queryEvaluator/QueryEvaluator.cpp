@@ -51,54 +51,13 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					set<int> tmp;
 					vector<int> tmp2;
 					tmp2 = pkb->getLineTable()->getAssignLines();
-					//cout << "TMP 1 - assign ";
-					//for (int ii = 0 ; ii < tmp2.size() ; ii++)
-					//	cout << tmp2[ii] << " ";
-					//cout << endl << "SETLINES ";
 					setLines.insert(tmp2.begin(),tmp2.end());
-					//std::copy(setLines.begin(), setLines.end(), tmp2.begin() );
-					//for (set<int>::iterator l2 = setLines.begin(); l2 != setLines.end(); ++l2)
-					//	cout << *l2 << " ";
-					//cout << endl;
-
-
 					tmp2 = pkb->getLineTable()->getWhileLines();
-					//cout << "TMP 2 - while ";
-					//for (int ii = 0 ; ii < tmp2.size() ; ii++)
-					//	cout << tmp2[ii] << " ";
-					//cout << endl;
-					//std::copy(setLines.begin(), setLines.end(), std::inserter( tmp2, tmp2.end() ) );
 					setLines.insert(tmp2.begin(),tmp2.end());
-					//for (set<int>::iterator l2 = setLines.begin(); l2 != setLines.end(); ++l2)
-					//	cout << *l2 << " ";
-					//cout << endl;
-
 					tmp2 = pkb->getLineTable()->getCallLines();
-					//cout << "TMP 3 - call ";
-					//for (int ii = 0 ; ii < tmp2.size() ; ii++)
-					//	cout << tmp2[ii] << " ";
-					//cout << endl;
-					//std::copy(setLines.begin(), setLines.end(), std::inserter( tmp2, tmp2.end() ) );
 					setLines.insert(tmp2.begin(),tmp2.end());
-					//for (set<int>::iterator l2 = setLines.begin(); l2 != setLines.end(); ++l2)
-					//	cout << *l2 << " ";
-					//cout << endl;
-
 					tmp2 = pkb->getLineTable()->getIfLines();
-					//cout << "TMP 4 - if ";
-					//for (int ii = 0 ; ii < tmp2.size() ; ii++)
-					//	cout << tmp2[ii] << " ";
-					//cout << endl;
-					//std::copy(setLines.begin(), setLines.end(), std::inserter( tmp2, tmp2.end() ) );
 					setLines.insert(tmp2.begin(),tmp2.end());
-					//for (set<int>::iterator l2 = setLines.begin(); l2 != setLines.end(); ++l2)
-					//	cout << *l2 << " ";
-					//cout << endl;
-
-					//setLines.insert(pkb->getLineTable()->getOrderedAssignLines().begin(),pkb->getLineTable()->getOrderedAssignLines().end());
-					//setLines.insert(pkb->getLineTable()->getOrderedWhileLines().begin(), pkb->getLineTable()->getOrderedWhileLines().end());
-					//setLines.insert(pkb->getLineTable()->getOrderedCallLines().begin(),pkb->getLineTable()->getOrderedCallLines().end());
-					//setLines.insert(pkb->getLineTable()->getOrderedIfLines().begin(),pkb->getLineTable()->getOrderedIfLines().end());
 					std::copy(setLines.begin(), setLines.end(), std::inserter( lines, lines.end() ) );
 					selectValue = (*begin)->data->getField1()->getValue();
 				} else if (s == "if") {
@@ -186,10 +145,12 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 
 	cout << "WYNIK: " ;
 	if(!lines.empty())
+	{
 		for(int i = 0 ; i < lines.size() ; i++)
 		{
 			cout << lines[i] << " ";
 		}
+	}
 	else
 		cout << "NONE";
 
@@ -310,9 +271,10 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 			setLines2 = pkb->getLineTable()->getOrderedAssignLines();
 		}
 	}
+
 	vector<int> resultPart;
 	// Sprawdzenie zaleznosci dla pobranych parametrow setLines1 oraz setLines2 i porównanie ich z wartosciami na lines (szukana wartosc)
-	if (setLines1.empty() && setLines2.empty()) {
+	if (!setLines1.empty() && !setLines2.empty()) {
 		for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 			for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 				if (pkb->getParent()->parent(*l1, *l2) == true) {
@@ -340,8 +302,105 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 
 vector<int> QueryEvaluator::getParentSResult(Field* field1, Field* field2,
 		vector<int> lines, string selectValue) {
+		set<int> setLines1;
+		set<int> setLines2;
+		//Sprawdzanie pierwszego parametru (Filed1) w relacji Parent
+		if (field1->getType() == "constant" && field2->getType() != "constant") {
+			int param = field1->getIntegerValue();
+			setLines1.insert(param);
+			if (field2->getType() == "stmt" || field2->getType() == "any") {
+				setLines2 = pkb->getLineTable()->getOrderedAssignLines();
+				set<int> tmp = pkb->getLineTable()->getOrderedWhileLines();
+				setLines2.insert(tmp.begin(), tmp.end());
+				tmp = pkb->getLineTable()->getOrderedIfLines();
+				setLines2.insert(tmp.begin(), tmp.end());
+				tmp = pkb->getLineTable()->getOrderedCallLines();
+				setLines2.insert(tmp.begin(), tmp.end());
+			} else if (field2->getType() == "while") {
+				setLines2 = pkb->getLineTable()->getOrderedWhileLines();
+			} else if (field2->getType() == "if") {
+				setLines2 = pkb->getLineTable()->getOrderedIfLines();
+			} else if (field2->getType() == "call") {
+				setLines2 = pkb->getLineTable()->getOrderedCallLines();
+			} else if (field2->getType() == "assign") {
+				setLines2 = pkb->getLineTable()->getOrderedAssignLines();
+			}
+		} else if (field1->getType() != "constant"
+				&& field2->getType() == "constant") {
+			int param = field2->getIntegerValue();
+			setLines2.insert(param);
+			if (field1->getType() == "stmt") {
+				setLines1 = pkb->getLineTable()->getOrderedWhileLines();
+				set<int> tmp = pkb->getLineTable()->getOrderedIfLines();
+				setLines1.insert(tmp.begin(), tmp.end());
+			} else if (field1->getType() == "while") {
+				setLines1 = pkb->getLineTable()->getOrderedWhileLines();
+			} else if (field1->getType() == "if") {
+				setLines1 = pkb->getLineTable()->getOrderedIfLines();
+			}
+		} else if (field1->getType() == "constant"
+				&& field2->getType() == "constant") {
+			int param1 = field1->getIntegerValue();
+			int param2 = field1->getIntegerValue();
+			if (pkb->getParent()->parent(param1, param2) == true) {
+				return lines;
+			}
+		} else {
+			if (field1->getType() == "stmt") {
+				setLines1 = pkb->getLineTable()->getOrderedWhileLines();
+				set<int> tmp = pkb->getLineTable()->getOrderedIfLines();
+				setLines1.insert(tmp.begin(), tmp.end());
+			} else if (field1->getType() == "while") {
+				setLines1 = pkb->getLineTable()->getOrderedWhileLines();
+			} else if (field1->getType() == "if") {
+				setLines1 = pkb->getLineTable()->getOrderedIfLines();
+			}
+			if (field2->getType() == "stmt" || field2->getType() == "prog_line"
+					|| field2->getType() == "any") {
+				set<int> tmp = pkb->getLineTable()->getOrderedWhileLines();
+				setLines2 = pkb->getLineTable()->getOrderedAssignLines();
+				setLines2.insert(tmp.begin(), tmp.end());
+				tmp = pkb->getLineTable()->getOrderedIfLines();
+				setLines2.insert(tmp.begin(), tmp.end());
+				tmp = pkb->getLineTable()->getOrderedCallLines();
+				setLines2.insert(tmp.begin(), tmp.end());
+			} else if (field2->getType() == "while") {
+				setLines2 = pkb->getLineTable()->getOrderedWhileLines();
+			} else if (field2->getType() == "if") {
+				setLines2 = pkb->getLineTable()->getOrderedIfLines();
+			} else if (field2->getType() == "call") {
+				setLines2 = pkb->getLineTable()->getOrderedCallLines();
+			} else if (field2->getType() == "assign") {
+				setLines2 = pkb->getLineTable()->getOrderedAssignLines();
+			}
+		}
 
-	return lines;
+		vector<int> resultPart;
+		// Sprawdzenie zaleznosci dla pobranych parametrow setLines1 oraz setLines2 i porównanie ich z wartosciami na lines (szukana wartosc)
+		if (!setLines1.empty() && !setLines2.empty()) {
+			for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
+				for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
+					if (pkb->getParent()->parentStar(*l1, *l2) == true) {
+						if (selectValue == field1->getValue() && selectValue == field2->getValue()) {
+							// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
+							//return nullptr;
+							return resultPart;
+						} else if (selectValue == field1->getValue() && find(lines.begin(), lines.end(), *l1) != lines.end()) {
+							// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
+							resultPart.push_back(*l1);
+						} else if (selectValue == field2->getValue() && find(lines.begin(), lines.end(), *l2) != lines.end()) {
+							// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
+							resultPart.push_back(*l2);
+						} else {
+							// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
+							return lines;
+						}
+					}
+				}
+			}
+		}
+		lines = resultPart;
+		return lines;
 }
 
 vector<int> QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vector<int> lines, string selectValue) {
@@ -445,22 +504,12 @@ vector<int> QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vecto
 		}
 	}
 
-	/*
-	for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1)
-		cout << *l1 << " ";
-	cout << endl;
-	for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2)
-		cout << *l2 << " ";
-	cout << endl;
-	*/
-
 	vector<int> resultPart;
 	// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
 	if (!setLines1.empty() && !setLines2.empty()) {
 		for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 			for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 				if (pkb->getFollows()->follows(*l1, *l2) == true) {
-					//cout << "FOLLOWS TRUE" << endl;
 					if (selectValue == field1->getValue() && selectValue == field2->getValue()) {
 						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 						//cout << "-" << endl;
