@@ -50,7 +50,6 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 					lines = pkbApi->getProceduresLines();
 					selectValue = (*begin)->data->getField1()->getValue();
 				} else if (s == "stmt" || s == "boolean") {
-					set<int> tmp;
 					vector<int> tmp2;
 					tmp2 = pkb->getLineTable()->getAssignLines();
 					setLines.insert(tmp2.begin(),tmp2.end());
@@ -179,40 +178,75 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 
 vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2,
 		vector<int> lines, string selectValue) {
-	set<int> setLines;
-	// "any", "assign", "procedure", "while", "constant", "variable", "prog_line", "stmt"
-	//if(field1->getType() == "any"){ 1st argument Modifies nigdy nie bedzie ' _ '
+	set<int> setLines1;
+	set<string> setString1;
+	set<int> setLines2;
+	set<string> setString2;
+	//Sprawdzanie pierwszego parametru (Filed1) w relacji Modifies
+	if (field1->getType() == "constant") {
+		int param = field1->getIntegerValue();
+		setLines1.insert(param);
+		if (field2->getType() == "variable") {
+			//dopisac wstawianie variable name do zmiennej pomocniczej SetString2? czy cos takiego
+		} else if (field2->getType() == "string"){
+			//Dopisac zapisywanie nazwy tej zmiennej w setLines2 - czyli setString2 ??
+		//	setString2 = field2->getValue();
+					//pkb->getVarTable->getVarName(id..); ????
+		}
+	} else {
+		if (field1->getType() == "stmt") {
+			setLines1 = pkb->getLineTable()->getOrderedWhileLines();
+			setLines1.insert(pkb->getLineTable()->getOrderedIfLines().begin(),pkb->getLineTable()->getOrderedIfLines().end());
+			//set<int> tmp = pkb->getLineTable()->getOrderedIfLines();
+			//setLines1.insert(tmp.begin(), tmp.end());
+			setLines1.insert(pkb->getLineTable()->getOrderedCallLines().begin(),pkb->getLineTable()->getOrderedCallLines().end());
+			setLines1.insert(pkb->getLineTable()->getOrderedAssignLines().begin(),pkb->getLineTable()->getOrderedAssignLines().end());
 
-	//}
-	//FIELD1
-	if (field1->getType() == "assign") {
-		setLines = pkb->getLineTable()->getOrderedAssignLines();
-	} else if (field1->getType() == "procedure") {
-
-	} else if (field1->getType() == "while") {
-
+		} else if (field1->getType() == "while") {
+			setLines1 = pkb->getLineTable()->getOrderedWhileLines();
+		} else if (field1->getType() == "if") {
+			setLines1 = pkb->getLineTable()->getOrderedIfLines();
+		} else if (field1->getType() == "call") {
+			setLines1 = pkb->getLineTable()->getOrderedCallLines();
+		} else if (field1->getType() == "assign") {
+			setLines1 = pkb->getLineTable()->getOrderedAssignLines();
+		} else if (field1->getType() == "procedure" ) {
+			//Dopisac dodawanie procedure
+		} else if (field1->getType() == "string"){
+				//Dopisac dodawanie string
+		}
+		//Sprawdzanie drugiego parametru w relacji Modifies (moze to byc tylko variable lub var_name)
+		if (field2->getType() == "variable" || field2->getType() == "any") {
+			// Tutaj dopisac dodawanie variable do setString2
+		} else if (field2->getType() == "string") {
+			// tutaj do zmiennej setString2 wpierdzielic wartosc konkretna var_name
+		}
 	}
-	//dla Constant czyli stalych wartosci - pobieram assign list
-	//i sprawdzam dla wartosci constant - jezeli prawda to wszystkie assign s¹ ok
-	else if (field2->getType() == "constant") {
 
-	}
-	//stmt czyli : assign, call, while, if
-	else if (field1->getType() == "stmt") {
-		set<int> tmp = pkb->getLineTable()->getOrderedAssignLines();
-		setLines = tmp;
-		tmp = pkb->getLineTable()->getOrderedWhileLines();
-		setLines.insert(tmp.begin(), tmp.end());
-		tmp = pkb->getLineTable()->getOrderedIfLines();
-		setLines.insert(tmp.begin(), tmp.end());
-		tmp = pkb->getLineTable()->getOrderedCallLines();
-		setLines.insert(tmp.begin(), tmp.end());
-	} else if (field1->getType() == "variable") {
-
-	} else if (field1->getType() == "prog_line") {
-
-	}
-
+/*	vector<int> resultPart;
+	// Sprawdzenie zaleznosci dla pobranych parametrow setLines1 oraz setLines2 i porównanie ich z wartosciami na lines (szukana wartosc)
+	if (!setLines1.empty() && !setLines2.empty()) {
+		for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
+			for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
+				if (pkb->getModifies()->modifies(*l1, var name) == true) {
+					if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
+						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
+						//return nullptr;
+						return resultPart;
+					} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
+						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
+						resultPart.push_back(*l1);
+					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
+						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
+						resultPart.push_back(*l2);
+					} else {
+						// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
+						return lines;
+					}
+				}
+			}
+		}
+	}*/
 	return lines;
 }
 
