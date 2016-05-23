@@ -452,7 +452,7 @@ void DesignExtractor::setCallLines() {
 			if (!(*begin)->data) {
 				cout << "error <set call's>" << endl;
 			} else {
-				linesTable->addCallLine((*begin)->data->lineNumber);
+				linesTable->addCallLine((*begin)->data->lineNumber,(*begin)->data->value);
 			}
 		}
 		++begin;

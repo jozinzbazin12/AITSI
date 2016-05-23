@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <string>
 #ifndef _GLIBCXX_SET
 #include <set>
 #endif
@@ -22,6 +23,7 @@ public:
 	LinesTable();
 	virtual ~LinesTable();
 	int getLinesCount();
+	string getCalledProcName(int callLine);
 	vector<int> getAssignLines();
 	set<int> getOrderedAssignLines();
 	map<int, string> getAllLines();
@@ -38,7 +40,7 @@ public:
 	string getLineString(int lineNumber); // zwraca test który byl w linii o tym numerze
 	void addWhileLine(int loopLine,int stmtLine);
 	void addIfLine(int ifLine, int stmtLine);
-	void addCallLine(int callLine);
+	void addCallLine(int callLine,string procName);
 	void addAssignLine(int assignLine);
 	void addLine(string text);
 	void writeAll();
@@ -52,6 +54,7 @@ private:
 	map<int, string> lines; // tutaj po prostu dla kolejnych numerów linii ich tekst (mo¿na na vector zamienic)
 	vector<int> assignLines;
 	vector<int> callLines;
+	map<int,string> pkbCallLines;
 	map<int, vector<int>> whileLines;
 	map<int, vector<int>> ifLines;
 
