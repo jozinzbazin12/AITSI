@@ -116,6 +116,7 @@ public:
 		return Tree->is_valid(it);
 	}
 
+	/*
 	tree<tree_node_<vector<int>*>*> getCFGTree(tree<tree_node_<ASTNode*>*>::iterator begin, tree<tree_node_<ASTNode*>*>::iterator end) {
 		tree<tree_node_<vector<int>*>*>* cfgTree = new tree<tree_node_<vector<int>*>*>();
 		int i = 0;
@@ -147,6 +148,7 @@ public:
 		}
 		return cfgTree;
 	}
+	*/
 
 	void printTree() {
 		tree<tree_node_<ASTNode*>*>::iterator begin = Tree->begin();
