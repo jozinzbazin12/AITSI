@@ -452,7 +452,8 @@ void DesignExtractor::setCallLines() {
 			if (!(*begin)->data) {
 				cout << "error <set call's>" << endl;
 			} else {
-				linesTable->addCallLine((*begin)->data->lineNumber,(*begin)->data->value);
+				linesTable->addCallLine((*begin)->data->lineNumber,
+						(*begin)->data->value);
 			}
 		}
 		++begin;
@@ -489,6 +490,7 @@ void DesignExtractor::setProcTable() {
 
 	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
 	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
 
 	while (begin != end) {
 		if (ASTtree->isValid(begin) && (*begin)->data->type == "PROCEDURE") {
@@ -497,9 +499,58 @@ void DesignExtractor::setProcTable() {
 			} else {
 				procTable->addProc(((*begin)->data->value),
 						((*begin)->data->lineNumber));
+
+				//get childs
+				for (int i = 0; i < ASTtree->getNumberOfChildren(begin); i++) {
+
+					tmp = ASTtree->getChild(begin, i);
+					if (ASTtree->isValid(tmp)) {
+
+						if ((*tmp)->data->type == "IF"
+								|| (*tmp)->data->type == "ELSE"
+								|| (*tmp)->data->type == "WHILE") {
+							procRecur(tmp, begin);
+
+						} else {
+							procTable->addProcBodyLine(
+									(*begin)->data->lineNumber,
+									(*tmp)->data->lineNumber);
+						}
+
+					}
+				}
+
 			}
 		}
 		++begin;
 	}
 }
 
+void DesignExtractor::procRecur(tree<tree_node_<ASTNode*>*>::iterator current,
+		tree<tree_node_<ASTNode*>*>::iterator procNode) {
+
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
+	ASTTree * ASTtree = pkb->getASTTree();
+	ProcTable * procTable = pkb->getProcTable();
+
+	procTable->addProcBodyLine((*procNode)->data->lineNumber,
+			(*current)->data->lineNumber);
+
+	for (int i = 0; i < ASTtree->getNumberOfChildren(current); i++) {
+
+		tmp = ASTtree->getChild(current, i);
+		if (ASTtree->isValid(tmp)) {
+
+			if ((*tmp)->data->type == "IF" || (*tmp)->data->type == "ELSE"
+					|| (*tmp)->data->type == "WHILE") {
+				procRecur(tmp, procNode);
+
+			} else {
+				procTable->addProcBodyLine((*procNode)->data->lineNumber,
+						(*tmp)->data->lineNumber);
+			}
+
+		}
+	}
+
+}

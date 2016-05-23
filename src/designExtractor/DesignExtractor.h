@@ -33,6 +33,8 @@ private:
 			tree<tree_node_<ASTNode*>*>::iterator ifNode);
 	void whileRecur(tree<tree_node_<ASTNode*>*>::iterator current,
 			tree<tree_node_<ASTNode*>*>::iterator whileNode);
+	void procRecur(tree<tree_node_<ASTNode*>*>::iterator current,
+			tree<tree_node_<ASTNode*>*>::iterator procNode);
 	void setIfLines();
 	void setCallLines();
 };

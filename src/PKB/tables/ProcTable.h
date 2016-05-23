@@ -10,7 +10,7 @@
 
 #include<string>
 #include<vector>
-
+#include<map>
 using namespace std;
 
 class ProcTable {
@@ -25,11 +25,17 @@ public:
 	virtual int getProcStartLine(string name);
 	virtual string getProcName(int id);
 	virtual void writeProcLines();
+	virtual void writeProcBodyLines();
 	virtual vector<int> getProceduresLines();
+	virtual map<int, vector<int>> getProceduresBodyLines();
+	virtual vector<int> getProceduresBodyLines(int procStartLine);
+	virtual void addProcBodyLine(int procStartLine, int stmtLine);
+
 
 private:
 	vector<string> procedures;
 	vector<int> proceduresStartLines;
+	map<int, vector<int>> proceduresLines;
 	int procId;
 };
 
