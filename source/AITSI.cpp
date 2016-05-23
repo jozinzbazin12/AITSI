@@ -170,10 +170,7 @@ void initSyntax() {
 #include "parser/parser.h"
 #include "globalVars.h"
 
-PKB * pkb = new PKB();
-DesignExtractor * designExtractor = new DesignExtractor();
-
-int main(int argc, char** args) {
+/*int main(int argc, char** args) {
 	if (argc <= 1) {
 		cout << "No arguments, to see usage help, use \"help\" parameter";
 		return 0;
@@ -252,4 +249,4 @@ int main(int argc, char** args) {
 	}
 	mainPQL();
 	return 0;
-}
+}*/

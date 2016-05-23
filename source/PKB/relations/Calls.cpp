@@ -73,7 +73,7 @@ bool Calls::calls(int callerId, int calleeId){
 bool Calls::callsStar(int callerId, int calleeId){
 	int tabSize = maxId + 1;
 	//FIXME do sth with const number -.-
-	bool visited[1651651616];
+	bool visited[200];
 	for(int i=0; i<maxId+1; i++)
 		visited[i] = false;
 
