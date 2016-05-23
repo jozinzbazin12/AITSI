@@ -508,6 +508,7 @@ void DesignExtractor::setProcTable() {
 						((*begin)->data->lineNumber));
 
 				//get childs
+				int procId = procTable->getProcId((*begin)->data->lineNumber);
 				for (int i = 0; i < ASTtree->getNumberOfChildren(begin); i++) {
 
 					tmp = ASTtree->getChild(begin, i);
@@ -516,11 +517,11 @@ void DesignExtractor::setProcTable() {
 						if ((*tmp)->data->type == "IF"
 								|| (*tmp)->data->type == "ELSE"
 								|| (*tmp)->data->type == "WHILE") {
-							procRecur(tmp, begin);
+							procRecur(tmp, procId);
 
 						} else {
 							procTable->addProcBodyLine(
-									(*begin)->data->lineNumber,
+									procId,
 									(*tmp)->data->lineNumber);
 						}
 
@@ -533,14 +534,13 @@ void DesignExtractor::setProcTable() {
 	}
 }
 
-void DesignExtractor::procRecur(tree<tree_node_<ASTNode*>*>::iterator current,
-		tree<tree_node_<ASTNode*>*>::iterator procNode) {
+void DesignExtractor::procRecur(tree<tree_node_<ASTNode*>*>::iterator current,int procId) {
 
 	tree<tree_node_<ASTNode*>*>::iterator tmp;
 	ASTTree * ASTtree = pkb->getASTTree();
 	ProcTable * procTable = pkb->getProcTable();
 
-	procTable->addProcBodyLine((*procNode)->data->lineNumber,
+	procTable->addProcBodyLine(procId,
 			(*current)->data->lineNumber);
 
 	for (int i = 0; i < ASTtree->getNumberOfChildren(current); i++) {
@@ -550,10 +550,10 @@ void DesignExtractor::procRecur(tree<tree_node_<ASTNode*>*>::iterator current,
 
 			if ((*tmp)->data->type == "IF" || (*tmp)->data->type == "ELSE"
 					|| (*tmp)->data->type == "WHILE") {
-				procRecur(tmp, procNode);
+				procRecur(tmp, procId);
 
 			} else {
-				procTable->addProcBodyLine((*procNode)->data->lineNumber,
+				procTable->addProcBodyLine(procId,
 						(*tmp)->data->lineNumber);
 			}
 

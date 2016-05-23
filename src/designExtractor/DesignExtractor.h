@@ -34,7 +34,7 @@ private:
 	void whileRecur(tree<tree_node_<ASTNode*>*>::iterator current,
 			tree<tree_node_<ASTNode*>*>::iterator whileNode);
 	void procRecur(tree<tree_node_<ASTNode*>*>::iterator current,
-			tree<tree_node_<ASTNode*>*>::iterator procNode);
+			int procId);
 	void setIfLines();
 	void setCallLines();
 };

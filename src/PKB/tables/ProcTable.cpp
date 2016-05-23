@@ -21,8 +21,8 @@ int ProcTable::addProc(string name, int startLine) {
 	procId++;
 	return procId - 1;
 }
-void ProcTable::addProcBodyLine(int procStartLine, int stmtLine) {
-	proceduresLines[procStartLine].push_back(stmtLine);
+void ProcTable::addProcBodyLine(int procId, int stmtLine) {
+	proceduresLines[procId].push_back(stmtLine);
 }
 map<int, vector<int>> ProcTable::getProceduresBodyLines() {
 	return proceduresLines;
@@ -90,8 +90,8 @@ void ProcTable::writeProcBodyLines() {
 vector<int> ProcTable::getProceduresLines() {
 	return proceduresStartLines;
 }
-vector<int> ProcTable::getProceduresBodyLines(int procStartLine) {  // JAK TO ZABEZPIECZYC PRZED WYJEBANIEM JAK NIE BEDZIE TAKIEGO KLUCZA ?!!??!
-	if (!(proceduresLines.find(procStartLine) == proceduresLines.end()))
-		return proceduresLines.find(procStartLine)->second;
+vector<int> ProcTable::getProceduresBodyLines(int procId) {  // JAK TO ZABEZPIECZYC PRZED WYJEBANIEM JAK NIE BEDZIE TAKIEGO KLUCZA ?!!??!
+	if (!(proceduresLines.find(procId) == proceduresLines.end()))
+		return proceduresLines.find(procId)->second;
 
 }
