@@ -1,9 +1,9 @@
 /*
- * Parent.cpp
- *
- *  Created on: 29 mar 2016
- *      Author: Pawel
- */
+* Parent.cpp
+*
+*  Created on: 29 mar 2016
+*      Author: Pawel
+*/
 
 #include "Parent.h"
 
@@ -25,15 +25,27 @@ void Parent::addKid(int lineNumber, int kidLine) {
 }
 
 bool Parent::parent(int parentLine, int kidLine) {
-	if (lineParent.count(parentLine) > 0){
-		return lineParent.at(parentLine) == kidLine;
+	if (lineParent.count(kidLine) > 0) {
+		return lineParent.at(kidLine) == parentLine;
 	}
+	return false;
+}
+
+bool Parent::parentStar(int parentLine, int kidLine) {
+	if (parent(parentLine, kidLine)) {
+		return true;
+	}
+
+	if (lineParent.count(kidLine) > 0) {
+		return parentStar(parentLine, lineParent.at(kidLine));
+	}
+
 	return false;
 }
 
 void Parent::writeAll() {
 	for (map<int, vector<int> >::iterator iter = lineKids.begin();
-			iter != lineKids.end(); ++iter) {
+		iter != lineKids.end(); ++iter) {
 		vector<int> tempVec = (*iter).second;
 		int key = (*iter).first;
 		cout << key << " :";
@@ -43,13 +55,13 @@ void Parent::writeAll() {
 		cout << endl;
 	}
 
-	cout << "\nparents\n";
+	/*	cout << "\nparents\n";
 
 	for (map<int, int>::iterator iter = lineParent.begin();
-			iter != lineParent.end(); ++iter) {
-		int value = (*iter).second;
-		int key = (*iter).first;
-		cout << key << " : " << value << endl;
-	}
+	iter != lineParent.end(); ++iter) {
+	int value = (*iter).second;
+	int key = (*iter).first;
+	cout << key << " : " << value << endl;
+	}*/
 }
 

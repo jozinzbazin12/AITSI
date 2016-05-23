@@ -1,9 +1,9 @@
 /*
- * Follows.cpp
- *
- *  Created on: 29 mar 2016
- *      Author: Pawel
- */
+* Follows.cpp
+*
+*  Created on: 29 mar 2016
+*      Author: Pawel
+*/
 
 #include "Follows.h"
 
@@ -16,29 +16,40 @@ Follows::~Follows() {
 	// TODO Auto-generated destructor stub
 }
 
-void Follows::addNext(int lineNum,int followLineNum){
+void Follows::addNext(int lineNum, int followLineNum) {
 	varNextFollowers[lineNum] = followLineNum;
 }
 
-void Follows::addPrev(int lineNum,int prevLineNum){
+void Follows::addPrev(int lineNum, int prevLineNum) {
 	varPrevFollowers[lineNum] = prevLineNum;
 }
 
-bool Follows::follows(int lineNum,int followerLineNum){
-	if(varNextFollowers.count(lineNum)>0){
+bool Follows::follows(int lineNum, int followerLineNum) {
+	if (varNextFollowers.count(lineNum)>0) {
 		return varNextFollowers.at(lineNum) == followerLineNum;
 	}
 	return false;
 }
 
-void Follows::writeAll(){
-	for (map<int, int>::iterator iter = varNextFollowers.begin(); iter != varNextFollowers.end(); ++iter) {
-		cout << (*iter).first << " --> " << (*iter).second <<endl;
+bool Follows::followsStar(int lineNum, int followerLineNum) {
+	if (follows(lineNum, followerLineNum))
+		return true;
+
+	if (varNextFollowers.count(lineNum)>0) {
+		return followsStar(varNextFollowers[lineNum], followerLineNum);
 	}
 
-	cout << endl;
+	return false;
+}
+
+void Follows::writeAll() {
+	for (map<int, int>::iterator iter = varNextFollowers.begin(); iter != varNextFollowers.end(); ++iter) {
+		cout << (*iter).first << " --> " << (*iter).second << endl;
+	}
+
+	/*	cout << endl;
 
 	for (map<int, int>::iterator iter = varPrevFollowers.begin(); iter != varPrevFollowers.end(); ++iter) {
-		cout << (*iter).first << " <-- " << (*iter).second <<endl;
-	}
+	cout << (*iter).first << " <-- " << (*iter).second <<endl;
+	}*/
 }

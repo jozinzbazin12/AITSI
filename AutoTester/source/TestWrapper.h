@@ -7,7 +7,6 @@
 
 // include your other headers here
 #include "AbstractWrapper.h"
-#include "AITSI.cpp"
 
 class TestWrapper : public AbstractWrapper {
  public:

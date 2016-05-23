@@ -8,15 +8,18 @@
 #include <map>
 #include <iterator>
 #include <stack>
+
+using namespace std;
+#include "types.h"
 #include "PQL/tree_util.hh"
 #include "PQL/PQLNode.h"
 #include "PQL/PQLTree.h"
 #include "QueryPreProcessor.h"
 #include "Validator/Validator.h"
 #include "PQL/PQL.h"
+#include "queryEvaluator/QueryEvaluator.h"
 
-using namespace std;
-bool debug = true;
+bool debug = false;
 
 string toLower(string str) {
 	transform(str.begin(), str.end(), str.begin(), ::tolower);
@@ -47,15 +50,25 @@ void mainPQL() {
 	pql->enterQuery();
 	//pql->processQuery(pql->getQuery());
 	//string a = "assign a; select a such that follows(a,\"a\");";
-	cout << "**** ZAPYTANIE **************************************************" << endl;
-	cout << pql->getQuery()<< endl << endl;
+	cout << "**** ZAPYTANIE **************************************************"
+		<< endl;
+	cout << pql->getQuery() << endl << endl;
 	cout << "**** DRZEWO *****************************************************" << endl;
 	que->parseQuery(pql->getQuery());
 	tree<tree_node_<PQLNode>>::iterator iter;
 	PQLTree* tree = que->getTree();
 	tree->printTree();
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	cout << endl;
 	cout << "**** KONIEC DRZEWA*****************************************************" << endl;
+
+	cout << "**** EVALUATOR *****************************************************" << endl;
+
+	QueryEvaluator* queEva = new QueryEvaluator();
+	queEva->getResult(tree);
+
+	cout << "**** KONIEC EVALUATORA *****************************************************" << endl;
+
 	cout << "**** WALIDACJA TESTY - KRZYSIEK****************************************" << endl;
 	cout << v->checkSelect("select dgdd 4 23") << endl;
 	cout << v->checkSelect("select select dgdd 4 23") << endl;
@@ -74,8 +87,7 @@ void mainPQL() {
 	cout << v->checkRelationship2("modifies(s,v)") << endl;
 	cout << v->checkAttribute("constant.value") << endl;
 	cout << "**** WALIDACJA TESTY - KONIEC****************************************" << endl;
-
-
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 #include "exceptions.h"
@@ -92,8 +104,18 @@ void mainPQL() {
 void initSyntax() {
 	Syntax* s = new ProcedureSyntax();
 	Syntax::allSynstax[s->keyWord] = s;
+	Syntax* w = new WhileSyntax();
+	Syntax::allSynstax[w->keyWord] = w;
 	Syntax* op = new OperandSyntax();
 	Syntax::allSynstax[op->keyWord] = op;
+	Syntax* callMeBabe = new CallSyntax();
+	Syntax::allSynstax[callMeBabe->keyWord] = callMeBabe;
+	Syntax* yiff = new IfSyntax();
+	Syntax::allSynstax[yiff->keyWord] = yiff;
+	Syntax* elze = new ElseSyntax();
+	Syntax::allSynstax[elze->keyWord] = elze;
+	Syntax* empty = new EmptySyntax();
+	Syntax::allSynstax[empty->keyWord] = empty;
 
 	RecursiveSyntax* ass = new AssingmentSyntax();
 	Syntax::allSynstax[ass->keyWord] = ass;
@@ -146,38 +168,88 @@ void initSyntax() {
 }
 
 #include "parser/parser.h"
+#include "globalVars.h"
+
+PKB * pkb = new PKB();
+DesignExtractor * designExtractor = new DesignExtractor();
 
 int main(int argc, char** args) {
 	if (argc <= 1) {
 		cout << "No arguments, to see usage help, use \"help\" parameter";
 		return 0;
 	}
-//W args[0] jest sciezka do exe.
+	//W args[0] jest sciezka do exe.
 	string action = string(args[1]);
 	if (action == "help") {
 		cout << "Usage...\n";
-	} else if (action == "file") {
+	}
+	else if (action == "file") {
 		initSyntax();
 		Parser parser(args[2]);
 		if (!parser.fileExists) {
 			cout << "File not found\n";
-		} else {
+		}
+		else {
 			try {
 				parser.parse();
 				cout << "OK" << endl;
 				parser.root->printTree();
-			} catch (RuntimeException &ex) {
+				pkb->setASTTree(parser.root);
+				designExtractor->start();
+
+				cout << "**********************************************************\n";
+				cout << "***********FOLLOWS**\n";
+				pkb->getFollows()->writeAll();
+				cout << "**********************************************************\n";
+				cout << "***********PARENTS**\n";
+				pkb->getParent()->writeAll();
+				cout << "**********************************************************\n";
+
+				cout << "***********USES**\n";
+				pkb->getUses()->writeAll();
+				cout << "**********************************************************\n";
+
+				cout << "***********VARIABLES**\n";
+				pkb->getVarTable()->writeAll();
+				cout << "**********************************************************\n";
+
+				cout << "***********IF LINES**\n";
+				pkb->getLineTable()->writeIfLines();
+				cout << "**********************************************************\n";
+
+				cout << "***********WHILE LINES**\n";
+				pkb->getLineTable()->writeWhileLines();
+				cout
+					<< "**********************************************************\n";
+
+				cout << "***********CALL LINES**\n";
+				pkb->getLineTable()->writeCallLines();
+				cout << "**********************************************************\n";
+
+				cout << "***********PROC LINES**\n";
+				pkb->getProcTable()->writeProcLines();
+				cout << "**********************************************************\n";
+				cout << "***********MODIFIES**\n";
+				pkb->getModifies()->writeAll();
+				cout << "**********************************************************\n";
+				cout << "***********LINES**\n";
+				pkb->getLineTable()->writeAll();
+				cout << "**********************************************************\n";
+
+			}
+			catch (RuntimeException &ex) {
 				ex.print();
-				cout << "FAIL";
-			} catch (Exception &ex) {
+				cout << "FAIL" << endl;
+			}
+			catch (Exception &ex) {
 				ex.print();
-				cout << "FAIL";
+				cout << "FAIL" << endl;
 			}
 		}
-	} else {
+	}
+	else {
 		cout << "Invalid arguments";
 	}
 	mainPQL();
 	return 0;
 }
-

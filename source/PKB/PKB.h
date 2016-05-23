@@ -1,19 +1,21 @@
 /*
- * PKB.h
- *
- *  Created on: 31 mar 2016
- *      Author: Pawel
- */
+* PKB.h
+*
+*  Created on: 31 mar 2016
+*      Author: Pawel
+*/
 
 #ifndef SRC_PKB_PKB_H_
 #define SRC_PKB_PKB_H_
 
 #include <iostream>
 #include "ast/tree_util.hh"
+
 #include "ast/ASTNode.h"
 #include "ast/ASTTree.h"
 #include "tables/VarTable.h"
 #include "tables/LinesTable.h"
+#include "tables/ProcTable.h"
 
 #include "relations/Parent.h"
 #include "relations/Follows.h"
@@ -21,9 +23,21 @@
 #include "relations/Uses.h"
 #include "relations/Modifies.h"
 
+#include "relations/Calls.h"
+
 class PKB {
 public:
-	static PKB& getInstance();
+
+	PKB() {
+		modifies = new Modifies();
+		uses = new Uses();
+		parent = new Parent();
+		follows = new Follows();
+		calls = new Calls();
+		varTable = new VarTable();
+		lineTable = new LinesTable();
+		procTable = new ProcTable();
+	}
 
 	virtual ~PKB();
 
@@ -43,41 +57,39 @@ public:
 		return uses;
 	}
 
-	ASTTree* getASTTree(){
-		if(tree == NULL)
-			setASTTree();
+	Calls* getCalls() {
+		return calls;
+	}
+
+	ASTTree* getASTTree() {
 		return tree;
 	}
 
-	VarTable* getVarTable(){
+	VarTable* getVarTable() {
 		return varTable;
 	}
 
-	LinesTable* getLineTable(){
-			return lineTable;
+	LinesTable* getLineTable() {
+		return lineTable;
 	}
 
-	void setASTTree(){
-
+	ProcTable* getProcTable() {
+		return procTable;
 	}
 
+	void setASTTree(ASTTree * tree2) {
+		tree = tree2;
+	}
 private:
 	Modifies* modifies = NULL;
 	Uses* uses = NULL;
 	Parent* parent = NULL;
 	Follows* follows = NULL;
+	Calls* calls = NULL;
 	ASTTree * tree = NULL;
 	VarTable * varTable = NULL;
 	LinesTable * lineTable = NULL;
-
-	PKB(){
-		modifies = new Modifies();
-		uses = new Uses();
-		parent = new Parent();
-		follows = new Follows();
-		varTable = new VarTable();
-		lineTable = new LinesTable();
-	}
+	ProcTable * procTable = NULL;
 };
 
 #endif /* SRC_PKB_PKB_H_ */

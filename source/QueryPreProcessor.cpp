@@ -1,9 +1,9 @@
 /*
- * QueryPreProcessor.cpp
- *
- *  Created on: 29 mar 2016
- *      Author: Popek
- */
+* QueryPreProcessor.cpp
+*
+*  Created on: 29 mar 2016
+*      Author: Popek
+*/
 
 #include "QueryPreProcessor.h"
 
@@ -26,17 +26,21 @@ void QueryPreProcessor::parseQuery(string query) {
 	vector<string> result_part;
 	vector<string> query_part;
 
+	//writeVector(first_split);
+
 	MatcherPQL* m = new MatcherPQL();
-	for(size_t i = 0 ; i < first_split.size() ; i ++)
+	for (size_t i = 0; i < first_split.size(); i++)
 	{
-		if(!m->checkTokens(first_split[i], "select"))
+		if (!m->checkTokens(first_split[i], "Select"))
 			result_part.push_back(first_split[i]);
 		else
 			query_part.push_back(first_split[i]);
 	}
 	delete m;
 
-	if(query_part.size() == 0) {
+	//writeVector(result_part);
+
+	if (query_part.size() == 0) {
 		exc->throwException();
 	}
 
@@ -53,8 +57,10 @@ void QueryPreProcessor::parseQuery(string query) {
 	//writeVector(query_part);
 
 	makeTree(query_part);
+
 	/*
 	for (int j = 0; j < fields.size(); j++) {
-		cout << fields[j].getType() << " " << fields[j].getValue() << endl;
-	}*/
+	cout << fields[j].getType() << " " << fields[j].getValue() << endl;
+	}
+	*/
 }

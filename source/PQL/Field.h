@@ -1,9 +1,9 @@
 /*
- * Field.h
- *
- *  Created on: 29 mar 2016
- *      Author: Popek
- */
+* Field.h
+*
+*  Created on: 29 mar 2016
+*      Author: Popek
+*/
 
 #ifndef SRC_TREE_FIELD_H_
 #define SRC_TREE_FIELD_H_
@@ -25,6 +25,7 @@ public:
 	bool isVal();
 	void setVal(bool val);
 	string& getValue();
+	int getIntegerValue();
 	void setValue(string& value);
 	bool isProcName();
 	void setProcName(bool procName);
@@ -34,7 +35,7 @@ public:
 
 
 private:
-	string type;
+	string type;  // assign, string, constant, variable, prog_line, procedure, stmt#, any
 	string value;
 	bool procName; // DEFAULT FALSE
 	bool varName; // DEFAULT FALSE

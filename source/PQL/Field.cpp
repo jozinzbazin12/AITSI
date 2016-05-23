@@ -1,10 +1,13 @@
 /*
- * Field.cpp
- *
- *  Created on: 29 mar 2016
- *      Author: Popek
- */
+* Field.cpp
+*
+*  Created on: 29 mar 2016
+*      Author: Popek
+*/
 
+#ifndef _STDLIB_H_
+#include <stdlib.h>
+#endif
 #include <iostream>
 #include <sstream>
 #include "Field.h"
@@ -26,7 +29,7 @@ Field::Field(string type, string value) {
 }
 
 Field::Field(string type, string value, bool procName, bool varName, bool val,
-		bool stmt) {
+	bool stmt) {
 	this->type = type;
 	this->value = value;
 	this->procName = procName;
@@ -65,6 +68,10 @@ void Field::setVal(bool val) {
 
 string& Field::getValue() {
 	return value;
+}
+
+int Field::getIntegerValue() {
+	return std::stoi(value);
 }
 
 void Field::setValue(string& value) {

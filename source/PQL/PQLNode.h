@@ -1,9 +1,9 @@
 /*
- * PQLNode.h
- *
- *  Created on: 30 mar 2016
- *      Author: Popek
- */
+* PQLNode.h
+*
+*  Created on: 30 mar 2016
+*      Author: Popek
+*/
 
 #ifndef SRC_PQL_PQLNODE_H_
 #define SRC_PQL_PQLNODE_H_
@@ -27,10 +27,17 @@ public:
 		this->type = type; // type = "resultNode"
 		this->field1 = field1;
 	}
+	// for WithNode
+	PQLNode(string type, Field* field1, Field* field2) {
+		this->type = type; // type = "withNode"
+		this->field1 = field1;
+		this->field2 = field2;
+	}
 	// for SuchNode
-	PQLNode(string type, string nodeType, Field* field1, Field* field2, bool star) {
+	PQLNode(string type, string nodeType, Field* field1, Field* field2,
+		bool star) {
 		this->type = type; // type = "suchNode"
-		this->nodeType = nodeType;
+		this->nodeType = nodeType; // nodeType = "modifies" // nodeType = "parent" // nodeType = "follows" // nodeType = "uses" // nodeType = "calls" //
 		this->field1 = field1;
 		this->field2 = field2;
 		this->star = star;
@@ -84,9 +91,11 @@ private:
 	string nodeType;
 	// for Result Node - field
 	// for Such Node - field (attributte 1 in relations)
+	// for With Node - field (attribute before '=')
 	Field* field1;
 	// for Result Node - empty
-	// only for Such Node - field (attributte 2 in relations)
+	// for Such Node - field (attributte 2 in relations)
+	// for With Node - field (attribute after '=')
 	Field* field2;
 	// only for Such Field - relations with star or not
 	bool star;

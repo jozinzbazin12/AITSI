@@ -1,0 +1,5 @@
+1 - Test
+assign a; 
+select a such that modifies(a,"t");
+1, 2, 7
+5000

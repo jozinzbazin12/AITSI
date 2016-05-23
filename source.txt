@@ -1,0 +1,2 @@
+procedure TestProcedure {
+	t = 1;}

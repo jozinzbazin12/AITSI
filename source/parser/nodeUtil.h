@@ -1,9 +1,9 @@
 /*
- * nodeUtil.h
- *
- *  Created on: 29 mar 2016
- *      Author: Grzegurz
- */
+* nodeUtil.h
+*
+*  Created on: 29 mar 2016
+*      Author: Grzegurz
+*/
 
 #ifndef SRC_PARSER_NODEUTIL_H_
 #define SRC_PARSER_NODEUTIL_H_
@@ -26,32 +26,62 @@ private:
 
 public:
 	static ASTTree* createAssignmentNode(int lineNumber) {
-		ASTNode* node = new ASTNode(0, StatementType::ASSIGN, lineNumber);
+		ASTNode* node = new ASTNode(0, NodeName::ASSIGN, lineNumber);
 		return createTree(node);
 	}
 
 	static ASTTree* createProcedureNode(string name, int lineNumber) {
-		ASTNode* node = new NewLevelNode(0, StatementType::PROCEDURE, lineNumber, name);
+		ASTNode* node = new NewLevelNode(0, NodeName::PROCEDURE, lineNumber, name);
+		return createTree(node);
+	}
+
+	static ASTTree* createCallNode(string name, int lineNumber) {
+		ASTNode* node = new ASTNode(0, NodeName::CALL, lineNumber, name);
 		return createTree(node);
 	}
 
 	static tree_node_<ASTNode*>* createProgramNode() {
-		ASTNode* node = new NewLevelNode(0, StatementType::PROGRAM, 0);
+		ASTNode* node = new NewLevelNode(0, NodeName::PROGRAM, 0);
 		return createTreeNode(node);
 	}
 
 	static ASTTree* createOperandNode(string name, int lineNumber) {
-		ASTNode* node = new ASTNode(0, "OPERAND", lineNumber, name);
+		ASTNode* node = new ASTNode(0, NodeName::OPERAND, lineNumber, name);
+		return createTree(node);
+	}
+
+	static ASTTree* createWhileNode(string name, int lineNumber) {
+		ASTNode* node = new NewLevelNode(0, NodeName::WHILE, lineNumber, name);
+		return createTree(node);
+	}
+
+	static ASTTree* createIfNode(string name, int lineNumber) {
+		ASTNode* node = new NewLevelNode(0, NodeName::IF, lineNumber, name);
+		return createTree(node);
+	}
+	static ASTTree* createElseNode(int lineNumber) {
+		ASTNode* node = new NewLevelNode(0, NodeName::ELSE, lineNumber);
 		return createTree(node);
 	}
 
 	static ASTTree* createExpressionNode(string name, int lineNumber) {
-		ASTNode* node = new ASTNode(0, "EXPRESSION", lineNumber, name);
+		ASTNode* node = new ASTNode(0, NodeName::EXPR, lineNumber, name);
+		return createTree(node);
+	}
+
+	static ASTTree* createFakeOpenNode() {
+		ASTNode* node = new ASTNode(0, NodeName::FAKE_OPEN, 0, NodeName::FAKE_OPEN);
+		return createTree(node);
+	}
+
+	static ASTTree* createFakeCloseNode(int closed) {
+		ASTNode* node = new ASTNode(0, NodeName::FAKE_CLOSE, 0, NodeName::FAKE_CLOSE);
+		node->closed = closed;
 		return createTree(node);
 	}
 
 	static tree<tree_node_<ASTNode*>*>::iterator appendChild(ASTTree* t, tree<tree_node_<ASTNode*>*>::iterator parent,
-			tree_node_<ASTNode*>* child) {
+		tree_node_<ASTNode*>* child) {
 		return t->appendChild(parent, child);
 	}
 

@@ -9,7 +9,7 @@ public:
 	int lineNumber;
 
 	//parser
-	bool last = false;
+	int closed = 0;
 	bool newLevel = false;
 	ASTNode() {
 

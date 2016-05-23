@@ -1,9 +1,9 @@
 /*
- * Parent.h
- *
- *  Created on: 29 mar 2016
- *      Author: Pawel
- */
+* Parent.h
+*
+*  Created on: 29 mar 2016
+*      Author: Pawel
+*/
 
 #ifndef SRC_PKB_RELATIONS_PARENT_H_
 #define SRC_PKB_RELATIONS_PARENT_H_
@@ -20,6 +20,7 @@ public:
 	void addParent(int lineNumber, int parentLine);
 	void addKid(int lineNumber, int kidLine);
 	bool parent(int parentLine, int kidLine);
+	bool parentStar(int parentLine, int kidLine);
 	void writeAll();
 	virtual ~Parent();
 

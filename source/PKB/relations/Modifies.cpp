@@ -6,7 +6,7 @@
  */
 
 #include "Modifies.h"
-#include "../PKB.h"
+#include "../../globalVars.h"
 Modifies::Modifies() {
 	// TODO Auto-generated constructor stub
 
@@ -33,8 +33,7 @@ bool Modifies::modifies(int lineNumber, string varName) {
 		return false;
 	}
 
-	PKB pkb = PKB::getInstance();
-	int varId = pkb.getVarTable()->getVarId(varName);
+	int varId = pkb -> getVarTable()->getVarId(varName);
 	if (varId == -1)
 		return false;
 	if (varModificationsLines.count(varId) > 0) {

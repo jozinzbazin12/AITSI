@@ -13,6 +13,7 @@ public:
 	int line;
 	string parser;
 	string msg;
+	bool runtime = false;
 
 	void print() {
 		stringstream ss;
@@ -25,9 +26,11 @@ public:
 class RuntimeException: public Exception {
 public:
 	RuntimeException() {
+		runtime = true;
 	}
 
-	RuntimeException(int line, string parser, string msg) {
+	RuntimeException(int line, string parser, string msg) :
+			RuntimeException() {
 		this->line = line;
 		this->parser = parser;
 		this->msg = msg;

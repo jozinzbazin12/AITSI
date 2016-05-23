@@ -1,9 +1,9 @@
 /*
- * Matcher.h
- *
- *  Created on: 31 mar 2016
- *      Author: Popek
- */
+* Matcher.h
+*
+*  Created on: 31 mar 2016
+*      Author: Popek
+*/
 
 #ifndef SRC_PARSERPQL_MATCHERPQL_H_
 #define SRC_PARSERPQL_MATCHERPQL_H_
@@ -42,28 +42,42 @@ public:
 		return (elem.find(".value") < elem.length());
 	}
 
+	bool checkBOOLEAN(string elem) {
+		return (elem.find("BOOLEAN") < elem.length());
+	}
+
 	bool checkAll(string elem) {
-		if (!checkVarName(elem) && !checkProcName(elem) && !checkStmt_(elem) && !checkValue(elem))
+		if (!checkVarName(elem) && !checkProcName(elem) && !checkStmt_(elem) && !checkValue(elem) && !checkBOOLEAN(elem))
 			return false;
 		else
 			return true;
 	}
 
+	vector<string> getTokensList()
+	{
+		return{ "assign","stmtlst","stmt","while","variable","constant","prog_line","if","call","procedure" };
+		//plus, minus, times - brakuje
+	}
+
 	string checkSuchThatType(string suchThatPart) {
-		if(checkTokens(suchThatPart,"parent")) return "parent";
-		if(checkTokens(suchThatPart,"follows")) return "follows";
-		if(checkTokens(suchThatPart,"modifies")) return "modifies";
-		if(checkTokens(suchThatPart,"uses")) return "uses";
+		if (checkTokens(suchThatPart, "Parent")) return "parent";
+		if (checkTokens(suchThatPart, "Follows")) return "follows";
+		if (checkTokens(suchThatPart, "Modifies")) return "modifies";
+		if (checkTokens(suchThatPart, "Uses")) return "uses";
+		if (checkTokens(suchThatPart, "Calls")) return "calls";
+		if (checkTokens(suchThatPart, "Next")) return "next";
+		if (checkTokens(suchThatPart, "Affects")) return "affects";
+
 		return "";
 	}
 
 	bool isString(string elem)
 	{
 		int pos1 = elem.find("\"");
-		int pos2 = elem.find("\"",pos1+1);
-		int pos3 = elem.find("\"",pos2+1);
+		int pos2 = elem.find("\"", pos1 + 1);
+		int pos3 = elem.find("\"", pos2 + 1);
 
-		if(pos1 < pos2 && pos1 + 1 != pos2 && pos3 > elem.length())
+		if (pos1 < pos2 && pos1 + 1 != pos2 && pos3 > elem.length())
 			return true;
 		else
 			return false;
@@ -71,7 +85,7 @@ public:
 
 	bool isStar(string elem, int position)
 	{
-		if(elem.find("*",position) < elem.length() && elem.find("*",position) == position)
+		if (elem.find("*", position) < elem.length() && elem.find("*", position) == position)
 			return true;
 		else
 			return false;
@@ -80,9 +94,20 @@ public:
 	bool hasTwoElem(string elem)
 	{
 		int pos1 = elem.find(",");
-		int pos2 = elem.find(",",pos1+1);
+		int pos2 = elem.find(",", pos1 + 1);
 
-		if(pos1 < elem.length() && pos2 > elem.length())
+		if (pos1 < elem.length() && pos2 > elem.length())
+			return true;
+		else
+			return false;
+	}
+
+	bool withHasTwoElem(string elem)
+	{
+		int pos1 = elem.find("=");
+		int pos2 = elem.find("=", pos1 + 1);
+
+		if (pos1 < elem.length() && pos2 > elem.length())
 			return true;
 		else
 			return false;
@@ -93,7 +118,7 @@ public:
 		int pos1 = elem.find("(");
 		int pos2 = elem.find(")");
 
-		if(pos1 == 0 && pos2 == elem.length() - 1)
+		if (pos1 == 0 && pos2 == elem.length() - 1)
 			return true;
 		else
 			return false;
@@ -106,7 +131,7 @@ public:
 
 	bool is_(string elem)
 	{
-		if(elem.find("_") < elem.length())
+		if (elem.find("_") < elem.length())
 			return true;
 		else
 			return false;
@@ -114,9 +139,9 @@ public:
 
 	bool isNumber(string elem)
 	{
-		for(int i = 0 ; i < elem.length() ; i ++)
+		for (int i = 0; i < elem.length(); i++)
 		{
-			if(!isdigit(elem[i]))
+			if (!isdigit(elem[i]))
 				return false;
 		}
 		return true;

@@ -1,14 +1,20 @@
 /*
- * PQLTree.h
- *
- *  Created on: 30 mar 2016
- *      Author: Popek
- */
+* PQLTree.h
+*
+*  Created on: 30 mar 2016
+*      Author: Popek
+*/
 
 #ifndef SRC_PQL_PQLTREE_H_
 #define SRC_PQL_PQLTREE_H_
 
 #include "PQLNode.h"
+#ifndef tree_hh_
+#include "tree.hh"
+#endif
+#ifndef _GLIBCXX_IOSTREAM
+#include <iostream>
+#endif
 
 using namespace std;
 
@@ -16,13 +22,15 @@ class PQLTree
 {
 private:
 	//static PQLTree *Ptree;
-	PQLTree() {
-		Tree = new tree<tree_node_<PQLNode*>*>();
-	}
+
 
 public:
 
 	tree<tree_node_<PQLNode*>*> *Tree;
+
+	PQLTree() {
+		Tree = new tree<tree_node_<PQLNode*>*>();
+	}
 
 	static PQLTree* getInstance()
 	{
@@ -31,12 +39,12 @@ public:
 		return Ptree;
 
 		/*if (Ptree == NULL) {
-			Ptree = new PQLTree();
-			return Ptree;
+		Ptree = new PQLTree();
+		return Ptree;
 		}
 		else
 		{
-			return Ptree;
+		return Ptree;
 		}*/
 
 	}
@@ -46,8 +54,8 @@ public:
 	}
 
 	//Insert node as last/first child of node pointed to by position.
-	tree<tree_node_<PQLNode*>*>::iterator appendChild(tree<tree_node_<PQLNode*>*>::iterator& nodeIter,tree_node_<PQLNode*>*& child) {
-		return Tree->append_child(nodeIter,child);
+	tree<tree_node_<PQLNode*>*>::iterator appendChild(tree<tree_node_<PQLNode*>*>::iterator& nodeIter, tree_node_<PQLNode*>*& child) {
+		return Tree->append_child(nodeIter, child);
 	}
 	tree<tree_node_<PQLNode*>*>::iterator appendRoot(tree_node_<PQLNode*>*& node) {
 		Tree->set_head(node);
@@ -62,7 +70,7 @@ public:
 		return Tree->insert(sibling, node);
 	}
 	//return the n-th child of the node at position.
-	tree<tree_node_<PQLNode*>*>::iterator getChild(tree<tree_node_<PQLNode*>*>::iterator& nodeIter,uint16_t childNumber) {
+	tree<tree_node_<PQLNode*>*>::iterator getChild(tree<tree_node_<PQLNode*>*>::iterator& nodeIter, uint16_t childNumber) {
 		return Tree->child(nodeIter, childNumber);
 	}
 	//Return iterator to the parent of a node.
@@ -109,11 +117,20 @@ public:
 		while (begin != end) {
 			for (int i = 0; i<Tree->depth(begin); ++i)
 				cout << "    |";
-				cout << " \\ " << ((*begin)->data->getType());
+			cout << " \\ " << ((*begin)->data->getType());
+
+			if ((*begin)->data->getType() == "suchNode")
+				cout << "[" << (*begin)->data->getField1()->printField() << "," << (*begin)->data->getField2()->printField() << "]";
+			if ((*begin)->data->getType() == "resultNode")
+				cout << "[" << (*begin)->data->getField1()->printField() << "]";
+			if ((*begin)->data->getType() == "withNode")
+				cout << "[" << (*begin)->data->getField1()->printField() << "," << (*begin)->data->getField2()->printField() << "]";
+
 			cout << endl;
 			++begin;
 		}
 	}
+
 
 };
 

@@ -1,9 +1,9 @@
 /*
- * Follows.h
- *
- *  Created on: 29 mar 2016
- *      Author: Pawel
- */
+* Follows.h
+*
+*  Created on: 29 mar 2016
+*      Author: Pawel
+*/
 
 #ifndef SRC_PKB_RELATIONS_FOLLOWS_H_
 #define SRC_PKB_RELATIONS_FOLLOWS_H_
@@ -20,6 +20,7 @@ public:
 	void addNext(int lineNum, int followerLineNum);
 	void addPrev(int lineNum, int prevLineNum);
 	bool follows(int lineNum, int followerLineNum);
+	bool followsStar(int lineNum, int followerLineNum);
 	void writeAll();
 private:
 	map <int, int > varNextFollowers;

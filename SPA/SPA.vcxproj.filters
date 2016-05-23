@@ -43,6 +43,9 @@
     <Filter Include="Source Files\ParserPQL">
       <UniqueIdentifier>{1f282e4e-0796-4525-a190-efe745a02c4f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\queryEvaluator">
+      <UniqueIdentifier>{52a8237c-f323-490e-902b-13076d406f56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\AITSI.cpp">
@@ -64,9 +67,6 @@
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
     <ClCompile Include="..\source\PKB\tables\LinesTable.cpp">
-      <Filter>Source Files\PKB\tables</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\PKB\tables\MainPawla.cpp">
       <Filter>Source Files\PKB\tables</Filter>
     </ClCompile>
     <ClCompile Include="..\source\PKB\tables\ProcTable.cpp">
@@ -104,6 +104,12 @@
     </ClCompile>
     <ClCompile Include="..\source\ParserPQL\MatcherPQL.cpp">
       <Filter>Source Files\ParserPQL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\relations\Calls.cpp">
+      <Filter>Source Files\PKB\relations</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\queryEvaluator\QueryEvaluator.cpp">
+      <Filter>Source Files\queryEvaluator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +214,15 @@
     </ClInclude>
     <ClInclude Include="..\source\ParserPQL\MatcherPQL.h">
       <Filter>Source Files\ParserPQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\globalVars.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\relations\Calls.h">
+      <Filter>Source Files\PKB\relations</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\queryEvaluator\QueryEvaluator.h">
+      <Filter>Source Files\queryEvaluator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,9 +1,9 @@
 /*
- * Exceptions.h
- *
- *  Created on: 3 kwi 2016
- *      Author: Popek
- */
+* Exceptions.h
+*
+*  Created on: 3 kwi 2016
+*      Author: Popek
+*/
 
 #ifndef SRC_PARSERPQL_EXCEPTIONS_H_
 #define SRC_PARSERPQL_EXCEPTIONS_H_
@@ -44,6 +44,18 @@ public:
 	void throwInvalidTypeOfArguments()
 	{
 		cout << "Clause has invalid type of arguments.";
+		exit(1);
+	}
+
+	void throwInvalidWithStatement()
+	{
+		cout << "Clause has invalid with part.";
+		exit(1);
+	}
+
+	void throwUnexpectedSelectPart()
+	{
+		cout << "Clause has undeclared select part.";
 		exit(1);
 	}
 };

@@ -18,16 +18,17 @@
     <ClCompile Include="..\source\PKB\AST\asttt.cpp" />
     <ClCompile Include="..\source\PKB\AST\NodeFactory.cpp" />
     <ClCompile Include="..\source\PKB\PKB.cpp" />
+    <ClCompile Include="..\source\PKB\relations\Calls.cpp" />
     <ClCompile Include="..\source\PKB\relations\Follows.cpp" />
     <ClCompile Include="..\source\PKB\relations\Modifies.cpp" />
     <ClCompile Include="..\source\PKB\relations\Parent.cpp" />
     <ClCompile Include="..\source\PKB\relations\Uses.cpp" />
     <ClCompile Include="..\source\PKB\tables\LinesTable.cpp" />
-    <ClCompile Include="..\source\PKB\tables\MainPawla.cpp" />
     <ClCompile Include="..\source\PKB\tables\ProcTable.cpp" />
     <ClCompile Include="..\source\PKB\tables\VarTable.cpp" />
     <ClCompile Include="..\source\PQL\Field.cpp" />
     <ClCompile Include="..\source\PQL\PQL.cpp" />
+    <ClCompile Include="..\source\queryEvaluator\QueryEvaluator.cpp" />
     <ClCompile Include="..\source\QueryPreProcessor.cpp" />
     <ClCompile Include="..\source\Validator\globalne.cpp" />
     <ClCompile Include="..\source\Validator\Validator.cpp" />
@@ -35,6 +36,7 @@
   <ItemGroup>
     <ClInclude Include="..\source\designExtractor\DesignExtractor.h" />
     <ClInclude Include="..\source\exceptions.h" />
+    <ClInclude Include="..\source\globalVars.h" />
     <ClInclude Include="..\source\ParserPQL\Exceptions.h" />
     <ClInclude Include="..\source\ParserPQL\MatcherPQL.h" />
     <ClInclude Include="..\source\parser\matchers.h" />
@@ -49,6 +51,7 @@
     <ClInclude Include="..\source\PKB\AST\tree_nodes.h" />
     <ClInclude Include="..\source\PKB\AST\tree_util.hh" />
     <ClInclude Include="..\source\PKB\PKB.h" />
+    <ClInclude Include="..\source\PKB\relations\Calls.h" />
     <ClInclude Include="..\source\PKB\relations\Follows.h" />
     <ClInclude Include="..\source\PKB\relations\Modifies.h" />
     <ClInclude Include="..\source\PKB\relations\Parent.h" />
@@ -63,6 +66,7 @@
     <ClInclude Include="..\source\PQL\tree.hh" />
     <ClInclude Include="..\source\PQL\tree_nodes.h" />
     <ClInclude Include="..\source\PQL\tree_util.hh" />
+    <ClInclude Include="..\source\queryEvaluator\QueryEvaluator.h" />
     <ClInclude Include="..\source\QueryPreProcessor.h" />
     <ClInclude Include="..\source\types.h" />
     <ClInclude Include="..\source\Validator\globalne.h" />
