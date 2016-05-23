@@ -11,6 +11,7 @@ public:
 	ASTTree() {
 
 		Tree = new tree<tree_node_<ASTNode*>*>();
+
 	}
 	tree<tree_node_<ASTNode*>*> *Tree;
 
@@ -113,6 +114,38 @@ public:
 	//checks if iterator is in tree
 	bool isValid(tree<tree_node_<ASTNode*>*>::iterator& it){
 		return Tree->is_valid(it);
+	}
+
+	tree<tree_node_<vector<int>*>*> getCFGTree(tree<tree_node_<ASTNode*>*>::iterator begin, tree<tree_node_<ASTNode*>*>::iterator end) {
+		tree<tree_node_<vector<int>*>*>* cfgTree = new tree<tree_node_<vector<int>*>*>();
+		int i = 0;
+		tree_node_<vector<int>*>* actualNode = new tree_node_<vector<int>*>();
+		while ( begin != end) {
+			actualNode->data->push_back(begin.node->data->data->lineNumber);
+			if (begin.node->data->data->type == "CONDITIONAL") {
+				cfgTree->insert(i,actualNode);
+				cfgTree->insert(i+1, actualNode);
+				tree<tree_node_<vector<int>*>*> ifStatement = getCFGTree(begin.node->first_child->first_child, begin.node->first_child->last_child);
+				cfgTree->insert_subtree_after(i,ifStatement.begin());
+				if (begin.node->first_child != begin.node->last_child) {
+					tree<tree_node_<vector<int>*>*> elseStatement = getCFGTree(begin.node->last_child->first_child, begin.node->last_child->last_child);
+					cfgTree->insert_subtree_after(i,elseStatement.begin());
+				}
+				actualNode = new tree_node_<vector<int>*>();
+				i++;
+			} else if (begin.node->data->data->type == "LOOP") {
+				cfgTree->insert(i,actualNode);
+				cfgTree->insert(i+1, actualNode);
+				tree<tree_node_<vector<int>*>*> whileStatement = getCFGTree(begin.node->first_child->first_child, begin.node->first_child->last_child);
+				cfgTree->insert_subtree_after(i,whileStatement.begin());
+				actualNode = new tree_node_<vector<int>*>();
+				i++;
+			}
+
+			i++;
+			begin++;
+		}
+		return cfgTree;
 	}
 
 	void printTree() {
