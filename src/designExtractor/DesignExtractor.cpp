@@ -324,6 +324,13 @@ void DesignExtractor::setUsesRelations() {
 				/*else
 				 uses->add(varTable->addVar((*begin)->data->value),
 				 (*begin)->data->lineNumber);*/
+			}else if ((*begin)->data->type == "IF") {              //in loop
+				int varId = varTable->getVarId((*begin)->data->value);
+				if (varId != -1)
+					uses->add(varId, (*begin)->data->lineNumber);
+				/*else
+				 uses->add(varTable->addVar((*begin)->data->value),
+				 (*begin)->data->lineNumber);*/
 			} else if ((*begin)->data->type == "OPERAND") {   //under Expression
 				tmp = begin.node->parent;
 				if ((*tmp)->data->type == "EXPR") {
