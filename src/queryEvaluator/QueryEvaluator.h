@@ -3,6 +3,7 @@
 //#include "PQLNode.h"
 #include "../PKB/api/PKBApi.h"
 #include <iterator>
+#include <sstream>
 #ifndef _GLIBCXX_VECTOR
 #include <vector>
 #endif
@@ -19,7 +20,7 @@ class QueryEvaluator {
 public:
 	QueryEvaluator();
 	virtual ~QueryEvaluator();
-	string getResult(PQLTree* tree);
+	vector<string> getResult(PQLTree* tree);
 	vector<int> getModifiesResult(Field* field1, Field* field2,
 			vector<int> lines, string selectValue);
 	vector<int> getUsesResult(Field* field1, Field* field2, vector<int> lines,
@@ -38,7 +39,8 @@ public:
 			string selectValue);
 	vector<int> getCallStarResult(Field* field1, Field* field2,
 			vector<int> lines, string selectValue);
-
+	vector<int> getWithResult(Field* field1, Field* field2,
+				vector<int> lines, string selectValue);
 private:
 	PKBApi *pkbApi = new PKBApi();
 };

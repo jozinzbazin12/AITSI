@@ -54,35 +54,27 @@ void mainPQL() {
 	pql->enterQuery();
 	//pql->processQuery(pql->getQuery());
 	//string a = "assign a; select a such that follows(a,\"a\");";
-	cout << "**** ZAPYTANIE **************************************************"
-			<< endl;
+	cout << "**** ZAPYTANIE **************************************************" << endl;
 	cout << pql->getQuery() << endl << endl;
-	cout << "**** DRZEWO *****************************************************"
-			<< endl;
+	cout << "**** DRZEWO *****************************************************" << endl;
 	que->parseQuery(pql->getQuery());
 	tree<tree_node_<PQLNode>>::iterator iter;
 	PQLTree* tree = que->getTree();
 	tree->printTree();
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	cout << endl;
-	cout
-			<< "**** KONIEC DRZEWA*****************************************************"
-			<< endl;
-
-	cout
-			<< "**** EVALUATOR *****************************************************"
-			<< endl;
+	cout << "**** KONIEC DRZEWA*****************************************************" << endl;
+	cout << "**** EVALUATOR *****************************************************" << endl;
 
 	QueryEvaluator* queEva = new QueryEvaluator();
-	queEva->getResult(tree);
+	vector<string> results = queEva->getResult(tree);
 
-	cout
-			<< "**** KONIEC EVALUATORA *****************************************************"
-			<< endl;
+	for (size_t i = 0; i < results.size(); i++) {
+		cout << "[" << i << "] " << results[i] << endl;
+	}
 
-	cout
-			<< "**** WALIDACJA TESTY - KRZYSIEK****************************************"
-			<< endl;
+	cout << "**** KONIEC EVALUATORA *****************************************************" << endl;
+	cout << "**** WALIDACJA TESTY - KRZYSIEK****************************************" << endl;
 	cout << v->checkSelect("select dgdd 4 23") << endl;
 	cout << v->checkSelect("select select dgdd 4 23") << endl;
 	vector<Field> entities;
@@ -99,9 +91,7 @@ void mainPQL() {
 	cout << v->checkRelationship("modifies(stmt,variable)") << endl;
 	cout << v->checkRelationship2("modifies(s,v)") << endl;
 	cout << v->checkAttribute("constant.value") << endl;
-	cout
-			<< "**** WALIDACJA TESTY - KONIEC****************************************"
-			<< endl;
+	cout << "**** WALIDACJA TESTY - KONIEC****************************************" << endl;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

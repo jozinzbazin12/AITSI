@@ -19,8 +19,8 @@ QueryEvaluator::~QueryEvaluator() {
 	// TODO Auto-generated destructor stub
 }
 
-string QueryEvaluator::getResult(PQLTree *Tree) {
-	string result;
+vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
+	vector<string> result;
 	vector<int> lines;
 	set<int> setLines;
 	string selectValue;
@@ -131,14 +131,18 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 						lines = getCallStarResult((*begin)->data->getField1(),
 								(*begin)->data->getField2(), lines,
 								selectValue);
-						cout << "Calls* " << result << endl;
+						cout << "Calls* " << endl;
 					} else {
 						lines = getCallResult((*begin)->data->getField1(),
 								(*begin)->data->getField2(), lines,
 								selectValue);
-						cout << "Calls " << result << endl;
+						cout << "Calls " << endl;
 					}
 				}
+			}
+
+			if(((*begin)->data->getType()) == "withNode") {
+				lines = getWithResult((*begin)->data->getField1(), (*begin)->data->getField2(), lines, selectValue);
 			}
 		//}
 		++begin;
@@ -148,7 +152,10 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 	if(!lines.empty())
 	{
 		if(resultType == "boolean")
-			cout << "TRUE";
+		{
+			result.push_back("TRUE");
+			//cout << "TRUE";
+		}
 		else
 		{
 			for(int i = 0 ; i < lines.size() ; i++)
@@ -156,19 +163,31 @@ string QueryEvaluator::getResult(PQLTree *Tree) {
 				if(resultType == "procedure")
 				{
 					string name = pkbApi -> getProcName(pkbApi -> getProcId(lines[i]));
-					cout << name << " ";
+					result.push_back(name);
+					//cout << name << " ";
 				}
 				else
-					cout << lines[i] << " ";
+				{
+					stringstream ss;
+					ss << lines[i];
+					result.push_back(ss.str());
+					//cout << lines[i] << " ";
+				}
 			}
 		}
 	}
 	else
 	{
 		if(resultType == "boolean")
-			cout << "FALSE";
+		{
+			result.push_back("FALSE");
+			//cout << "FALSE";
+		}
 		else
-			cout << "NONE";
+		{
+			result.push_back("NONE");
+			//cout << "NONE";
+		}
 	}
 
 	cout << endl;
@@ -729,14 +748,11 @@ vector<int> QueryEvaluator::getFollowsSResult(Field* field1, Field* field2, vect
 	return resultPart;
 }
 
-vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2,
-		vector<int> lines, string selectValue) {
+vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<int> lines, string selectValue) {
 	return lines;
 }
 
-vector<int> QueryEvaluator::getUsesSResult(Field* field1, Field* field2,
-		vector<int> lines, string selectValue) {
-
+vector<int> QueryEvaluator::getUsesSResult(Field* field1, Field* field2, vector<int> lines, string selectValue) {
 	return lines;
 }
 
@@ -967,4 +983,22 @@ vector<int> QueryEvaluator::getCallStarResult(Field* field1, Field* field2, vect
 	return resultPart;
 }
 
+vector<int> QueryEvaluator::getWithResult(Field* field1, Field* field2, vector<int> lines, string selectValue) {
+
+	/*
+	 * stmt	(if,while,assign,call)			stmt#
+	 * assign								stmt#
+	 * while								stmt#
+	 * variable								varName
+	 * constant								value
+	 * prog_line							stmt#
+	 * if									stmt#
+	 * call									stmt#
+	 * procedure							procName
+	 */
+
+
+
+	return lines;
+}
 } /* namespace std */
