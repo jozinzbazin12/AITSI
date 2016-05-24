@@ -218,26 +218,6 @@ private:
 			}
 		}
 
-		if(suchNodes.size() > 0)
-		{
-			iter = PqlTree->getRoot();
-
-			node = new PQLNode("suchMainNode");
-			treeNode = new tree_node_<PQLNode*>(node);
-			iter = PqlTree->appendChild(iter, treeNode);
-
-			node = suchNodes[0];
-			treeNode = new tree_node_<PQLNode*>(node);
-			iter = PqlTree->appendChild(iter, treeNode);
-
-			for(size_t i = 1 ; i < suchNodes.size() ; i ++)
-			{
-				node = suchNodes[i];
-				treeNode = new tree_node_<PQLNode*>(node);
-				iter = PqlTree->appendSibling(iter, treeNode);
-			}
-		}
-
 		if(withNodes.size() > 0)
 		{
 			iter = PqlTree->getRoot();
@@ -253,6 +233,26 @@ private:
 			for(size_t i = 1 ; i < withNodes.size() ; i ++)
 			{
 				node = withNodes[i];
+				treeNode = new tree_node_<PQLNode*>(node);
+				iter = PqlTree->appendSibling(iter, treeNode);
+			}
+		}
+
+		if(suchNodes.size() > 0)
+		{
+			iter = PqlTree->getRoot();
+
+			node = new PQLNode("suchMainNode");
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = PqlTree->appendChild(iter, treeNode);
+
+			node = suchNodes[0];
+			treeNode = new tree_node_<PQLNode*>(node);
+			iter = PqlTree->appendChild(iter, treeNode);
+
+			for(size_t i = 1 ; i < suchNodes.size() ; i ++)
+			{
+				node = suchNodes[i];
 				treeNode = new tree_node_<PQLNode*>(node);
 				iter = PqlTree->appendSibling(iter, treeNode);
 			}
@@ -462,7 +462,10 @@ private:
 
 			if(attr.size() == 2)
 			{
-				withNodes.push_back(new PQLNode("withNode", attr[0], attr[1]));
+				if(matcher->checkWithAttributes(attr[0],attr[1]))
+					withNodes.push_back(new PQLNode("withNode", attr[0], attr[1]));
+				else
+					exc-> throwInvalidWithStatementAttributes();
 			}
 			else
 			{

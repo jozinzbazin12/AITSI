@@ -2,8 +2,10 @@
 #define SRC_QUERYEVALUATOR_QUERYEVALUATOR_H_
 //#include "PQLNode.h"
 #include "../PKB/api/PKBApi.h"
+#include "../ParserPQL/MatcherPQL.h"
 #include <iterator>
 #include <sstream>
+#include <map>
 #ifndef _GLIBCXX_VECTOR
 #include <vector>
 #endif
@@ -39,10 +41,12 @@ public:
 			string selectValue);
 	vector<int> getCallStarResult(Field* field1, Field* field2,
 			vector<int> lines, string selectValue);
-	vector<int> getWithResult(Field* field1, Field* field2,
-				vector<int> lines, string selectValue);
+	void getWithResult(Field* field1, Field* field2,
+				vector<int> lines);
 private:
 	PKBApi *pkbApi = new PKBApi();
+	map<string,vector<int>> map;
+	set<int> cutSetLines(string fieldValue, set<int> setLines);
 };
 
 } /* namespace std */

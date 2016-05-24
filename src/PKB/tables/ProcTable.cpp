@@ -92,6 +92,8 @@ vector<int> ProcTable::getProceduresLines() {
 }
 vector<int> ProcTable::getProceduresBodyLines(int procId) {  // JAK TO ZABEZPIECZYC PRZED WYJEBANIEM JAK NIE BEDZIE TAKIEGO KLUCZA ?!!??!
 	if (!(proceduresLines.find(procId) == proceduresLines.end()))
+	{
 		return proceduresLines.find(procId)->second;
-
+	}
+	return vector<int>();
 }

@@ -53,6 +53,12 @@ public:
 		exit(1);
 	}
 
+	void throwInvalidWithStatementAttributes()
+	{
+		cout << "Clause with has invalid equals attributes (e.g. string = integer, etc.).";
+		exit(1);
+	}
+
 	void throwUnexpectedSelectPart()
 	{
 		cout << "Clause has undeclared select part.";

@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <iostream>
+#include "../PQL/Field.h"
 
 using namespace std;
 
@@ -27,11 +28,11 @@ public:
 	}
 
 	bool checkVarName(string elem) {
-		return (elem.find(".varname") < elem.length());
+		return (elem.find(".varName") < elem.length());
 	}
 
 	bool checkProcName(string elem) {
-		return (elem.find(".procname") < elem.length());
+		return (elem.find(".procName") < elem.length());
 	}
 
 	bool checkStmt_(string elem) {
@@ -51,6 +52,40 @@ public:
 			return false;
 		else
 			return true;
+	}
+
+	bool checkWithAttributes(Field* field1, Field* field2)
+	{
+		string type1 = "error";
+		if(field1->getType() == "procedure" && field1->isProcName()) type1 = "string";
+		if(field1->getType() == "variable" && field1->isVarName()) type1 = "string";
+		if(field1->getType() == "constant") type1 = "integer";
+		if((field1->getType() == "stmt"
+			|| field1->getType() == "assign"
+			|| field1->getType() == "while"
+			|| field1->getType() == "if"
+			|| field1->getType() == "call"
+			|| field1->getType() == "prog_line") && field1->isStmt()) type1 = "integer";
+		if(field1->getType() == "string") type1 = "string";
+
+		string type2 = "error";
+		if(field2->getType() == "procedure" && field2->isProcName()) type2 = "string";
+		if(field2->getType() == "variable" && field2->isVarName()) type2 = "string";
+		if(field2->getType() == "constant") type2 = "integer";
+		if((field2->getType() == "stmt"
+			|| field2->getType() == "assign"
+			|| field2->getType() == "while"
+			|| field2->getType() == "if"
+			|| field2->getType() == "call"
+			|| field2->getType() == "prog_line") && field2->isStmt()) type2 = "integer";
+		if(field2->getType() == "string") type2 = "string";
+
+		if(type1 == "string" && type2 == "string")
+			return true;
+		else if(type1 == "integer" && type2 == "integer")
+			return true;
+		else
+			return false;
 	}
 
 	vector<string> getTokensList()
