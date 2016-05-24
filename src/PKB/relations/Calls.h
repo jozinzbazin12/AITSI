@@ -21,6 +21,7 @@ public:
 	void addCall(int callerId, int calleeId);
 	bool calls(int callerId, int calleeId);
 	bool callsStar(int callerId, int calleeId);
+	vector<int> getCallees(int callerId);
 	void writeAll();
 
 private:

@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 #include <string>
 
 using namespace std;
@@ -44,6 +45,8 @@ public:
 	int getMaxProcId();
 	int getProcStartLine(int id);
 	int getProcStartLine(string name);
+	vector<int> getProcedureBodyLines(int procId);
+	set<int> getProcedureBodyLinesStar(int procId);
 	string getProcName(int id);
 };
 

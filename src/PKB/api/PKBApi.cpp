@@ -116,3 +116,11 @@ string PKBApi::getProcName(int id) {
 	return pkb -> getProcTable() -> getProcName(id);
 }
 
+vector<int> PKBApi::getProcedureBodyLines(int procId) {
+	return pkb -> getProcTable() -> getProcedureBodyLines(procId);
+}
+
+set<int> PKBApi::getProcedureBodyLinesStar(int procId) {
+	return pkb -> getProcTable() -> getProcedureBodyLinesStar(procId, pkb -> getCalls());
+}
+

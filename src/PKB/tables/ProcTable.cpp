@@ -90,10 +90,35 @@ void ProcTable::writeProcBodyLines() {
 vector<int> ProcTable::getProceduresLines() {
 	return proceduresStartLines;
 }
-vector<int> ProcTable::getProceduresBodyLines(int procId) {  // JAK TO ZABEZPIECZYC PRZED WYJEBANIEM JAK NIE BEDZIE TAKIEGO KLUCZA ?!!??!
-	if (!(proceduresLines.find(procId) == proceduresLines.end()))
-	{
-		return proceduresLines.find(procId)->second;
+
+vector<int> ProcTable::getProcedureBodyLines(int procId) {  // JAK TO ZABEZPIECZYC PRZED WYJEBANIEM JAK NIE BEDZIE TAKIEGO KLUCZA ?!!??!
+	if (proceduresLines.count(procId) > 0)
+		return proceduresLines[procId];
+
+	vector<int> empty;
+	return empty;
+}
+
+set<int> ProcTable::getProcedureBodyLinesStar(int procId, Calls * calls) {
+	bool visited[procId];
+	for(int i=0; i<procId; i++)
+			visited[i] = false;
+	set<int> procedureLines;
+	procedureLines = procedureRecur(procId, calls, procedureLines, visited);
+	return procedureLines;
+}
+
+set<int> ProcTable::procedureRecur(int procId, Calls * calls, set<int> procedureLines, bool visited[]) {
+	vector<int> temp = getProcedureBodyLines(procId);
+	for(int i : temp){
+		procedureLines.insert(i);
 	}
-	return vector<int>();
+
+	for(int i : (calls -> getCallees(procId))) {
+		if(!visited[i]) {
+			visited[i] = true;
+			procedureLines = procedureRecur(i, calls, procedureLines, visited);
+		}
+	}
+	return procedureLines;
 }

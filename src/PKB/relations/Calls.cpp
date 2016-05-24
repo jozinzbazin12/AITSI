@@ -94,6 +94,14 @@ bool Calls::callsStarRecur(int callerId, int calleeId, bool visited[]){
 	return false;
 }
 
+vector<int> Calls::getCallees(int callerId) {
+	if(calleeIds.count(callerId) > 0){
+		return calleeIds[callerId];
+	}
+	vector<int> empty;
+	return empty;
+}
+
 void Calls::writeAll(){
 	for (map<int, vector<int> >::iterator iter = calleeIds.begin();
 				iter != calleeIds.end(); ++iter) {
