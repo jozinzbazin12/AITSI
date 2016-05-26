@@ -22,6 +22,7 @@ public:
 	bool uses(int lineNumber, string varName); // jeœli varName puste to znaczy ¿e jakakolwiek zmienna
 	void writeAll();
 	virtual ~Uses();
+	virtual map<int,vector<int>> getAllUses();
 
 private:
 	map <int, vector<int> > varUsesLines;

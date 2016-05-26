@@ -57,3 +57,7 @@ void Uses::writeAll(){
 	}
 }
 
+map<int,vector<int>> Uses::getAllUses()
+{
+	return varUsesLines;
+}

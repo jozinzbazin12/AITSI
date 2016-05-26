@@ -41,3 +41,6 @@ void VarTable::writeAll(){
 	}
 }
 
+vector<string> VarTable::getAllVar() {
+	return variables;
+}

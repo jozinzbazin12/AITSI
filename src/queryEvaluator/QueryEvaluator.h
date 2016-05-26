@@ -45,7 +45,7 @@ public:
 				vector<int> lines);
 private:
 	PKBApi *pkbApi = new PKBApi();
-	map<string,vector<int>> map;
+	map<string,vector<int>> withMap;
 	set<int> cutSetLines(string fieldValue, set<int> setLines);
 };
 
