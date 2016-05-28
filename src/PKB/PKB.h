@@ -24,6 +24,7 @@
 #include "relations/Modifies.h"
 
 #include "relations/Calls.h"
+#include "relations/Next.h"
 
 class PKB {
 public:
@@ -34,6 +35,7 @@ public:
 		parent = new Parent();
 		follows = new Follows();
 		calls = new Calls();
+		next = new Next();
 		varTable = new VarTable();
 		lineTable = new LinesTable();
 		procTable = new ProcTable();
@@ -61,6 +63,10 @@ public:
 		return calls;
 	}
 
+	Next* getNext() {
+		return next;
+	}
+
 	ASTTree* getASTTree(){
 		return tree;
 	}
@@ -86,6 +92,7 @@ private:
 	Parent* parent = NULL;
 	Follows* follows = NULL;
 	Calls* calls = NULL;
+	Next* next = NULL;
 	ASTTree * tree = NULL;
 	VarTable * varTable = NULL;
 	LinesTable * lineTable = NULL;

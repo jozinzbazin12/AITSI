@@ -26,6 +26,7 @@ void DesignExtractor::start() {
 	setCallLines();
 	setProcTable();
 	setCallsRelations();
+	setNextRelations();
 }
 
 void DesignExtractor::setFollowRelations() {
@@ -559,5 +560,88 @@ void DesignExtractor::procRecur(tree<tree_node_<ASTNode*>*>::iterator current,in
 
 		}
 	}
+}
 
+void DesignExtractor::setNextRelations() {
+	ASTTree * ASTtree = pkb->getASTTree();
+	Next * next = pkb->getNext();
+
+	tree<tree_node_<ASTNode*>*>::iterator begin = ASTtree->getRoot();
+	tree<tree_node_<ASTNode*>*>::iterator end = ASTtree->getEnd();
+	tree<tree_node_<ASTNode*>*>::iterator tmp;
+	tree<tree_node_<ASTNode*>*>::iterator tmp2;
+
+	while (begin != end) {
+		if (ASTtree->isValid(begin) && (*begin)->data) {
+			if ((*begin)->data->type == "ASSIGN" || (*begin)->data->type == "CALL") {
+				tmp = begin.node -> next_sibling;
+				if(ASTtree->isValid(tmp) && (*tmp)->data) {
+					next->addNext((*begin)->data->lineNumber, (*tmp)->data->lineNumber);
+				}
+				else {
+					tmp = begin.node -> parent;
+					if(ASTtree->isValid(tmp) && (*tmp)->data) {
+						if((*tmp)->data->type == "WHILE") {
+							next->addNext((*begin)->data->lineNumber, (*tmp)->data->lineNumber);
+						}
+						else if((*tmp)->data->type == "IF" || (*tmp)->data->type == "ELSE") {
+							while(true) {
+								if((*tmp)->data->type == "ELSE") {
+									tmp = tmp.node -> prev_sibling;
+								}
+								if(!(ASTtree->isValid(tmp)) || !((*tmp)->data) || (*tmp)->data->type != "IF") {
+									if((*tmp)->data->type == "WHILE") {
+										next->addNext((*begin)->data->lineNumber, (*tmp)->data->lineNumber);
+									}
+									break;
+								}
+								else {
+									tmp2 = tmp.node -> next_sibling;
+									if(ASTtree->isValid(tmp2) && (*tmp2)->data) {
+										if((*tmp2)->data->type != "ELSE") {
+											next->addNext((*begin)->data->lineNumber, (*tmp2)->data->lineNumber);
+											break;
+										}
+										else {
+											tmp2 = tmp.node -> next_sibling -> next_sibling;
+											if(ASTtree->isValid(tmp2) && (*tmp2)->data) {
+												next->addNext((*begin)->data->lineNumber, (*tmp2)->data->lineNumber);
+												break;
+											}
+										}
+									}
+								}
+								tmp = tmp.node -> parent;
+							}
+						}
+					}
+				}
+			}
+			else if ((*begin)->data->type == "WHILE") {
+				tmp = begin.node -> first_child;
+				if(ASTtree->isValid(tmp) && (*tmp)->data) {
+					next->addNext((*begin)->data->lineNumber, (*tmp)->data->lineNumber);
+				}
+				tmp = begin.node -> next_sibling;
+				if(ASTtree->isValid(tmp) && (*tmp)->data) {
+					next->addNext((*begin)->data->lineNumber, (*tmp)->data->lineNumber);
+				}
+			}
+			else if ((*begin)->data->type == "IF") {
+				tmp = begin.node -> first_child;
+				if(ASTtree->isValid(tmp) && (*tmp)->data) {
+					next->addNext((*begin)->data->lineNumber, (*tmp)->data->lineNumber);
+				}
+				tmp2 = begin.node -> next_sibling;
+
+				if(ASTtree->isValid(tmp2) && (*tmp2)->data && (*tmp2)->data->type == "ELSE") {
+					tmp = tmp2.node -> first_child;
+					if(ASTtree->isValid(tmp) && (*tmp)->data) {
+						next->addNext((*begin)->data->lineNumber, (*tmp)->data->lineNumber);
+					}
+				}
+			}
+		}
+		++begin;
+	}
 }

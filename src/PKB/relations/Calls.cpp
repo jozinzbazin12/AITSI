@@ -23,13 +23,12 @@ void Calls::addCall(int callerId, int calleeId){
 	if(calleeId > maxId)
 			maxId = calleeId;
 
-	if(calleeIds.count(callerId) > 0){
+	if(calleeIds.count(callerId) > 0) {
 		vector<int> temp = calleeIds[callerId];
 		for (vector<int>::iterator iter = temp.begin(); iter != temp.end(); ++iter) {
 			if((*iter) == calleeId)
 				return;
 		}
-
 	}
 	calleeIds[callerId].push_back(calleeId);
 }
