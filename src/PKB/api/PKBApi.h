@@ -27,6 +27,8 @@ public:
 	bool followsStar(int lineNum, int followerLineNum);
 	bool calls(int callerId, int calleeId);
 	bool callsStar(int callerId, int calleeId);
+	bool next(int lineNumber, int nextLineNumber);
+	bool nextStar(int lineNumber, int nextLineNumber);
 
 	int getLinesCount();
 	vector<int> getAssignLines();

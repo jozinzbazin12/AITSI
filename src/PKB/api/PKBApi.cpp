@@ -48,6 +48,14 @@ bool PKBApi::callsStar(int callerId, int calleeId) {
 	return pkb -> getCalls() -> callsStar(callerId, calleeId);
 }
 
+bool PKBApi::next(int lineNumber, int nextLineNumber) {
+	return pkb -> getNext() -> next(lineNumber, nextLineNumber);
+}
+
+bool PKBApi::nextStar(int lineNumber, int nextLineNumber) {
+	return pkb -> getNext() -> nextStar(lineNumber, nextLineNumber);
+}
+
 /////////////////////////////////////////////////////////////////////////////
 
 int PKBApi::getLinesCount(){

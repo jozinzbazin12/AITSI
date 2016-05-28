@@ -8,8 +8,7 @@
 #include "Next.h"
 
 Next::Next() {
-	// TODO Auto-generated constructor stub
-
+	maxId = -1;
 }
 
 Next::~Next() {
@@ -17,6 +16,12 @@ Next::~Next() {
 }
 
 void Next::addNext(int lineNumber, int nextLineNumber) {
+
+	if(lineNumber > maxId)
+		maxId = lineNumber;
+	if(nextLineNumber > maxId)
+		maxId = nextLineNumber;
+
 	if(nextLines.count(lineNumber) > 0) { //zapobieganie powtórkom
 		vector<int> temp = nextLines[lineNumber];
 		for (vector<int>::iterator iter = temp.begin(); iter != temp.end(); ++iter) {
@@ -25,6 +30,42 @@ void Next::addNext(int lineNumber, int nextLineNumber) {
 		}
 	}
 	nextLines[lineNumber].push_back(nextLineNumber);
+}
+
+bool Next::next(int lineNumber, int nextLineNumber) {
+	if(nextLines.count(lineNumber) == 0)
+		return false;
+
+	for (vector<int>::iterator iter = nextLines[lineNumber].begin();
+				iter != nextLines[lineNumber].end(); ++iter) {
+		if((*iter) == nextLineNumber)
+			return true;
+	}
+
+	return false;
+}
+
+bool Next::nextStar(int lineNumber, int nextLineNumber) {
+	bool visited[maxId+1];
+	for(int i=0; i<maxId+1; i++)
+		visited[i] = false;
+
+	return nextStarRecur(lineNumber, nextLineNumber, visited);
+}
+
+bool Next::nextStarRecur(int lineNumber, int nextLineNumber, bool visited[]) {
+	if(next(lineNumber, nextLineNumber))
+		return true;
+
+	if(nextLines.count(lineNumber) > 0) {
+		for (vector<int>::iterator iter = nextLines[lineNumber].begin(); iter != nextLines[lineNumber].end(); ++iter) {
+			if(!visited[(*iter)]) {
+				visited[(*iter)] = true;
+				return nextStarRecur((*iter), nextLineNumber, visited);
+			}
+		}
+	}
+	return false;
 }
 
 void Next::writeAll() {

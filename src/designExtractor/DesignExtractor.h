@@ -28,7 +28,6 @@ private:
 	void setProcTable();
 	void setCallsRelations();
 	void setNextRelations();
-	void setNextForAssign();
 	/*void recur(tree<tree_node_<ASTNode*>*>::iterator current,tree<tree_node_<ASTNode*>*>::iterator ifNode, Modifies * modifies,
 	 VarTable * varTable);*/
 	void ifRecur(tree<tree_node_<ASTNode*>*>::iterator current,
