@@ -45,7 +45,8 @@ void DesignExtractor::setFollowRelations() {
 			} else {
 				tmp = begin.node->next_sibling;
 				if (ASTtree->isValid(tmp)) {
-					if ((*begin)->data->lineNumber != (*tmp)->data->lineNumber) {
+					if ((*begin)->data->lineNumber != (*tmp)->data->lineNumber
+							&& ((*begin)->data->type != "ELSE" && (*tmp)->data->type != "ELSE")) {
 						follows->addNext((*begin)->data->lineNumber, (*tmp)->data->lineNumber);
 						follows->addPrev((*tmp)->data->lineNumber, (*begin)->data->lineNumber);
 					}
@@ -72,7 +73,7 @@ void DesignExtractor::setParentRelations() {
 				tmp = begin.node->parent;        //tmp = parent    begin - child
 				if (ASTtree->isValid(tmp) && (*tmp)->data->type != "PROCEDURE"
 						&& (*tmp)->data->type != "PROGRAM") {
-					if ((*tmp)->data->type == "ELSE") {
+					if ((*tmp)->data->type == "ELSE" && (*begin)->data->type != "ELSE") {
 						prevSib = tmp.node->prev_sibling;  //getting if node
 						if (ASTtree->isValid(prevSib)) {
 							parent->addParent((*begin)->data->lineNumber,
