@@ -7,6 +7,100 @@
 
 #include "Validator.h"
 
+/*
+Meta symbols:
+
+a* -- repetition of a, 0 or more times
+a+ -- repetition of a, 1 or more times
+a | b -- a or b
+brackets ( and ) are used for grouping
+
+Lexical tokens:
+
+LETTER : A-Z | a-z -- capital or small letter
+DIGIT : 0-9
+NAME : LETTER (LETTER | DIGIT)* -- procedure names and variables are strings of letters, and digits, starting with a letter
+INTEGER : DIGIT+ -- constants are sequences of digits
+
+Grammar rules:
+
+program : procedure+
+procedure : ‘procedure’ proc_name ‘{‘ stmtLst ‘}’
+procedure : stmtLst
+stmtLst : stmt+
+stmt : call | while | if | assign
+call : ‘call’ proc_name ‘;’
+while : ‘while’ var_name ‘{‘ stmtLst ‘}’
+while: variable stmtLst
+if : ‘if’ var_name ‘then’ ‘{‘ stmtLst ‘}’ ‘else’ ‘{‘ stmtLst ‘}’
+if : variable stmtLst stmtLst
+assign : var_name ‘=’ expr ‘;’
+assign : variable expr
+expr : expr ‘+’ term | expr ‘-’ term | term
+expr : plus | minus | times | ref
+plus : expr expr
+minus : expr expr
+times : expr expr
+ref : variable | constant
+term : term ‘*’ factor | factor
+factor : var_name | const_value | ‘(’ expr ‘)’
+var_name : NAME
+proc_name : NAME
+const_value : INTEGER
+
+Attributes and attribute value types:
+
+procedure.procName, call.procName, variable.varName : NAME
+constant.value : INTEGER
+stmt.stmt# : INTEGER
+
+
+Program design entities:
+
+program, procedure
+stmtLst, stmt, assign, call, while, if
+plus, minus, times
+variable, constant
+prog_line
+
+Attributes and attribute value types:
+
+procedure.procName, variable.varName : NAME
+constant.value : INTEGER
+stmt.stmt# : INTEGER (numbers assigned to statements for the purpose of reference)
+call.procName : NAME
+
+Program design entity relationships:
+
+Modifies (procedure, variable)
+Modifies (stmt, variable)
+Uses (procedure, variable)
+Uses (stmt, variable)
+Calls (procedure 1, procedure 2)
+Calls* (procedure 1, procedure 2)
+Parent (stmt 1, stmt 2)
+Parent* (stmt 1, stmt 2)
+Follows (stmt 1, stmt 2)
+Follows* (stmt 1, stmt 2)
+Next (prog_line 1, prog_line 2)
+Next* (prog_line 1, prog_line 2)
+Affects (assign 1, assign2)
+Affects* (assign 1, assign2)
+ */
+
+/*
+ * 	TODO:
+ * 	Parent i Follows z liczbami naturalnymi dodatnimi po obu stronach
+ * 	Calls ze stringami po obu stronach
+ * 	Modifies i Uses ze stringami po obu stronach lub liczba naturala dodatnia lewo stringiem prawo
+ * 	Next z liczbami naturalnymi dodatnimi po obu stronach
+ * 	W Next moga byc takie same zmienne obie
+ * 	Affects liczbami naturalnymi dodatnimi po obu stronach
+ * 	Te stringi to w ciapkach musza byc
+ * 	Modifies (_, “x”’) and Uses (_, “x”) are not allowed, w reszcie moze byc _ po obu stronach
+ * 	jakies te wzory z tymi _ ale tego juz raczej nie bede sprawdzal
+ */
+
 Validator::Validator() {
 	// TODO Auto-generated constructor stub
 	init();
@@ -36,7 +130,7 @@ void Validator::init() {
 	addAttribute("variable", "varname", "NAME");
 	addAttribute("constant", "value", "INTEGER");
 	addAttribute("stmt", "stmt#", "INTEGER");
-	addAttribute("procedure", "procname", "NAME");
+	addAttribute("call", "procname", "NAME");
 
 	addRelationship("modifies", 2, "procedure", "variable");
 	addRelationship("modifies", 2, "stmt", "variable");
@@ -44,77 +138,67 @@ void Validator::init() {
 	addRelationship("modifies", 2, "call", "variable");
 	addRelationship("modifies", 2, "while", "variable");
 	addRelationship("modifies", 2, "if", "variable");
+	addRelationship("modifies", 2, "prog_line", "variable");
 	addRelationship("uses", 2, "procedure", "variable");
 	addRelationship("uses", 2, "stmt", "variable");
 	addRelationship("uses", 2, "assign", "variable");
 	addRelationship("uses", 2, "call", "variable");
 	addRelationship("uses", 2, "while", "variable");
 	addRelationship("uses", 2, "if", "variable");
+	addRelationship("uses", 2, "prog_line", "variable");
 	addRelationship("calls", 2, "procedure", "procedure");
 	addRelationship("calls*", 2, "procedure", "procedure");
 	addRelationship("parent", 2, "stmt", "stmt");
-	addRelationship("parent", 2, "assign", "stmt");
-	addRelationship("parent", 2, "call", "stmt");
+	addRelationship("parent", 2, "stmt", "prog_line");
+	addRelationship("parent", 2, "while", "prog_line");
+	addRelationship("parent", 2, "if", "prog_line");
+	addRelationship("parent", 2, "prog_line", "prog_line");
+	addRelationship("parent", 2, "prog_line", "stmt");
+	addRelationship("parent", 2, "prog_line", "assign");
+	addRelationship("parent", 2, "prog_line", "call");
+	addRelationship("parent", 2, "prog_line", "while");
+	addRelationship("parent", 2, "prog_line", "if");
 	addRelationship("parent", 2, "while", "stmt");
 	addRelationship("parent", 2, "if", "stmt");
 	addRelationship("parent", 2, "stmt", "assign");
 	addRelationship("parent", 2, "stmt", "call");
 	addRelationship("parent", 2, "stmt", "while");
 	addRelationship("parent", 2, "stmt", "if");
-	addRelationship("parent", 2, "assign", "assign");
-	addRelationship("parent", 2, "call", "call");
 	addRelationship("parent", 2, "while", "while");
 	addRelationship("parent", 2, "if", "if");
-	addRelationship("parent", 2, "assign", "call");
-	addRelationship("parent", 2, "assign", "while");
-	addRelationship("parent", 2, "assign", "if");
-	addRelationship("parent", 2, "call", "assign");
 	addRelationship("parent", 2, "while", "assign");
 	addRelationship("parent", 2, "if", "assign");
-	addRelationship("parent", 2, "call", "assign");
-	addRelationship("parent", 2, "call", "while");
-	addRelationship("parent", 2, "call", "if");
-	addRelationship("parent", 2, "assign", "call");
 	addRelationship("parent", 2, "while", "call");
 	addRelationship("parent", 2, "if", "call");
-	addRelationship("parent", 2, "assign", "while");
-	addRelationship("parent", 2, "call", "while");
 	addRelationship("parent", 2, "if", "while");
-	addRelationship("parent", 2, "while", "assign");
-	addRelationship("parent", 2, "while", "call");
 	addRelationship("parent", 2, "while", "if");
 	addRelationship("parent*", 2, "stmt", "stmt");
-	addRelationship("parent*", 2, "assign", "stmt");
-	addRelationship("parent*", 2, "call", "stmt");
 	addRelationship("parent*", 2, "while", "stmt");
 	addRelationship("parent*", 2, "if", "stmt");
 	addRelationship("parent*", 2, "stmt", "assign");
 	addRelationship("parent*", 2, "stmt", "call");
 	addRelationship("parent*", 2, "stmt", "while");
 	addRelationship("parent*", 2, "stmt", "if");
-	addRelationship("parent*", 2, "assign", "assign");
-	addRelationship("parent*", 2, "call", "call");
 	addRelationship("parent*", 2, "while", "while");
 	addRelationship("parent*", 2, "if", "if");
-	addRelationship("parent*", 2, "assign", "call");
-	addRelationship("parent*", 2, "assign", "while");
-	addRelationship("parent*", 2, "assign", "if");
-	addRelationship("parent*", 2, "call", "assign");
 	addRelationship("parent*", 2, "while", "assign");
 	addRelationship("parent*", 2, "if", "assign");
-	addRelationship("parent*", 2, "call", "assign");
-	addRelationship("parent*", 2, "call", "while");
-	addRelationship("parent*", 2, "call", "if");
-	addRelationship("parent*", 2, "assign", "call");
 	addRelationship("parent*", 2, "while", "call");
 	addRelationship("parent*", 2, "if", "call");
-	addRelationship("parent*", 2, "assign", "while");
-	addRelationship("parent*", 2, "call", "while");
 	addRelationship("parent*", 2, "if", "while");
-	addRelationship("parent*", 2, "while", "assign");
-	addRelationship("parent*", 2, "while", "call");
 	addRelationship("parent*", 2, "while", "if");
 	addRelationship("follows", 2, "stmt", "stmt");
+	addRelationship("follows", 2, "stmt", "prog_line");
+	addRelationship("follows", 2, "while", "prog_line");
+	addRelationship("follows", 2, "if", "prog_line");
+	addRelationship("follows", 2, "call", "prog_line");
+	addRelationship("follows", 2, "assign", "prog_line");
+	addRelationship("follows", 2, "prog_line", "prog_line");
+	addRelationship("follows", 2, "prog_line", "stmt");
+	addRelationship("follows", 2, "prog_line", "assign");
+	addRelationship("follows", 2, "prog_line", "call");
+	addRelationship("follows", 2, "prog_line", "while");
+	addRelationship("follows", 2, "prog_line", "if");
 	addRelationship("follows", 2, "assign", "stmt");
 	addRelationship("follows", 2, "call", "stmt");
 	addRelationship("follows", 2, "while", "stmt");
@@ -142,10 +226,19 @@ void Validator::init() {
 	addRelationship("follows", 2, "assign", "while");
 	addRelationship("follows", 2, "call", "while");
 	addRelationship("follows", 2, "if", "while");
-	addRelationship("follows", 2, "while", "assign");
-	addRelationship("follows", 2, "while", "call");
 	addRelationship("follows", 2, "while", "if");
 	addRelationship("follows*", 2, "stmt", "stmt");
+	addRelationship("follows*", 2, "stmt", "prog_line");
+	addRelationship("follows*", 2, "while", "prog_line");
+	addRelationship("follows*", 2, "if", "prog_line");
+	addRelationship("follows*", 2, "call", "prog_line");
+	addRelationship("follows*", 2, "assign", "prog_line");
+	addRelationship("follows*", 2, "prog_line", "prog_line");
+	addRelationship("follows*", 2, "prog_line", "stmt");
+	addRelationship("follows*", 2, "prog_line", "assign");
+	addRelationship("follows*", 2, "prog_line", "call");
+	addRelationship("follows*", 2, "prog_line", "while");
+	addRelationship("follows*", 2, "prog_line", "if");
 	addRelationship("follows*", 2, "assign", "stmt");
 	addRelationship("follows*", 2, "call", "stmt");
 	addRelationship("follows*", 2, "while", "stmt");
@@ -173,13 +266,17 @@ void Validator::init() {
 	addRelationship("follows*", 2, "assign", "while");
 	addRelationship("follows*", 2, "call", "while");
 	addRelationship("follows*", 2, "if", "while");
-	addRelationship("follows*", 2, "while", "assign");
-	addRelationship("follows*", 2, "while", "call");
 	addRelationship("follows*", 2, "while", "if");
 	addRelationship("next", 2, "prog_line", "prog_line");
 	addRelationship("next*", 2, "prog_line", "prog_line");
 	addRelationship("affects", 2, "assign", "assign");
+	addRelationship("affects", 2, "prog_line", "assign");
+	addRelationship("affects", 2, "assign", "prog_line");
+	addRelationship("affects", 2, "prog_line", "prog_line");
 	addRelationship("affects*", 2, "assign", "assign");
+	addRelationship("affects*", 2, "prog_line", "assign");
+	addRelationship("affects8", 2, "assign", "prog_line");
+	addRelationship("affects*", 2, "prog_line", "prog_line");
 }
 
 void Validator::addEntity(string entity) {
