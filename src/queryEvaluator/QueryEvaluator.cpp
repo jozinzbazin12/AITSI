@@ -179,13 +179,15 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 				if(resultType == "variable")
 				{
 					map<int,vector<int>> varLines = pkb -> getUses() ->getAllUses();
+					vector<int> variableIds;
+					if(withMap.count(selectValue) > 0) variableIds = withMap[selectValue];
 					for (map<int, vector<int>>::iterator it = varLines.begin(); it != varLines.end(); ++it)
 					{
 						vector<int> tmp = (*it).second;
 						if(find(tmp.begin(), tmp.end(), lines[i]) != tmp.end())
 						{
 							string name = pkb -> getVarTable() -> getVarName((*it).first);
-							if(find(result.begin(), result.end(), name) == result.end())
+							if(find(result.begin(), result.end(), name) == result.end() && (find(variableIds.begin(),variableIds.end(), (*it).first) != variableIds.end() || variableIds.empty()))
 								result.push_back(name);
 						}
 					}
@@ -1011,9 +1013,46 @@ vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<i
 	}
 
 	// Skrócenie listy parametru 1 bior¹c pod uwagê czêœci zapytania z 'with'
-	setLines1 = cutSetLines(field1->getValue(), setLines1);
+	//setLines1 = cutSetLines(field1->getValue(), setLines1);
 	// Skrócenie listy parametru 2 bior¹c pod uwagê czêœci zapytania z 'with'
+
+	/*
+	set<int> tmpSetLines2;
+	map<int,vector<int>> varLines = pkb -> getUses() ->getAllUses();
+	for (set<int>::iterator l1 = setLines2.begin(); l1 != setLines2.end(); ++l1)
+	{
+		for (map<int, vector<int>>::iterator it = varLines.begin(); it != varLines.end(); ++it)
+		{
+			if(*l1 == (*it).first)
+			{
+				vector<int> tmp = (*it).second;
+				for(size_t j = 0 ; j < tmp.size() ; j++)
+				{
+					tmpSetLines2.insert(tmp[j]);
+				}
+			}
+		}
+	}
+    */
+
 	setLines2 = cutSetLines(field2->getValue(), setLines2);
+
+	/*
+	setLines2.clear();
+	for (set<int>::iterator l1 = tmpSetLines2.begin(); l1 != tmpSetLines2.end(); ++l1) {
+		for (map<int, vector<int>>::iterator it = varLines.begin(); it != varLines.end(); ++it)
+		{
+			vector<int> tmp = (*it).second;
+			for(size_t j = 0 ; j < tmp.size() ; j++)
+			{
+				if(tmp[j] == *l1 && find(setLines2.begin(),setLines2.end(), *l1) == setLines2.end())
+				{
+					setLines2.insert((*it).first);
+				}
+			}
+		}
+	}
+	*/
 
 	vector<int> resultPart;
 	// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
@@ -1469,7 +1508,9 @@ void QueryEvaluator::getWithResult(Field* field1, Field* field2, vector<int> lin
 		for(size_t i = 0; i < l.size() ; i++)
 		{
 			if(pkb->getUses()->uses(l[i],value2) && find(lines.begin(), lines.end(), l[i]) != lines.end()) {
-				withLines.push_back(l[i]);
+				int param2 = pkb->getVarTable()->getVarId(value2);
+				if(param2 != -1)
+					withLines.push_back(param2);
 			}
 		}
 		withMap.insert(std::pair<string,vector<int>>(field1->getValue(),withLines));
@@ -1480,7 +1521,9 @@ void QueryEvaluator::getWithResult(Field* field1, Field* field2, vector<int> lin
 		for(size_t i = 0; i < l.size() ; i++)
 		{
 			if(pkb->getUses()->uses(l[i],value1) && find(lines.begin(), lines.end(), l[i]) != lines.end()) {
-				withLines.push_back(l[i]);
+				int param2 = pkb->getVarTable()->getVarId(value1);
+				if(param2 != -1)
+					withLines.push_back(param2);
 			}
 		}
 		withMap.insert(std::pair<string,vector<int>>(field2->getValue(),withLines));
@@ -1498,18 +1541,34 @@ void QueryEvaluator::getWithResult(Field* field1, Field* field2, vector<int> lin
 	}
 	else if(field1->getType() == "string" && field2->getType() == "string" && value1 != value2)
 	{
-		withMap.insert(std::pair<string,vector<int>>("all",withLines));
+		vector<int> empty;
+		withMap.insert(std::pair<string,vector<int>>("all",empty));
 	}
 }
 
 
 set<int> QueryEvaluator::cutSetLines(string fieldValue, set<int> setLines)
 {
-	vector<int> fieldMap = withMap[fieldValue];
+	vector<int> fieldMap;
+	if(withMap.count(fieldValue) > 0) fieldMap = withMap[fieldValue];
 	set<int> setLines1tmp;
-	vector<int> allMap = withMap["all"];
-	if(!allMap.empty())
+	vector<int> allMap;
+	if(withMap.count("all") > 0) allMap = withMap["all"];
+
+	if(!withMap.empty())
 	{
+		if(!allMap.empty())
+		{
+			for (set<int>::iterator l1 = setLines.begin(); l1 != setLines.end(); ++l1) {
+				if(find(allMap.begin(), allMap.end(), *l1) != allMap.end())
+				{
+					setLines1tmp.insert(*l1);
+				}
+			}
+			setLines.clear();
+			setLines.insert(setLines1tmp.begin(), setLines1tmp.end());
+		}
+
 		if(!fieldMap.empty())
 		{
 			for (set<int>::iterator l1 = setLines.begin(); l1 != setLines.end(); ++l1) {
@@ -1521,12 +1580,11 @@ set<int> QueryEvaluator::cutSetLines(string fieldValue, set<int> setLines)
 			setLines.clear();
 			setLines.insert(setLines1tmp.begin(), setLines1tmp.end());
 		}
-		else
+		else if(allMap.empty())
 		{
 			setLines.clear();
 		}
 	}
-
 	return setLines;
 }
 
