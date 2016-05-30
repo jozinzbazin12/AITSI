@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 #include <string>
 
 using namespace std;
@@ -26,6 +27,8 @@ public:
 	bool followsStar(int lineNum, int followerLineNum);
 	bool calls(int callerId, int calleeId);
 	bool callsStar(int callerId, int calleeId);
+	bool next(int lineNumber, int nextLineNumber);
+	bool nextStar(int lineNumber, int nextLineNumber);
 
 	int getLinesCount();
 	vector<int> getAssignLines();
@@ -44,6 +47,8 @@ public:
 	int getMaxProcId();
 	int getProcStartLine(int id);
 	int getProcStartLine(string name);
+	vector<int> getProcedureBodyLines(int procId);
+	set<int> getProcedureBodyLinesStar(int procId);
 	string getProcName(int id);
 };
 

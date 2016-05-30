@@ -48,6 +48,14 @@ bool PKBApi::callsStar(int callerId, int calleeId) {
 	return pkb->getCalls()->callsStar(callerId, calleeId);
 }
 
+bool PKBApi::next(int lineNumber, int nextLineNumber) {
+	return pkb->getNext()->next(lineNumber, nextLineNumber);
+}
+
+bool PKBApi::nextStar(int lineNumber, int nextLineNumber) {
+	return pkb->getNext()->nextStar(lineNumber, nextLineNumber);
+}
+
 /////////////////////////////////////////////////////////////////////////////
 
 int PKBApi::getLinesCount() {
@@ -114,5 +122,13 @@ int PKBApi::getProcStartLine(string name) {
 
 string PKBApi::getProcName(int id) {
 	return pkb->getProcTable()->getProcName(id);
+}
+
+vector<int> PKBApi::getProcedureBodyLines(int procId) {
+	return pkb->getProcTable()->getProcedureBodyLines(procId);
+}
+
+set<int> PKBApi::getProcedureBodyLinesStar(int procId) {
+	return pkb->getProcTable()->getProcedureBodyLinesStar(procId, pkb->getCalls());
 }
 

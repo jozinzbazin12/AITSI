@@ -1,9 +1,9 @@
 /*
- * Calls.h
- *
- *  Created on: 12 maj 2016
- *      Author: Pawel
- */
+* Calls.h
+*
+*  Created on: 12 maj 2016
+*      Author: Pawel
+*/
 
 #ifndef SRC_PKB_RELATIONS_CALLS_H_
 #define SRC_PKB_RELATIONS_CALLS_H_
@@ -21,6 +21,7 @@ public:
 	void addCall(int callerId, int calleeId);
 	bool calls(int callerId, int calleeId);
 	bool callsStar(int callerId, int calleeId);
+	vector<int> getCallees(int callerId);
 	void writeAll();
 
 private:

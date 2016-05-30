@@ -1,9 +1,9 @@
 /*
- * Uses.cpp
- *
- *  Created on: 29 mar 2016
- *      Author: Pawel
- */
+* Uses.cpp
+*
+*  Created on: 29 mar 2016
+*      Author: Pawel
+*/
 
 #include "Uses.h"
 #include "../../globalVars.h"
@@ -16,16 +16,16 @@ Uses::~Uses() {
 	// TODO Auto-generated destructor stub
 }
 
-void Uses::add(int varId, int lineNumber){
+void Uses::add(int varId, int lineNumber) {
 	varUsesLines[varId].push_back(lineNumber);
 }
 
-bool Uses::uses(int lineNumber, string varName){
+bool Uses::uses(int lineNumber, string varName) {
 	if (varName == "") {
 		for (map<int, vector<int> >::iterator iter = varUsesLines.begin(); iter != varUsesLines.end(); ++iter) {
 			vector<int> tempVec = (*iter).second;
 			for (unsigned i = 0; i < tempVec.size(); i++) {
-				if(tempVec[i] == lineNumber){
+				if (tempVec[i] == lineNumber) {
 					return true;
 				}
 			}
@@ -33,7 +33,7 @@ bool Uses::uses(int lineNumber, string varName){
 		return false;
 	}
 
-	int varId = pkb -> getVarTable() -> getVarId(varName);
+	int varId = pkb->getVarTable()->getVarId(varName);
 	if (varId == -1)
 		return false;
 	if (varUsesLines.count(varId) > 0) {
@@ -45,15 +45,19 @@ bool Uses::uses(int lineNumber, string varName){
 	return false;
 }
 
-void Uses::writeAll(){
-	for( map<int, vector<int> >::iterator iter = varUsesLines.begin(); iter != varUsesLines.end(); ++iter ) {
-	   vector<int> tempVec = (*iter).second;
-	   int key = (*iter).first;
-	   cout << key << " :";
-	   for (unsigned i = 0; i < tempVec.size(); i++) {
-	      cout << " " << tempVec[i];
-	   }
-	   cout << endl;
+void Uses::writeAll() {
+	for (map<int, vector<int> >::iterator iter = varUsesLines.begin(); iter != varUsesLines.end(); ++iter) {
+		vector<int> tempVec = (*iter).second;
+		int key = (*iter).first;
+		cout << pkb->getVarTable()->getVarName(key) << " :";
+		for (unsigned i = 0; i < tempVec.size(); i++) {
+			cout << " " << tempVec[i];
+		}
+		cout << endl;
 	}
 }
 
+map<int, vector<int>> Uses::getAllUses()
+{
+	return varUsesLines;
+}

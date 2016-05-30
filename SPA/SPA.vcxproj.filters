@@ -111,6 +111,9 @@
     <ClCompile Include="..\source\queryEvaluator\QueryEvaluator.cpp">
       <Filter>Source Files\queryEvaluator</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\PKB\relations\Next.cpp">
+      <Filter>Source Files\PKB\relations</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\exceptions.h">
@@ -223,6 +226,9 @@
     </ClInclude>
     <ClInclude Include="..\source\queryEvaluator\QueryEvaluator.h">
       <Filter>Source Files\queryEvaluator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\relations\Next.h">
+      <Filter>Source Files\PKB\relations</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

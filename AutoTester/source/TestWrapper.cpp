@@ -62,7 +62,8 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 	QueryPreProcessor* que = new QueryPreProcessor();
 	que->parseQuery(query);
 	PQLTree* tree = que->getTree();
-	results.push_back(queEva->getResult(tree));
+	vector<string> resultsTmp = queEva->getResult(tree);
+	copy(resultsTmp.begin(), resultsTmp.end(), back_inserter(results));
 	delete que;
 	delete tree;
 }

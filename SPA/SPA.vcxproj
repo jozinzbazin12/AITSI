@@ -21,6 +21,7 @@
     <ClCompile Include="..\source\PKB\relations\Calls.cpp" />
     <ClCompile Include="..\source\PKB\relations\Follows.cpp" />
     <ClCompile Include="..\source\PKB\relations\Modifies.cpp" />
+    <ClCompile Include="..\source\PKB\relations\Next.cpp" />
     <ClCompile Include="..\source\PKB\relations\Parent.cpp" />
     <ClCompile Include="..\source\PKB\relations\Uses.cpp" />
     <ClCompile Include="..\source\PKB\tables\LinesTable.cpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="..\source\PKB\relations\Calls.h" />
     <ClInclude Include="..\source\PKB\relations\Follows.h" />
     <ClInclude Include="..\source\PKB\relations\Modifies.h" />
+    <ClInclude Include="..\source\PKB\relations\Next.h" />
     <ClInclude Include="..\source\PKB\relations\Parent.h" />
     <ClInclude Include="..\source\PKB\relations\Uses.h" />
     <ClInclude Include="..\source\PKB\tables\LinesTable.h" />

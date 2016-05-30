@@ -27,12 +27,15 @@ private:
 	void setUsesRelations();
 	void setProcTable();
 	void setCallsRelations();
+	void setNextRelations();
 	/*void recur(tree<tree_node_<ASTNode*>*>::iterator current,tree<tree_node_<ASTNode*>*>::iterator ifNode, Modifies * modifies,
 	VarTable * varTable);*/
 	void ifRecur(tree<tree_node_<ASTNode*>*>::iterator current,
 		tree<tree_node_<ASTNode*>*>::iterator ifNode);
 	void whileRecur(tree<tree_node_<ASTNode*>*>::iterator current,
 		tree<tree_node_<ASTNode*>*>::iterator whileNode);
+	void procRecur(tree<tree_node_<ASTNode*>*>::iterator current,
+		int procId);
 	void setIfLines();
 	void setCallLines();
 };

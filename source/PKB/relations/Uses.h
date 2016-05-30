@@ -1,9 +1,9 @@
 /*
- * Uses.h
- *
- *  Created on: 29 mar 2016
- *      Author: Pawel
- */
+* Uses.h
+*
+*  Created on: 29 mar 2016
+*      Author: Pawel
+*/
 
 #ifndef SRC_PKB_RELATIONS_USES_H_
 #define SRC_PKB_RELATIONS_USES_H_
@@ -22,6 +22,7 @@ public:
 	bool uses(int lineNumber, string varName); // jeœli varName puste to znaczy ¿e jakakolwiek zmienna
 	void writeAll();
 	virtual ~Uses();
+	virtual map<int, vector<int>> getAllUses();
 
 private:
 	map <int, vector<int> > varUsesLines;

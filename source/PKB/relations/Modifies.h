@@ -1,9 +1,9 @@
 /*
- * Modifies.h
- *
- *  Created on: 29 mar 2016
- *      Author: Pawel
- */
+* Modifies.h
+*
+*  Created on: 29 mar 2016
+*      Author: Pawel
+*/
 
 #ifndef SRC_PKB_RELATIONS_MODIFIES_H_
 #define SRC_PKB_RELATIONS_MODIFIES_H_
@@ -21,6 +21,7 @@ public:
 	void add(int varId, int lineNumber);
 	bool modifies(int lineNumber, string varName); // jeœli varName puste to znaczy ¿e jakakolwiek zmienna
 	void writeAll();
+	map<int, vector<int>> getAllModifies();
 
 private:
 	map <int, vector<int> > varModificationsLines;

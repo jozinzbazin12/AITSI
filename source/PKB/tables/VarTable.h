@@ -23,6 +23,7 @@ public:
 	virtual int getVarId(string name);
 	virtual string getVarName(int id);
 	virtual void writeAll();
+	virtual vector<string> getAllVar();
 
 private:
 	vector<string> variables;

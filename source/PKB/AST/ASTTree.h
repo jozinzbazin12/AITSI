@@ -11,6 +11,7 @@ public:
 	ASTTree() {
 
 		Tree = new tree<tree_node_<ASTNode*>*>();
+
 	}
 	tree<tree_node_<ASTNode*>*> *Tree;
 
@@ -73,7 +74,7 @@ public:
 	}
 
 	//Compute the depth to the root or to a fixed other iterator.
-	int getDepth(tree<tree_node_<ASTNode*>*>::iterator& nodeIter){
+	int getDepth(tree<tree_node_<ASTNode*>*>::iterator& nodeIter) {
 		return Tree->depth(nodeIter);
 	}
 
@@ -87,33 +88,67 @@ public:
 
 	//Return sibling iterator to the first child of given node.
 	tree<tree_node_<ASTNode*>*>::iterator getFirstChild(tree<tree_node_<ASTNode*>*>::iterator& it) {
-			return Tree->begin(it);
-		}
+		return Tree->begin(it);
+	}
 	//Return sibling end iterator for children of given node.
 	tree<tree_node_<ASTNode*>*>::iterator getLastChild(tree<tree_node_<ASTNode*>*>::iterator& it) {
-				return Tree->end(it);
-			}
+		return Tree->end(it);
+	}
 
 	tree<tree_node_<ASTNode*>*>::iterator getEnd() {
-			return Tree->end();
-		}
+		return Tree->end();
+	}
 
 
-	tree<tree_node_<ASTNode*>*>::leaf_iterator getEndOfLeaf(tree<tree_node_<ASTNode*>*>::iterator& it){
-			return Tree->end_leaf(it);
-		}
+	tree<tree_node_<ASTNode*>*>::leaf_iterator getEndOfLeaf(tree<tree_node_<ASTNode*>*>::iterator& it) {
+		return Tree->end_leaf(it);
+	}
 
-	tree<tree_node_<ASTNode*>*>::leaf_iterator getBeginLeaf(tree<tree_node_<ASTNode*>*>::iterator& it){
-				return Tree->begin_leaf(it);
-			}
+	tree<tree_node_<ASTNode*>*>::leaf_iterator getBeginLeaf(tree<tree_node_<ASTNode*>*>::iterator& it) {
+		return Tree->begin_leaf(it);
+	}
 
 	tree<tree_node_<ASTNode*>*>::iterator parent(tree<tree_node_<ASTNode*>*>::iterator& it) {
-			return Tree->parent(it);
-		}
+		return Tree->parent(it);
+	}
 	//checks if iterator is in tree
-	bool isValid(tree<tree_node_<ASTNode*>*>::iterator& it){
+	bool isValid(tree<tree_node_<ASTNode*>*>::iterator& it) {
 		return Tree->is_valid(it);
 	}
+
+	/*
+	tree<tree_node_<vector<int>*>*> getCFGTree(tree<tree_node_<ASTNode*>*>::iterator begin, tree<tree_node_<ASTNode*>*>::iterator end) {
+	tree<tree_node_<vector<int>*>*>* cfgTree = new tree<tree_node_<vector<int>*>*>();
+	int i = 0;
+	tree_node_<vector<int>*>* actualNode = new tree_node_<vector<int>*>();
+	while ( begin != end) {
+	actualNode->data->push_back(begin.node->data->data->lineNumber);
+	if (begin.node->data->data->type == "CONDITIONAL") {
+	cfgTree->insert(i,actualNode);
+	cfgTree->insert(i+1, actualNode);
+	tree<tree_node_<vector<int>*>*> ifStatement = getCFGTree(begin.node->first_child->first_child, begin.node->first_child->last_child);
+	cfgTree->insert_subtree_after(i,ifStatement.begin());
+	if (begin.node->first_child != begin.node->last_child) {
+	tree<tree_node_<vector<int>*>*> elseStatement = getCFGTree(begin.node->last_child->first_child, begin.node->last_child->last_child);
+	cfgTree->insert_subtree_after(i,elseStatement.begin());
+	}
+	actualNode = new tree_node_<vector<int>*>();
+	i++;
+	} else if (begin.node->data->data->type == "LOOP") {
+	cfgTree->insert(i,actualNode);
+	cfgTree->insert(i+1, actualNode);
+	tree<tree_node_<vector<int>*>*> whileStatement = getCFGTree(begin.node->first_child->first_child, begin.node->first_child->last_child);
+	cfgTree->insert_subtree_after(i,whileStatement.begin());
+	actualNode = new tree_node_<vector<int>*>();
+	i++;
+	}
+
+	i++;
+	begin++;
+	}
+	return cfgTree;
+	}
+	*/
 
 	void printTree() {
 		tree<tree_node_<ASTNode*>*>::iterator begin = Tree->begin();
@@ -124,8 +159,9 @@ public:
 			}
 			if (!(*begin)->data) {
 				cout << "??" << endl;
-			} else {
-				cout << " \\ " << "(" << (*begin)->data->type << " : " << (*begin)->data->value << ")" <<" : " << (*begin)->data->lineNumber << ")" << endl;
+			}
+			else {
+				cout << " \\ " << "(" << (*begin)->data->type << " : " << (*begin)->data->value << ")" << " : " << (*begin)->data->lineNumber << ")" << endl;
 			}
 			++begin;
 		}
