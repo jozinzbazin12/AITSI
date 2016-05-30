@@ -26,9 +26,11 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 	vector<int> lines;
 	set<int> setLines;
 	string selectValue;
-	string resultType;
 	tree<tree_node_<PQLNode*>*>::iterator begin = Tree->Tree->begin();
 	tree<tree_node_<PQLNode*>*>::iterator end = Tree->Tree->end();
+	bool isModifies = false;
+	bool isUses = false;
+
 
 	while (begin != end) {
 		//for (int i = 0; i < Tree->Tree->depth(end); ++i) {
@@ -83,6 +85,7 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 					lines = getModifiesResult((*begin)->data->getField1(),
 							(*begin)->data->getField2(), lines, selectValue);
 					cout << "Modifies" << endl;
+					isModifies = true;
 				}
 				//Sprawdzanie czy wystapila relacja Parent lub Parent*
 				if ((*begin)->data->getNodeType() == "parent") {
@@ -133,6 +136,7 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 								(*begin)->data->getField2(), lines,
 								selectValue);
 						cout << "Uses" << endl;
+						isUses = true;
 					}
 				}
 				// Calls || Calls*
@@ -170,7 +174,8 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 		{
 			for(size_t i = 0 ; i < lines.size() ; i++)
 			{
-				if(resultType == "procedure")
+				//cout << "LINIA: " << lines[i] << endl;
+ 				if(resultType == "procedure")
 				{
 					string name = pkbApi -> getProcName(pkbApi -> getProcId(lines[i]));
 					result.push_back(name);
@@ -178,17 +183,72 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 				}
 				if(resultType == "variable")
 				{
-					map<int,vector<int>> varLines = pkb -> getUses() ->getAllUses();
+					map<int,vector<int>> varUsesLines = pkb -> getUses() -> getAllUses();
+					map<int,vector<int>> varModifiesLines = pkb -> getModifies() -> getAllModifies();
 					vector<int> variableIds;
 					if(withMap.count(selectValue) > 0) variableIds = withMap[selectValue];
-					for (map<int, vector<int>>::iterator it = varLines.begin(); it != varLines.end(); ++it)
+
+					if(isUses && !isModifies) // Wyst¹pi³a tylko relacja -> Uses
 					{
-						vector<int> tmp = (*it).second;
-						if(find(tmp.begin(), tmp.end(), lines[i]) != tmp.end())
+						for (map<int, vector<int>>::iterator it = varUsesLines.begin(); it != varUsesLines.end(); ++it)
 						{
-							string name = pkb -> getVarTable() -> getVarName((*it).first);
-							if(find(result.begin(), result.end(), name) == result.end() && (find(variableIds.begin(),variableIds.end(), (*it).first) != variableIds.end() || variableIds.empty()))
-								result.push_back(name);
+							vector<int> tmp = (*it).second;
+							if(find(tmp.begin(), tmp.end(), lines[i]) != tmp.end())
+							{
+								string name = pkb -> getVarTable() -> getVarName((*it).first);
+								if(find(result.begin(), result.end(), name) == result.end() && (find(variableIds.begin(),variableIds.end(), (*it).first) != variableIds.end() || variableIds.empty()))
+									result.push_back(name);
+							}
+						}
+					}
+					else if(!isUses && isModifies) // Wyst¹pi³a tylko relacja -> Modifies
+					{
+						for (map<int, vector<int>>::iterator it = varModifiesLines.begin(); it != varModifiesLines.end(); ++it)
+						{
+							vector<int> tmp = (*it).second;
+							if(find(tmp.begin(), tmp.end(), lines[i]) != tmp.end())
+							{
+								string name = pkb -> getVarTable() -> getVarName((*it).first);
+								if(find(result.begin(), result.end(), name) == result.end() && (find(variableIds.begin(),variableIds.end(), (*it).first) != variableIds.end() || variableIds.empty()))
+									result.push_back(name);
+							}
+						}
+					}
+					else if(isUses && isModifies) // Wyst¹pi³y obie relacje -> Uses i Modifies
+					{
+						vector<string> resultUses;
+						for (map<int, vector<int>>::iterator it = varUsesLines.begin(); it != varUsesLines.end(); ++it)
+						{
+							vector<int> tmp = (*it).second;
+							if(find(tmp.begin(), tmp.end(), lines[i]) != tmp.end())
+							{
+								string name = pkb -> getVarTable() -> getVarName((*it).first);
+								if(find(resultUses.begin(), resultUses.end(), name) == resultUses.end() && (find(variableIds.begin(),variableIds.end(), (*it).first) != variableIds.end() || variableIds.empty()))
+									resultUses.push_back(name);
+							}
+						}
+
+						vector<string> resultModifies;
+						for (map<int, vector<int>>::iterator it = varModifiesLines.begin(); it != varModifiesLines.end(); ++it)
+						{
+							vector<int> tmp = (*it).second;
+							if(find(tmp.begin(), tmp.end(), lines[i]) != tmp.end())
+							{
+								string name = pkb -> getVarTable() -> getVarName((*it).first);
+								if(find(resultModifies.begin(), resultModifies.end(), name) == resultModifies.end() && (find(variableIds.begin(),variableIds.end(), (*it).first) != variableIds.end() || variableIds.empty()))
+									resultModifies.push_back(name);
+							}
+						}
+
+						for(size_t iU = 0 ; iU < resultUses.size() ; iU++)
+						{
+							for(size_t iM = 0 ; iM < resultModifies.size() ; iM++)
+							{
+								if(resultUses[iU] == resultModifies[iM] && find(result.begin(), result.end(), resultUses[iU]) == result.end())
+								{
+									result.push_back(resultUses[iU]);
+								}
+							}
 						}
 					}
 				}
@@ -221,78 +281,295 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 	return result;
 }
 
-vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2,
-		vector<int> lines, string selectValue) {
+vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vector<int> lines, string selectValue) {
 	set<int> setLines1;
-	set<string> setString1;
 	set<int> setLines2;
-	set<string> setString2;
-	//Sprawdzanie pierwszego parametru (Filed1) w relacji Modifies
-	if (field1->getType() == "constant") {
-		int param = field1->getIntegerValue();
-		setLines1.insert(param);
-		if (field2->getType() == "variable") {
-			//dopisac wstawianie variable name do zmiennej pomocniczej SetString2? czy cos takiego
-		} else if (field2->getType() == "string"){
-			//Dopisac zapisywanie nazwy tej zmiennej w setLines2 - czyli setString2 ??
-		//	setString2 = field2->getValue();
-					//pkb->getVarTable->getVarName(id..); ????
-		}
-	} else {
-		if (field1->getType() == "stmt") {
-			setLines1 = pkb->getLineTable()->getOrderedWhileLines();
-			setLines1.insert(pkb->getLineTable()->getOrderedIfLines().begin(),pkb->getLineTable()->getOrderedIfLines().end());
-			//set<int> tmp = pkb->getLineTable()->getOrderedIfLines();
-			//setLines1.insert(tmp.begin(), tmp.end());
-			setLines1.insert(pkb->getLineTable()->getOrderedCallLines().begin(),pkb->getLineTable()->getOrderedCallLines().end());
-			setLines1.insert(pkb->getLineTable()->getOrderedAssignLines().begin(),pkb->getLineTable()->getOrderedAssignLines().end());
 
-		} else if (field1->getType() == "while") {
-			setLines1 = pkb->getLineTable()->getOrderedWhileLines();
-		} else if (field1->getType() == "if") {
-			setLines1 = pkb->getLineTable()->getOrderedIfLines();
-		} else if (field1->getType() == "call") {
-			setLines1 = pkb->getLineTable()->getOrderedCallLines();
-		} else if (field1->getType() == "assign") {
-			setLines1 = pkb->getLineTable()->getOrderedAssignLines();
-		} else if (field1->getType() == "procedure" ) {
-			//Dopisac dodawanie procedure
-		} else if (field1->getType() == "string"){
-				//Dopisac dodawanie string
+	if(field1->getType() == "constant" && field2->getType() == "constant")
+	{
+		int param1 = field1->getIntegerValue();
+		string param2 = pkb->getVarTable()->getVarName(field2->getIntegerValue());
+		setLines1.insert(param1);
+		if(!param2.empty())
+		{
+			setLines2.insert(field2->getIntegerValue());
 		}
-		//Sprawdzanie drugiego parametru w relacji Modifies (moze to byc tylko variable lub var_name)
-		if (field2->getType() == "variable" || field2->getType() == "any") {
-			// Tutaj dopisac dodawanie variable do setString2
-		} else if (field2->getType() == "string") {
-			// tutaj do zmiennej setString2 wpierdzielic wartosc konkretna var_name
+	}
+	else if(field1->getType() == "constant" && field2->getType() != "constant")
+	{
+		int param1 = field1->getIntegerValue();
+		setLines1.insert(param1);
+
+		if(field2->getType() == "variable")
+		{
+			vector<string> tmp = pkb->getVarTable()->getAllVar();
+			for(size_t i = 0 ; i < tmp.size() ; i++)
+			{
+				setLines2.insert(pkb->getVarTable()->getVarId(tmp[i]));
+			}
+		}
+		else if(field2->getType() == "string")
+		{
+			int param2 = pkb->getVarTable()->getVarId(field2->getValue());
+			if(param2 != -1)
+				setLines2.insert(param2);
+		}
+	}
+	else if(field1->getType() != "constant" && field2->getType() == "constant")
+	{
+		//if
+		//while
+		//assign
+		//procedure
+		//call
+		if(field1->getType() == "if")
+		{
+			map<int,vector<int>> ifLinesStart = pkb->getLineTable()->getIfBodyLines();
+
+			for (map<int, vector<int>>::iterator it = ifLinesStart.begin(); it != ifLinesStart.end(); ++it) {
+				vector<int> ifLines = (*it).second;
+				//setLines1.insert((*it).first);
+				for(size_t i = 0 ; i < ifLines.size() ; i++)
+				{
+					setLines1.insert(ifLines[i]);
+				}
+			}
+		}
+		else if(field1->getType() == "while")
+		{
+			map<int,vector<int>> whileLinesStart = pkb->getLineTable()->getWhileBodyLines();
+
+			for (map<int, vector<int>>::iterator it = whileLinesStart.begin(); it != whileLinesStart.end(); ++it) {
+				vector<int> whileLines = (*it).second;
+				//setLines1.insert((*it).first);
+				for(size_t i = 0 ; i < whileLines.size() ; i++)
+				{
+					setLines1.insert(whileLines[i]);
+				}
+			}
+		}
+		else if(field1->getType() == "assign")
+		{
+			setLines1 = pkb->getLineTable()->getOrderedAssignLines();
+		}
+		else if(field1->getType() == "procedure")
+		{
+			map<int,vector<int>> procLinesStart = pkb->getProcTable()->getProceduresBodyLines();
+
+			for (map<int, vector<int>>::iterator it = procLinesStart.begin(); it != procLinesStart.end(); ++it)
+			{
+				vector<int> procLines = (*it).second;
+				int procParam = pkb->getProcTable()->getProcStartLine((*it).first);
+				setLines1.insert(procParam);
+				for(size_t i = 0 ; i < procLines.size() ; i++)
+				{
+					setLines1.insert(procLines[i]);
+				}
+			}
+		}
+		else if(field1->getType() == "call")
+		{
+			vector<int> callLinesStart = pkb->getLineTable()->getCallLines();
+			for(size_t i = 0 ; i < callLinesStart.size() ; i++)
+			{
+				string procName = pkb->getLineTable()->getCalledProcName(callLinesStart[i]);
+				int procId = pkb->getProcTable()->getProcId(procName);
+				if(procId != -1)
+				{
+					vector<int> callLines = pkb->getProcTable()->getProcedureBodyLines(procId);
+
+					for(size_t j = 0 ; j < callLines.size() ; j++)
+					{
+						setLines1.insert(callLines[j]);
+					}
+				}
+			}
+		}
+		else if(field1->getType() == "string")
+		{
+			int procId = pkb->getProcTable()->getProcId(field1->getValue());
+			if(procId != -1)
+			{
+				vector<int> procLines = pkb->getProcTable()->getProcedureBodyLines(procId);
+
+				for(size_t j = 0 ; j < procLines.size() ; j++)
+				{
+					setLines1.insert(procLines[j]);
+				}
+			}
+		}
+
+		int param2 = field2->getIntegerValue();
+		setLines2.insert(param2);
+	}
+	else
+	{
+		//Sprawdzenie atrybutu z pola 1
+		if(field1->getType() == "if")
+		{
+			map<int,vector<int>> ifLinesStart = pkb->getLineTable()->getIfBodyLines();
+
+			for (map<int, vector<int>>::iterator it = ifLinesStart.begin(); it != ifLinesStart.end(); ++it) {
+				vector<int> ifLines = (*it).second;
+				//setLines1.insert((*it).first);
+				for(size_t i = 0 ; i < ifLines.size() ; i++)
+				{
+					setLines1.insert(ifLines[i]);
+				}
+			}
+		}
+		else if(field1->getType() == "while")
+		{
+			map<int,vector<int>> whileLinesStart = pkb->getLineTable()->getWhileBodyLines();
+
+			for (map<int, vector<int>>::iterator it = whileLinesStart.begin(); it != whileLinesStart.end(); ++it) {
+				vector<int> whileLines = (*it).second;
+				//setLines1.insert((*it).first);
+				for(size_t i = 0 ; i < whileLines.size() ; i++)
+				{
+					setLines1.insert(whileLines[i]);
+				}
+			}
+		}
+		else if(field1->getType() == "assign")
+		{
+			setLines1 = pkb->getLineTable()->getOrderedAssignLines();
+		}
+		else if(field1->getType() == "procedure")
+		{
+			map<int,vector<int>> procLinesStart = pkb->getProcTable()->getProceduresBodyLines();
+
+			for (map<int, vector<int>>::iterator it = procLinesStart.begin(); it != procLinesStart.end(); ++it)
+			{
+				vector<int> procLines = (*it).second;
+				int procParam = pkb->getProcTable()->getProcStartLine((*it).first);
+				setLines1.insert(procParam);
+				for(size_t i = 0 ; i < procLines.size() ; i++)
+				{
+					setLines1.insert(procLines[i]);
+				}
+			}
+		}
+		else if(field1->getType() == "call")
+		{
+			vector<int> callLinesStart = pkb->getLineTable()->getCallLines();
+			for(size_t i = 0 ; i < callLinesStart.size() ; i++)
+			{
+				string procName = pkb->getLineTable()->getCalledProcName(callLinesStart[i]);
+				int procId = pkb->getProcTable()->getProcId(procName);
+				if(procId != -1)
+				{
+					vector<int> callLines = pkb->getProcTable()->getProcedureBodyLines(procId);
+
+					for(size_t j = 0 ; j < callLines.size() ; j++)
+					{
+						setLines1.insert(callLines[j]);
+					}
+				}
+			}
+		}
+		else if(field1->getType() == "string")
+		{
+			int procId = pkb->getProcTable()->getProcId(field1->getValue());
+			if(procId != -1)
+			{
+				vector<int> procLines = pkb->getProcTable()->getProcedureBodyLines(procId);
+
+				for(size_t j = 0 ; j < procLines.size() ; j++)
+				{
+					setLines1.insert(procLines[j]);
+				}
+			}
+		}
+
+		//Sprawdzenie atrybutu z pola 2
+		if(field2->getType() == "variable")
+		{
+			vector<string> tmp = pkb->getVarTable()->getAllVar();
+			for(size_t i = 0 ; i < tmp.size() ; i++)
+			{
+				setLines2.insert(pkb->getVarTable()->getVarId(tmp[i]));
+			}
+		}
+		else if(field2->getType() == "string")
+		{
+			int param2 = pkb->getVarTable()->getVarId(field2->getValue());
+			if(param2 != -1)
+				setLines2.insert(param2);
 		}
 	}
 
-/*	vector<int> resultPart;
-	// Sprawdzenie zaleznosci dla pobranych parametrow setLines1 oraz setLines2 i porównanie ich z wartosciami na lines (szukana wartosc)
+	// Skrócenie listy parametru 1 bior¹c pod uwagê czêœci zapytania z 'with'
+	//setLines1 = cutSetLines(field1->getValue(), setLines1);
+	// Skrócenie listy parametru 2 bior¹c pod uwagê czêœci zapytania z 'with'
+
+	/*
+	set<int> tmpSetLines2;
+	map<int,vector<int>> varLines = pkb -> getUses() ->getAllUses();
+	for (set<int>::iterator l1 = setLines2.begin(); l1 != setLines2.end(); ++l1)
+	{
+		for (map<int, vector<int>>::iterator it = varLines.begin(); it != varLines.end(); ++it)
+		{
+			if(*l1 == (*it).first)
+			{
+				vector<int> tmp = (*it).second;
+				for(size_t j = 0 ; j < tmp.size() ; j++)
+				{
+					tmpSetLines2.insert(tmp[j]);
+				}
+			}
+		}
+	}
+    */
+
+	setLines2 = cutSetLines(field2->getValue(), setLines2);
+
+	/*
+	setLines2.clear();
+	for (set<int>::iterator l1 = tmpSetLines2.begin(); l1 != tmpSetLines2.end(); ++l1) {
+		for (map<int, vector<int>>::iterator it = varLines.begin(); it != varLines.end(); ++it)
+		{
+			vector<int> tmp = (*it).second;
+			for(size_t j = 0 ; j < tmp.size() ; j++)
+			{
+				if(tmp[j] == *l1 && find(setLines2.begin(),setLines2.end(), *l1) == setLines2.end())
+				{
+					setLines2.insert((*it).first);
+				}
+			}
+		}
+	}
+	*/
+
+	vector<int> resultPart;
+	// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
 	if (!setLines1.empty() && !setLines2.empty()) {
 		for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 			for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
-				if (pkb->getModifies()->modifies(*l1, var name) == true) {
+				if (pkb->getModifies()->modifies(*l1, pkb->getVarTable()->getVarName(*l2)) == true) {
 					if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
 						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
-						//return nullptr;
+						//cout << "-" << endl;
 						return resultPart;
 					} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
+						//cout << "L1 " << *l1 << endl;
 						resultPart.push_back(*l1);
-					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
+					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
-						resultPart.push_back(*l2);
+						//cout << "L2 " << *l2 << endl;
+						resultPart.push_back(*l1);
 					} else {
 						// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
+						//cout << "ALL" << endl;
 						return lines;
 					}
 				}
 			}
 		}
-	}*/
-	return lines;
+	}
+
+	return resultPart;
 }
 
 vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector<int> lines, string selectValue) {
@@ -1072,6 +1349,27 @@ vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<i
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 						//cout << "L2 " << *l2 << endl;
 						resultPart.push_back(*l1);
+						/*
+						 *
+						 * Trzeba zmienic pozosta³e metody wyszukiwania odpowiedzi, zeby uzywac tego \/.
+						 * Wymaga dopracowania.
+						 *
+						 *
+						 * map<int, vector<int>> varUses = pkb -> getUses() -> getAllUses();
+						 * vector<int> fieldLines;
+						 * if(varUses.count(*l2) > 0) fieldLines = varUses[*l2];
+						 *
+						 * if(!fieldLines.empty())
+						 * {
+						 * 	for(size_t i = 0 ; i < fieldLines.size() ; i++)
+						 * 	{
+						 * 		if(find(lines.begin(), lines.end(), fieldLines[i]) != lines.end())
+						 * 		{
+						 * 			resultPart.push_back(fieldLines[i]);
+						 * 		}
+						 * 	}
+						 * }
+						 */
 					} else {
 						// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
 						//cout << "ALL" << endl;
@@ -1545,7 +1843,6 @@ void QueryEvaluator::getWithResult(Field* field1, Field* field2, vector<int> lin
 		withMap.insert(std::pair<string,vector<int>>("all",empty));
 	}
 }
-
 
 set<int> QueryEvaluator::cutSetLines(string fieldValue, set<int> setLines)
 {

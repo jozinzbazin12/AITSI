@@ -63,3 +63,6 @@ void Modifies::writeAll() {
 	}
 }
 
+map<int, vector<int>> Modifies::getAllModifies() {
+	return varModificationsLines;
+}

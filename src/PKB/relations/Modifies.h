@@ -21,6 +21,7 @@ public:
 	void add(int varId, int lineNumber);
 	bool modifies(int lineNumber, string varName); // jeœli varName puste to znaczy ¿e jakakolwiek zmienna
 	void writeAll();
+	map<int, vector<int>> getAllModifies();
 
 private:
 	map <int, vector<int> > varModificationsLines;

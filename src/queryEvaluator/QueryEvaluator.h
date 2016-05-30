@@ -47,6 +47,7 @@ private:
 	PKBApi *pkbApi = new PKBApi();
 	map<string,vector<int>> withMap;
 	set<int> cutSetLines(string fieldValue, set<int> setLines);
+	string resultType;
 };
 
 } /* namespace std */
