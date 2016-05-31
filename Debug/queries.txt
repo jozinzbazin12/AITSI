@@ -1,10 +1,70 @@
-1 - Test
-while w; stmt s; 
-Select w such that Follows*(w,s);
-10, 18, 23
+501
+procedure p; stmt s;
+Select s such that Calls (p,23)
+1, 18
 5000
-2 - Testaa
-stmt s; 
-Select s such that Parent(8,s);
-9, 10, 13, 14, 15, 16
+100
+procedure p;
+Select p such that Calls (p, "Rectangle")
+Circle
+5000
+150
+procedure p;
+Select p such that Calls (p, 18)
+Circle
+5000
+200
+procedure p,q;
+Select p such that Calls (p, q)
+Circle, Rectangle
+5000
+250
+procedure p,q;
+Select q such that Calls (p, q)
+Triangle, Hexagon, Rectangle
+5000
+300
+procedure p;
+Select p such that Calls* (p,"Triangle")
+Circle, Rectangle
+5000
+400
+procedure p;
+Select p such that Calls* (p,23)
+Circle, Rectangle
+5000
+500
+procedure p; stmt s;
+Select s such that Calls* (p,23)
+1, 18
+5000
+503
+stmt s;
+Select s such that Calls* ("Rectangle","Triangle")
+18
+5000
+504
+procedure p; stmt s;
+Select s such that Calls (p,"Triangle")
+1, 18
+5000
+505
+stmt s;
+Select s such that Calls ("Rectangle","Triangle")
+18
+5000
+506
+stmt s;
+Select s such that Calls (1,18)
+1
+5000
+507
+stmt s;
+Select s such that Calls (1,5)
+NONE
+5000
+603
+stmt s;
+Select s such that Calls* ("Circle","Triangle")
+1
 5000

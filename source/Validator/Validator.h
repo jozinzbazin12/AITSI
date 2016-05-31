@@ -8,6 +8,7 @@
 #include <vector>
 #include <iostream>
 #include <functional>
+#include <cmath>
 #include "../PQL/Field.h"
 #include <algorithm>
 #include "globalne.h"

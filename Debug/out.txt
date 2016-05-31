@@ -1,21 +1,114 @@
 <?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
 <test_results>
 <info>
-<name>Debug</name><parsing_time_taken>34.000000</parsing_time_taken>
+<name>Debug</name><parsing_time_taken>37.000000</parsing_time_taken>
 </info>
 <queries>
 <query>
-<id ReturnTuple="1" Followsstar="1" SuchThat="1" CondNum="3" RelNum="1" comment="Test">1</id><querystr><![CDATA[while w; stmt s;  Select w such that Follows*(w,s);]]></querystr>
-<stuans>10,18,23</stuans>
-<correct>10,18,23</correct>
-<time_taken>12.000000</time_taken>
+<id ReturnTuple="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" >501</id><querystr><![CDATA[procedure p; stmt s; Select s such that Calls (p,23)]]></querystr>
+<stuans>1,18</stuans>
+<correct>1,18</correct>
+<time_taken>7.000000</time_taken>
 <passed/>
 </query>
 <query>
-<id ReturnTuple="1" Parent="1" SuchThat="1" CondNum="3" RelNum="1" comment="Testaa">2</id><querystr><![CDATA[stmt s;  Select s such that Parent(8,s);]]></querystr>
-<stuans>9,10,13,14,15,16</stuans>
-<correct>9,10,13,14,15,16</correct>
+<id ReturnTuple="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" >100</id><querystr><![CDATA[procedure p; Select p such that Calls (p, "Rectangle")]]></querystr>
+<stuans>Circle</stuans>
+<correct>Circle</correct>
+<time_taken>8.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" >150</id><querystr><![CDATA[procedure p; Select p such that Calls (p, 18)]]></querystr>
+<stuans>Circle</stuans>
+<correct>Circle</correct>
 <time_taken>9.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" >200</id><querystr><![CDATA[procedure p,q; Select p such that Calls (p, q)]]></querystr>
+<stuans>Circle,Rectangle</stuans>
+<correct>Circle,Rectangle</correct>
+<time_taken>7.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" >250</id><querystr><![CDATA[procedure p,q; Select q such that Calls (p, q)]]></querystr>
+<stuans>Rectangle,Triangle,Hexagon</stuans>
+<correct>Triangle,Hexagon,Rectangle</correct>
+<time_taken>13.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Callsstar="1" SuchThat="1" CondNum="3" RelNum="1" >300</id><querystr><![CDATA[procedure p; Select p such that Calls* (p,"Triangle")]]></querystr>
+<stuans>Circle,Rectangle</stuans>
+<correct>Circle,Rectangle</correct>
+<time_taken>10.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Callsstar="1" SuchThat="1" CondNum="3" RelNum="1" >400</id><querystr><![CDATA[procedure p; Select p such that Calls* (p,23)]]></querystr>
+<stuans>Circle,Rectangle</stuans>
+<correct>Circle,Rectangle</correct>
+<time_taken>9.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Callsstar="1" SuchThat="1" CondNum="3" RelNum="1" >500</id><querystr><![CDATA[procedure p; stmt s; Select s such that Calls* (p,23)]]></querystr>
+<stuans>1,18</stuans>
+<correct>1,18</correct>
+<time_taken>10.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Callsstar="1" SuchThat="1" CondNum="3" RelNum="1" >503</id><querystr><![CDATA[stmt s; Select s such that Calls* ("Rectangle","Triangle")]]></querystr>
+<stuans>18</stuans>
+<correct>18</correct>
+<time_taken>8.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" >504</id><querystr><![CDATA[procedure p; stmt s; Select s such that Calls (p,"Triangle")]]></querystr>
+<stuans>1,18</stuans>
+<correct>1,18</correct>
+<time_taken>10.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" >505</id><querystr><![CDATA[stmt s; Select s such that Calls ("Rectangle","Triangle")]]></querystr>
+<stuans>18</stuans>
+<correct>18</correct>
+<time_taken>8.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" >506</id><querystr><![CDATA[stmt s; Select s such that Calls (1,18)]]></querystr>
+<stuans>1</stuans>
+<correct>1</correct>
+<time_taken>9.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Calls="1" SuchThat="1" CondNum="3" RelNum="1" >507</id><querystr><![CDATA[stmt s; Select s such that Calls (1,5)]]></querystr>
+<stuans></stuans>
+<correct>NONE</correct>
+<time_taken>9.000000</time_taken>
+<failed>
+<missing>NONE</missing>
+<additional></additional>
+<summary>
+<expected>1</expected>
+<matched>0</matched>
+<missing>1</missing>
+<additional>0</additional>
+</summary>
+</failed>
+</query>
+<query>
+<id ReturnTuple="1" Callsstar="1" SuchThat="1" CondNum="3" RelNum="1" >603</id><querystr><![CDATA[stmt s; Select s such that Calls* ("Circle","Triangle")]]></querystr>
+<stuans>1</stuans>
+<correct>1</correct>
+<time_taken>8.000000</time_taken>
 <passed/>
 </query>
 </queries>
