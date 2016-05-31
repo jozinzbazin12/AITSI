@@ -1,0 +1,10 @@
+1 - Test
+while w; stmt s; 
+Select w such that Follows*(w,s);
+10, 18, 23
+5000
+2 - Testaa
+stmt s; 
+Select s such that Parent(8,s);
+9, 10, 13, 14, 15, 16
+5000

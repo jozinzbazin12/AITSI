@@ -1,0 +1,22 @@
+<?xml-stylesheet type="text/xsl" href="analysis.xsl"?>
+<test_results>
+<info>
+<name>Debug</name><parsing_time_taken>34.000000</parsing_time_taken>
+</info>
+<queries>
+<query>
+<id ReturnTuple="1" Followsstar="1" SuchThat="1" CondNum="3" RelNum="1" comment="Test">1</id><querystr><![CDATA[while w; stmt s;  Select w such that Follows*(w,s);]]></querystr>
+<stuans>10,18,23</stuans>
+<correct>10,18,23</correct>
+<time_taken>12.000000</time_taken>
+<passed/>
+</query>
+<query>
+<id ReturnTuple="1" Parent="1" SuchThat="1" CondNum="3" RelNum="1" comment="Testaa">2</id><querystr><![CDATA[stmt s;  Select s such that Parent(8,s);]]></querystr>
+<stuans>9,10,13,14,15,16</stuans>
+<correct>9,10,13,14,15,16</correct>
+<time_taken>9.000000</time_taken>
+<passed/>
+</query>
+</queries>
+</test_results>
