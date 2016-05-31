@@ -93,9 +93,8 @@ Affects* (assign 1, assign2)
  * 	Parent i Follows z liczbami naturalnymi dodatnimi po obu stronach
  * 	Calls ze stringami po obu stronach
  * 	Modifies i Uses ze stringami po obu stronach lub liczba naturala dodatnia lewo stringiem prawo
- * 	Next z liczbami naturalnymi dodatnimi po obu stronach
+ * 	Next i Affects z liczbami naturalnymi dodatnimi po obu stronach
  * 	W Next moga byc takie same zmienne obie
- * 	Affects liczbami naturalnymi dodatnimi po obu stronach
  * 	Te stringi to w ciapkach musza byc
  * 	Modifies (_, “x”’) and Uses (_, “x”) are not allowed, w reszcie moze byc _ po obu stronach
  * 	jakies te wzory z tymi _ ale tego juz raczej nie bede sprawdzal
@@ -275,7 +274,7 @@ void Validator::init() {
 	addRelationship("affects", 2, "prog_line", "prog_line");
 	addRelationship("affects*", 2, "assign", "assign");
 	addRelationship("affects*", 2, "prog_line", "assign");
-	addRelationship("affects8", 2, "assign", "prog_line");
+	addRelationship("affects*", 2, "assign", "prog_line");
 	addRelationship("affects*", 2, "prog_line", "prog_line");
 }
 
@@ -478,10 +477,50 @@ bool Validator::checkRelationship2(string relationship) {
 				attributesArray[j] = queryDeclarations[i].getType();
 		}
 	}
+	if(rel != "next" && rel != "next*" && v1[0] == v1[1]) {  // tego nie jestem pewny, to sprawdza czy 2 zmienne sa takie same, chyba tylko w next moga byc takie same?
+		return false;
+	}
+	if(rel == "calls" || rel == "calls*") {
+		if(v1[0][0] == '\"' && v1[0][v1.size() - 1] == '\"')
+			attrValidatorsArray[0] = true;
+		if(v1[1][0] == '\"' && v1[1][v1.size() - 1] == '\"')
+			attrValidatorsArray[1] = true;
+	}
+	if(rel == "modifies" || rel == "uses") {
+		if(v1[0][0] == '\"' && v1[0][v1.size() - 1] == '\"') {
+			attrValidatorsArray[0] = true;
+			if(v1[1][0] == '\"' && v1[1][v1.size() - 1] == '\"')
+				attrValidatorsArray[1] = true;
+		}
+		else if (isInteger(v1[0]) && v1[1][0] == '\"' && v1[1][v1.size() - 1] == '\"') {
+			attrValidatorsArray[0] = true;
+			attrValidatorsArray[1] = true;
+		}
+	}
+	if(rel == "parent" || rel == "parent*" || rel == "follows" || rel == "follows*" || rel == "next" || rel == "next*" || rel == "affects" || rel == "affects*") {
+		if (isInteger(v1[0])) {
+			attrValidatorsArray[0] = true;
+			if(isInteger(v1[1]))
+				attrValidatorsArray[1] = true;
+		}
+	}
+	if(v1[0] == "_")
+		attrValidatorsArray[0] = true;
+	if(v1[1] == "_")
+		attrValidatorsArray[1] = true;
+	if(rel == "modifies" || rel == "uses") {
+		if(v1[0] == "_") {
+			attrValidatorsArray[0] = true;
+			if(v1[1][0] == '\"' && v1[1][v1.size() - 1] == '\"')
+				attrValidatorsArray[1] = false;
+		}
+	}
 	for(size_t i=0; i < relIdxs.size(); i++) {
 		for(size_t j = 0; j < v1.size(); j++) {
-			if(attributesArray[j] == relationshipTab[relIdxs[i]][j+2])
-				attrValidatorsArray[j] = true;
+			if(attrValidatorsArray[j] == false) {
+				if(attributesArray[j] == relationshipTab[relIdxs[i]][j+2])
+					attrValidatorsArray[j] = true;
+			}
 		}
 		bool wrongAttr = false;
 		for(size_t j = 0; j < v1.size(); j++) {
