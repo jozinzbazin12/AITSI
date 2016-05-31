@@ -58,25 +58,31 @@ void mainPQL() {
 	cout << "**** ZAPYTANIE **************************************************" << endl;
 	cout << pql->getQuery() << endl << endl;
 	cout << "**** DRZEWO *****************************************************" << endl;
+	vector<string> results;
 	try {
 		que->parseQuery(pql->getQuery());
 
-	tree<tree_node_<PQLNode>>::iterator iter;
-	PQLTree* tree = que->getTree();
-	tree->printTree();
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	cout << endl;
-	cout << "**** KONIEC DRZEWA*****************************************************" << endl;
-	cout << "**** EVALUATOR ********************************************************" << endl;
+		tree<tree_node_<PQLNode>>::iterator iter;
+		PQLTree* tree = que->getTree();
+		tree->printTree();
+		/////////////////////////////////////////////////////////////////////////////////////////////////
+		cout << endl;
+		cout << "**** KONIEC DRZEWA*****************************************************" << endl;
+		cout << "**** EVALUATOR ********************************************************" << endl;
 
-	QueryEvaluator* queEva = new QueryEvaluator();
-	vector<string> results = queEva->getResult(tree);
+		QueryEvaluator* queEva = new QueryEvaluator();
+		results = queEva->getResult(tree);
 
-	for (size_t i = 0; i < results.size(); i++) {
-		cout << "[" << i << "] " << results[i] << endl;
-	}
-
+		for (size_t i = 0; i < results.size(); i++) {
+			cout << "[" << i << "] " << results[i] << endl;
+		}
 	} catch(const char* ex) {
+		vector<string> tmp;
+		string query = pql->getQuery();
+		if(query.find("BOOLEAN") <= query.length())
+			results.push_back("false");
+		else
+			results = tmp;
 		cerr << ex << endl;
 	}
 

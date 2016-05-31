@@ -153,6 +153,11 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 						cout << "Calls " << endl;
 					}
 				}
+
+				if ((*begin)->data->getNodeType() == "affects" || (*begin)->data->getNodeType() == "next") {
+					vector<int> empty;
+					lines = empty;
+				}
 			}
 
 			if(((*begin)->data->getType()) == "withNode") {
@@ -165,6 +170,13 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 	cout << "WYNIK: " ;
 
 	result.clear();
+
+	/*
+	for(size_t i = 0 ; i < lines.size() ; i++)
+	{
+		cout << "---> " << lines[i] << endl;
+	}
+	*/
 
 	if(!lines.empty())
 	{
@@ -181,7 +193,8 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
  				if(resultType == "procedure")
 				{
 					string name = pkbApi -> getProcName(pkbApi -> getProcId(lines[i]));
-					result.push_back(name);
+					if(find(result.begin(), result.end(), name) >= result.begin())
+						result.push_back(name);
 					//cout << name << " ";
 				}
 				if(resultType == "variable")
@@ -259,7 +272,8 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 				{
 					stringstream ss;
 					ss << lines[i];
-					result.push_back(ss.str());
+					if(find(result.begin(), result.end(), ss.str()) >= result.begin())
+						result.push_back(ss.str());
 					//cout << lines[i] << " ";
 				}
 			}
@@ -503,7 +517,8 @@ vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vect
 	}
 
 	// Skrócenie listy parametru 1 bior¹c pod uwagê czêœci zapytania z 'with'
-	//setLines1 = cutSetLines(field1->getValue(), setLines1);
+	if(field1->getType() != "constant")
+		setLines1 = cutSetLines(field1->getValue(), setLines1);
 	// Skrócenie listy parametru 2 bior¹c pod uwagê czêœci zapytania z 'with'
 
 	/*
@@ -524,8 +539,8 @@ vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vect
 		}
 	}
     */
-
-	setLines2 = cutSetLines(field2->getValue(), setLines2);
+	if(field2->getType() != "constant")
+		setLines2 = cutSetLines(field2->getValue(), setLines2);
 
 	/*
 	setLines2.clear();
@@ -557,11 +572,13 @@ vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vect
 					} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 						//cout << "L1 " << *l1 << endl;
-						resultPart.push_back(*l1);
+						if(find(resultPart.begin(),resultPart.end(),*l1) >= resultPart.end())
+							resultPart.push_back(*l1);
 					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 						//cout << "L2 " << *l2 << endl;
-						resultPart.push_back(*l1);
+						if(find(resultPart.begin(),resultPart.end(),*l1) >= resultPart.end())
+							resultPart.push_back(*l1);
 					} else {
 						// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
 						//cout << "ALL" << endl;
@@ -603,7 +620,7 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 			&& field2->getType() == "constant") {
 		int param = field2->getIntegerValue();
 		setLines2.insert(param);
-		if (field1->getType() == "stmt") {
+		if (field1->getType() == "stmt" || field1->getType() == "any") {
 			setLines1 = pkb->getLineTable()->getOrderedWhileLines();
 			set<int> tmp = pkb->getLineTable()->getOrderedIfLines();
 			setLines1.insert(tmp.begin(), tmp.end());
@@ -620,7 +637,7 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 			return lines;
 		}
 	} else {
-		if (field1->getType() == "stmt") {
+		if (field1->getType() == "stmt" || field1->getType() == "any") {
 			setLines1 = pkb->getLineTable()->getOrderedWhileLines();
 			set<int> tmp = pkb->getLineTable()->getOrderedIfLines();
 			setLines1.insert(tmp.begin(), tmp.end());
@@ -650,9 +667,15 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 	}
 
 	// Skrócenie listy parametru 1 bior¹c pod uwagê czêœci zapytania z 'with'
-	setLines1 = cutSetLines(field1->getValue(), setLines1);
+	//for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) cout << "(1.1) " << *l1 << endl;
+	if(field1->getType() != "constant" && field1->getType() != "any")
+		setLines1 = cutSetLines(field1->getValue(), setLines1);
+	//for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) cout << "(1.2) " << *l1 << endl;
 	// Skrócenie listy parametru 2 bior¹c pod uwagê czêœci zapytania z 'with'
-	setLines2 = cutSetLines(field2->getValue(), setLines2);
+	//for (set<int>::iterator l1 = setLines2.begin(); l1 != setLines2.end(); ++l1) cout << "(2.1) " << *l1 << endl;
+	if(field2->getType() != "constant" && field2->getType() != "any")
+		setLines2 = cutSetLines(field2->getValue(), setLines2);
+	//for (set<int>::iterator l1 = setLines2.begin(); l1 != setLines2.end(); ++l1) cout << "(2.2) " << *l1 << endl;
 
 	vector<int> resultPart;
 	// Sprawdzenie zaleznosci dla pobranych parametrow setLines1 oraz setLines2 i porównanie ich z wartosciami na lines (szukana wartosc)
@@ -666,10 +689,12 @@ vector<int> QueryEvaluator::getParentResult(Field* field1, Field* field2, vector
 						return resultPart;
 					} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
-						resultPart.push_back(*l1);
+						if(find(resultPart.begin(),resultPart.end(),*l1) >= resultPart.end())
+							resultPart.push_back(*l1);
 					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
-						resultPart.push_back(*l2);
+						if(find(resultPart.begin(),resultPart.end(),*l2) >= resultPart.end())
+							resultPart.push_back(*l2);
 					} else {
 						// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
 						return lines;
@@ -711,7 +736,7 @@ vector<int> QueryEvaluator::getParentSResult(Field* field1, Field* field2,
 				&& field2->getType() == "constant") {
 			int param = field2->getIntegerValue();
 			setLines2.insert(param);
-			if (field1->getType() == "stmt") {
+			if (field1->getType() == "stmt" || field1->getType() == "any") {
 				setLines1 = pkb->getLineTable()->getOrderedWhileLines();
 				set<int> tmp = pkb->getLineTable()->getOrderedIfLines();
 				setLines1.insert(tmp.begin(), tmp.end());
@@ -728,7 +753,7 @@ vector<int> QueryEvaluator::getParentSResult(Field* field1, Field* field2,
 				return lines;
 			}
 		} else {
-			if (field1->getType() == "stmt") {
+			if (field1->getType() == "stmt" || field1->getType() == "any") {
 				setLines1 = pkb->getLineTable()->getOrderedWhileLines();
 				set<int> tmp = pkb->getLineTable()->getOrderedIfLines();
 				setLines1.insert(tmp.begin(), tmp.end());
@@ -758,9 +783,11 @@ vector<int> QueryEvaluator::getParentSResult(Field* field1, Field* field2,
 		}
 
 		// Skrócenie listy parametru 1 bior¹c pod uwagê czêœci zapytania z 'with'
-		setLines1 = cutSetLines(field1->getValue(), setLines1);
+		if(field1->getType() != "constant" && field1->getType() != "any")
+			setLines1 = cutSetLines(field1->getValue(), setLines1);
 		// Skrócenie listy parametru 2 bior¹c pod uwagê czêœci zapytania z 'with'
-		setLines2 = cutSetLines(field2->getValue(), setLines2);
+		if(field2->getType() != "constant" && field2->getType() != "any")
+			setLines2 = cutSetLines(field2->getValue(), setLines2);
 
 		vector<int> resultPart;
 		// Sprawdzenie zaleznosci dla pobranych parametrow setLines1 oraz setLines2 i porównanie ich z wartosciami na lines (szukana wartosc)
@@ -774,10 +801,12 @@ vector<int> QueryEvaluator::getParentSResult(Field* field1, Field* field2,
 							return resultPart;
 						} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 							// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
-							resultPart.push_back(*l1);
+							if(find(resultPart.begin(),resultPart.end(),*l1) >= resultPart.end())
+								resultPart.push_back(*l1);
 						} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
 							// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
-							resultPart.push_back(*l2);
+							if(find(resultPart.begin(),resultPart.end(),*l2) >= resultPart.end())
+								resultPart.push_back(*l2);
 						} else {
 							// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
 							return lines;
@@ -892,9 +921,11 @@ vector<int> QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vecto
 	}
 
 	// Skrócenie listy parametru 1 bior¹c pod uwagê czêœci zapytania z 'with'
-	setLines1 = cutSetLines(field1->getValue(), setLines1);
+	if(field1->getType() != "constant" && field1->getType() != "any")
+		setLines1 = cutSetLines(field1->getValue(), setLines1);
 	// Skrócenie listy parametru 2 bior¹c pod uwagê czêœci zapytania z 'with'
-	setLines2 = cutSetLines(field2->getValue(), setLines2);
+	if(field2->getType() != "constant" && field2->getType() != "any")
+		setLines2 = cutSetLines(field2->getValue(), setLines2);
 
 	vector<int> resultPart;
 	// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
@@ -909,11 +940,13 @@ vector<int> QueryEvaluator::getFollowsResult(Field* field1, Field* field2, vecto
 					} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 						//cout << "L1 " << *l1 << endl;
-						resultPart.push_back(*l1);
+						if(find(resultPart.begin(),resultPart.end(),*l1) >= resultPart.end())
+							resultPart.push_back(*l1);
 					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 						//cout << "L2 " << *l2 << endl;
-						resultPart.push_back(*l2);
+						if(find(resultPart.begin(),resultPart.end(),*l2) >= resultPart.end())
+							resultPart.push_back(*l2);
 					} else {
 						// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
 						//cout << "ALL" << endl;
@@ -1038,9 +1071,11 @@ vector<int> QueryEvaluator::getFollowsSResult(Field* field1, Field* field2, vect
 	*/
 
 	// Skrócenie listy parametru 1 bior¹c pod uwagê czêœci zapytania z 'with'
-	setLines1 = cutSetLines(field1->getValue(), setLines1);
+	if(field1->getType() != "constant" && field1->getType() != "any")
+		setLines1 = cutSetLines(field1->getValue(), setLines1);
 	// Skrócenie listy parametru 2 bior¹c pod uwagê czêœci zapytania z 'with'
-	setLines2 = cutSetLines(field2->getValue(), setLines2);
+	if(field2->getType() != "constant" && field2->getType() != "any")
+		setLines2 = cutSetLines(field2->getValue(), setLines2);
 
 	vector<int> resultPart;
 	// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
@@ -1056,11 +1091,13 @@ vector<int> QueryEvaluator::getFollowsSResult(Field* field1, Field* field2, vect
 					} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 						//cout << "L1 " << *l1 << endl;
-						resultPart.push_back(*l1);
+						if(find(resultPart.begin(),resultPart.end(),*l1) >= resultPart.end())
+							resultPart.push_back(*l1);
 					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 						//cout << "L2 " << *l2 << endl;
-						resultPart.push_back(*l2);
+						if(find(resultPart.begin(),resultPart.end(),*l2) >= resultPart.end())
+							resultPart.push_back(*l2);
 					} else {
 						// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
 						//cout << "ALL" << endl;
@@ -1293,7 +1330,8 @@ vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<i
 	}
 
 	// Skrócenie listy parametru 1 bior¹c pod uwagê czêœci zapytania z 'with'
-	//setLines1 = cutSetLines(field1->getValue(), setLines1);
+	if(field1->getType() != "constant")
+		setLines1 = cutSetLines(field1->getValue(), setLines1);
 	// Skrócenie listy parametru 2 bior¹c pod uwagê czêœci zapytania z 'with'
 
 	/*
@@ -1314,8 +1352,8 @@ vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<i
 		}
 	}
     */
-
-	setLines2 = cutSetLines(field2->getValue(), setLines2);
+	if(field2->getType() != "constant")
+		setLines2 = cutSetLines(field2->getValue(), setLines2);
 
 	/*
 	setLines2.clear();
@@ -1347,11 +1385,13 @@ vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<i
 					} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 						//cout << "L1 " << *l1 << endl;
-						resultPart.push_back(*l1);
+						if(find(resultPart.begin(),resultPart.end(),*l1) >= resultPart.end())
+							resultPart.push_back(*l1);
 					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 						//cout << "L2 " << *l2 << endl;
-						resultPart.push_back(*l1);
+						if(find(resultPart.begin(),resultPart.end(),*l1) >= resultPart.end())
+							resultPart.push_back(*l1);
 						/*
 						 *
 						 * Trzeba zmienic pozosta³e metody wyszukiwania odpowiedzi, zeby uzywac tego \/.
@@ -1461,9 +1501,11 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 	}
 
 	// Skrócenie listy parametru 1 bior¹c pod uwagê czêœci zapytania z 'with'
-	candidatesForParameter1 = cutSetLines(field1->getValue(), candidatesForParameter1);
+	if(field1->getType() != "constant" && field1->getType() != "any")
+		candidatesForParameter1 = cutSetLines(field1->getValue(), candidatesForParameter1);
 	// Skrócenie listy parametru 2 bior¹c pod uwagê czêœci zapytania z 'with'
-	candidatesForParameter2 = cutSetLines(field2->getValue(), candidatesForParameter2);
+	if(field2->getType() != "constant" && field2->getType() != "any")
+		candidatesForParameter2 = cutSetLines(field2->getValue(), candidatesForParameter2);
 
 	//cout << "candidatesForParameter1: " << candidatesForParameter1.size() << " candidatesForParameter2: " << candidatesForParameter2.size() << endl;
 
@@ -1489,10 +1531,12 @@ vector<int> QueryEvaluator::getCallResult(Field* field1, Field* field2, vector<i
 			    {
 			    	if (selectValue == field1->getValue() && selectValue != "boolean") {
 						// dodaje mozliwosc z par1 do wyniku gdy call(par1,*) gdzie * = 'any','const','var'
-						resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
+			    		if(find(resultPart.begin(),resultPart.end(),pkbApi->getProcStartLine(*parameter1)) >= resultPart.end())
+			    			resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
 					} else if (selectValue == field2->getValue() && selectValue != "boolean") {
 						// dodaje mozliwosc z par2 do wyniku gdy call(*,par2) gdzie * = 'any','const','var'
-						resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
+						if(find(resultPart.begin(),resultPart.end(),pkbApi->getProcStartLine(*parameter2)) >= resultPart.end())
+							resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
 					} else {
 						// zwracam wszystkie czy call(1,_) lub call(_,1)
 						return lines;
@@ -1588,9 +1632,11 @@ vector<int> QueryEvaluator::getCallStarResult(Field* field1, Field* field2, vect
 	*/
 
 	// Skrócenie listy parametru 1 bior¹c pod uwagê czêœci zapytania z 'with'
-	candidatesForParameter1 = cutSetLines(field1->getValue(), candidatesForParameter1);
+	if(field1->getType() != "constant" && field1->getType() != "any")
+		candidatesForParameter1 = cutSetLines(field1->getValue(), candidatesForParameter1);
 	// Skrócenie listy parametru 2 bior¹c pod uwagê czêœci zapytania z 'with'
-	candidatesForParameter2 = cutSetLines(field2->getValue(), candidatesForParameter2);
+	if(field2->getType() != "constant" && field2->getType() != "any")
+		candidatesForParameter2 = cutSetLines(field2->getValue(), candidatesForParameter2);
 
 	if (firstParameterType == "constant" && secondParameterType == "constant") {
 		if (pkbApi->callsStar(firstProcedureId, secondProcedureId)) {
@@ -1611,10 +1657,12 @@ vector<int> QueryEvaluator::getCallStarResult(Field* field1, Field* field2, vect
 				{
 					if (selectValue == field1->getValue() && selectValue != "boolean") {
 						// dodaje mozliwosc z par1 do wyniku gdy call(par1,*) gdzie * = 'any','const','var'
-						resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
+						if(find(resultPart.begin(),resultPart.end(),pkbApi->getProcStartLine(*parameter1)) >= resultPart.end())
+							resultPart.push_back(pkbApi->getProcStartLine(*parameter1));
 					} else if (selectValue == field2->getValue() && selectValue != "boolean") {
 						// dodaje mozliwosc z par2 do wyniku gdy call(*,par2) gdzie * = 'any','const','var'
-						resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
+						if(find(resultPart.begin(),resultPart.end(),pkbApi->getProcStartLine(*parameter2)) >= resultPart.end())
+							resultPart.push_back(pkbApi->getProcStartLine(*parameter2));
 					} else {
 						// zwracam wszystkie czy call(1,_) lub call(_,1)
 						return lines;
