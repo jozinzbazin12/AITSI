@@ -163,11 +163,14 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 	}
 
 	cout << "WYNIK: " ;
+
+	result.clear();
+
 	if(!lines.empty())
 	{
 		if(resultType == "boolean")
 		{
-			result.push_back("TRUE");
+			result.push_back("true");
 			//cout << "TRUE";
 		}
 		else
@@ -266,12 +269,12 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 	{
 		if(resultType == "boolean")
 		{
-			result.push_back("FALSE");
+			result.push_back("false");
 			//cout << "FALSE";
 		}
 		else
 		{
-			result.push_back("NONE");
+			//result.push_back("NONE");
 			//cout << "NONE";
 		}
 	}

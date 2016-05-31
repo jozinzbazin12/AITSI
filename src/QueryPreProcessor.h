@@ -107,11 +107,11 @@ private:
 							//cout << tmpFields[j].getType() << " " << tmpFields[j].getValue() << endl;
 							fields.push_back(tmpFields[j]);
 						}
-
 					}
 				}
 			} else {
 				exc->throwException();
+				return vector<Field>();
 			}
 		}
 
@@ -352,7 +352,7 @@ private:
 		//cout << suchPart << endl;
 		suchPart = suchPart.substr(startPos+type.length());
 		//cout << suchPart << endl;
-		vector<string> suchParts = split(suchPart,"and");
+		vector<string> suchParts = split(suchPart," and ");
 
 		//writeVector(suchParts);
 
