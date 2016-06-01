@@ -108,3 +108,8 @@ assign a;
 Select a such that Modifies (a, "t") and Uses (a, "c")
 19
 5000
+1-test
+variable v; stmt s; if ifs; while w;
+select v such that Uses (s, v) and Uses (ifs, v)
+
+5000

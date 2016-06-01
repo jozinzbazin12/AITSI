@@ -31,7 +31,7 @@ namespace std {
 		bool isModifies = false;
 		bool isUses = false;
 
-		/***** Wype�nienie pomocniczej usesLines i usesIDs *****/
+		/***** Wype³nienie pomocniczej usesLines i usesIDs *****/
 
 		map<int, vector<int>> tmpUsesLines = pkb->getUses()->getAllUses();
 		for (map<int, vector<int>>::iterator it = tmpUsesLines.begin(); it != tmpUsesLines.end(); ++it)
@@ -261,7 +261,7 @@ namespace std {
 						vector<int> variableIds;
 						if (withMap.count(selectValue) > 0) variableIds = withMap[selectValue];
 
-						if (isUses && !isModifies) // Wyst�pi�a tylko relacja -> Uses
+						if (isUses && !isModifies) // Wyst¹pi³a tylko relacja -> Uses
 						{
 							for (map<int, vector<int>>::iterator it = varUsesLines.begin(); it != varUsesLines.end(); ++it)
 							{
@@ -278,7 +278,7 @@ namespace std {
 								}
 							}
 						}
-						else if (!isUses && isModifies) // Wyst�pi�a tylko relacja -> Modifies
+						else if (!isUses && isModifies) // Wyst¹pi³a tylko relacja -> Modifies
 						{
 							for (map<int, vector<int>>::iterator it = varModifiesLines.begin(); it != varModifiesLines.end(); ++it)
 							{
@@ -291,7 +291,7 @@ namespace std {
 								}
 							}
 						}
-						else if (isUses && isModifies) // Wyst�pi�y obie relacje -> Uses i Modifies
+						else if (isUses && isModifies) // Wyst¹pi³y obie relacje -> Uses i Modifies
 						{
 							vector<string> resultUses;
 							for (map<int, vector<int>>::iterator it = varUsesLines.begin(); it != varUsesLines.end(); ++it)
@@ -577,10 +577,10 @@ namespace std {
 			}
 		}
 
-		// Skr�cenie listy parametru 1 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 1 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field1->getType() != "constant")
 			setLines1 = cutSetLines(field1->getValue(), setLines1);
-		// Skr�cenie listy parametru 2 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 2 bior¹c pod uwagê czêci zapytania z 'with'
 
 		/*
 		set<int> tmpSetLines2;
@@ -621,30 +621,30 @@ namespace std {
 		*/
 
 		vector<int> resultPart;
-		// Sprawdzenie czy wszystkie parametry by�y dobre, je�eli nie return pusta lista - TZN. by� b��d przy parsowaniu lub walidacji
+		// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
 		if (!setLines1.empty() && !setLines2.empty()) {
 			for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 				for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 					if (pkb->getModifies()->modifies(*l1, pkb->getVarTable()->getVarName(*l2)) == true) {
 						if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
-							// Je�eli oba parametry s� takie same a nie s� to constant to znaczy �e nie ma odpowiedzi
+							// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 							//cout << "-" << endl;
 							return resultPart;
 						}
 						else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
-							// Je�eli pierwszy parametr jest tym kt�rego szukamy to wybieramy z listy pierwszej
+							// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 							//cout << "L1 " << *l1 << endl;
 							if (find(resultPart.begin(), resultPart.end(), *l1) >= resultPart.end())
 								resultPart.push_back(*l1);
 						}
 						else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
-							// Je�eli drugi parametr jest tym kt�rego szukamy to wybieramy z listy drugiej
+							// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 							//cout << "L2 " << *l2 << endl;
 							if (find(resultPart.begin(), resultPart.end(), *l1) >= resultPart.end())
 								resultPart.push_back(*l1);
 						}
 						else {
-							// Je�eli �aden parametr nie jest tym kt�rego szukamy to zwracamy wszystkie warto�ci
+							// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoci
 							//cout << "ALL" << endl;
 							return lines;
 						}
@@ -745,40 +745,40 @@ namespace std {
 			}
 		}
 
-		// Skr�cenie listy parametru 1 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 1 bior¹c pod uwagê czêci zapytania z 'with'
 		//for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) cout << "(1.1) " << *l1 << endl;
 		if (field1->getType() != "constant" && field1->getType() != "any")
 			setLines1 = cutSetLines(field1->getValue(), setLines1);
 		//for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) cout << "(1.2) " << *l1 << endl;
-		// Skr�cenie listy parametru 2 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 2 bior¹c pod uwagê czêci zapytania z 'with'
 		//for (set<int>::iterator l1 = setLines2.begin(); l1 != setLines2.end(); ++l1) cout << "(2.1) " << *l1 << endl;
 		if (field2->getType() != "constant" && field2->getType() != "any")
 			setLines2 = cutSetLines(field2->getValue(), setLines2);
 		//for (set<int>::iterator l1 = setLines2.begin(); l1 != setLines2.end(); ++l1) cout << "(2.2) " << *l1 << endl;
 
 		vector<int> resultPart;
-		// Sprawdzenie zaleznosci dla pobranych parametrow setLines1 oraz setLines2 i por�wnanie ich z wartosciami na lines (szukana wartosc)
+		// Sprawdzenie zaleznosci dla pobranych parametrow setLines1 oraz setLines2 i porównanie ich z wartosciami na lines (szukana wartosc)
 		if (!setLines1.empty() && !setLines2.empty()) {
 			for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 				for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 					if (pkb->getParent()->parent(*l1, *l2) == true) {
 						if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
-							// Je�eli oba parametry s� takie same a nie s� to constant to znaczy �e nie ma odpowiedzi
+							// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 							//return nullptr;
 							return resultPart;
 						}
 						else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
-							// Je�eli pierwszy parametr jest tym kt�rego szukamy to wybieramy z listy pierwszej
+							// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 							if (find(resultPart.begin(), resultPart.end(), *l1) >= resultPart.end())
 								resultPart.push_back(*l1);
 						}
 						else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
-							// Je�eli drugi parametr jest tym kt�rego szukamy to wybieramy z listy drugiej
+							// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 							if (find(resultPart.begin(), resultPart.end(), *l2) >= resultPart.end())
 								resultPart.push_back(*l2);
 						}
 						else {
-							// Je�eli �aden parametr nie jest tym kt�rego szukamy to zwracamy wszystkie warto�ci
+							// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoci
 							return lines;
 						}
 					}
@@ -877,36 +877,36 @@ namespace std {
 			}
 		}
 
-		// Skr�cenie listy parametru 1 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 1 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field1->getType() != "constant" && field1->getType() != "any")
 			setLines1 = cutSetLines(field1->getValue(), setLines1);
-		// Skr�cenie listy parametru 2 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 2 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field2->getType() != "constant" && field2->getType() != "any")
 			setLines2 = cutSetLines(field2->getValue(), setLines2);
 
 		vector<int> resultPart;
-		// Sprawdzenie zaleznosci dla pobranych parametrow setLines1 oraz setLines2 i por�wnanie ich z wartosciami na lines (szukana wartosc)
+		// Sprawdzenie zaleznosci dla pobranych parametrow setLines1 oraz setLines2 i porównanie ich z wartosciami na lines (szukana wartosc)
 		if (!setLines1.empty() && !setLines2.empty()) {
 			for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 				for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 					if (pkb->getParent()->parentStar(*l1, *l2) == true) {
 						if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
-							// Je�eli oba parametry s� takie same a nie s� to constant to znaczy �e nie ma odpowiedzi
+							// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 							//return nullptr;
 							return resultPart;
 						}
 						else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
-							// Je�eli pierwszy parametr jest tym kt�rego szukamy to wybieramy z listy pierwszej
+							// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 							if (find(resultPart.begin(), resultPart.end(), *l1) >= resultPart.end())
 								resultPart.push_back(*l1);
 						}
 						else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
-							// Je�eli drugi parametr jest tym kt�rego szukamy to wybieramy z listy drugiej
+							// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 							if (find(resultPart.begin(), resultPart.end(), *l2) >= resultPart.end())
 								resultPart.push_back(*l2);
 						}
 						else {
-							// Je�eli �aden parametr nie jest tym kt�rego szukamy to zwracamy wszystkie warto�ci
+							// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoci
 							return lines;
 						}
 					}
@@ -929,7 +929,7 @@ namespace std {
 		//Sprawdzanie pierwszego parametru (Filed1) w relacji Follows
 		if (field1->getType() == "constant" && field2->getType() != "constant") {
 			int param = field1->getIntegerValue();
-			//Dodanie warto�ci constant do listy 1
+			//Dodanie wartoci constant do listy 1
 			setLines1.insert(param);
 			//Sprawdzanie czym jest drugi parametr i ewentualne pobranie listy
 			if (field2->getType() == "stmt" || field2->getType() == "any") {
@@ -957,7 +957,7 @@ namespace std {
 		else if (field1->getType() != "constant"
 			&& field2->getType() == "constant") {
 			int param = field2->getIntegerValue();
-			//Dodanie warto�ci constant do listy 2
+			//Dodanie wartoci constant do listy 2
 			setLines2.insert(param);
 			//Sprawdzanie czym jest pierwszy parametr i ewentualne pobranie listy
 			if (field1->getType() == "stmt" || field1->getType() == "any") {
@@ -991,7 +991,7 @@ namespace std {
 		}
 		else {
 			// Pobranie listy dla pierwszego parametru
-			// Any - TZN. dowolna warto�� z dost�pnych czyli stmt
+			// Any - TZN. dowolna wartoæ z dostêpnych czyli stmt
 			if (field1->getType() == "stmt" || field1->getType() == "any") {
 				setLines1 = pkb->getLineTable()->getOrderedAssignLines();
 				set<int> pom = pkb->getLineTable()->getOrderedWhileLines();
@@ -1037,38 +1037,38 @@ namespace std {
 			}
 		}
 
-		// Skr�cenie listy parametru 1 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 1 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field1->getType() != "constant" && field1->getType() != "any")
 			setLines1 = cutSetLines(field1->getValue(), setLines1);
-		// Skr�cenie listy parametru 2 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 2 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field2->getType() != "constant" && field2->getType() != "any")
 			setLines2 = cutSetLines(field2->getValue(), setLines2);
 
 		vector<int> resultPart;
-		// Sprawdzenie czy wszystkie parametry by�y dobre, je�eli nie return pusta lista - TZN. by� b��d przy parsowaniu lub walidacji
+		// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
 		if (!setLines1.empty() && !setLines2.empty()) {
 			for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 				for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 					if (pkb->getFollows()->follows(*l1, *l2) == true) {
 						if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
-							// Je�eli oba parametry s� takie same a nie s� to constant to znaczy �e nie ma odpowiedzi
+							// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 							//cout << "-" << endl;
 							return resultPart;
 						}
 						else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
-							// Je�eli pierwszy parametr jest tym kt�rego szukamy to wybieramy z listy pierwszej
+							// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 							//cout << "L1 " << *l1 << endl;
 							if (find(resultPart.begin(), resultPart.end(), *l1) >= resultPart.end())
 								resultPart.push_back(*l1);
 						}
 						else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
-							// Je�eli drugi parametr jest tym kt�rego szukamy to wybieramy z listy drugiej
+							// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 							//cout << "L2 " << *l2 << endl;
 							if (find(resultPart.begin(), resultPart.end(), *l2) >= resultPart.end())
 								resultPart.push_back(*l2);
 						}
 						else {
-							// Je�eli �aden parametr nie jest tym kt�rego szukamy to zwracamy wszystkie warto�ci
+							// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoci
 							//cout << "ALL" << endl;
 							return lines;
 						}
@@ -1092,7 +1092,7 @@ namespace std {
 		//Sprawdzanie pierwszego parametru (Filed1) w relacji Follows
 		if (field1->getType() == "constant" && field2->getType() != "constant") {
 			int param = field1->getIntegerValue();
-			//Dodanie warto�ci constant do listy 1
+			//Dodanie wartoci constant do listy 1
 			setLines1.insert(param);
 			//Sprawdzanie czym jest drugi parametr i ewentualne pobranie listy
 			if (field2->getType() == "stmt" || field2->getType() == "any") {
@@ -1120,7 +1120,7 @@ namespace std {
 		else if (field1->getType() != "constant"
 			&& field2->getType() == "constant") {
 			int param = field2->getIntegerValue();
-			//Dodanie warto�ci constant do listy 2
+			//Dodanie wartoci constant do listy 2
 			setLines2.insert(param);
 			//Sprawdzanie czym jest pierwszy parametr i ewentualne pobranie listy
 			if (field1->getType() == "stmt" || field1->getType() == "any") {
@@ -1154,7 +1154,7 @@ namespace std {
 		}
 		else {
 			// Pobranie listy dla pierwszego parametru
-			// Any - TZN. dowolna warto�� z dost�pnych czyli stmt
+			// Any - TZN. dowolna wartoæ z dostêpnych czyli stmt
 			if (field1->getType() == "stmt" || field1->getType() == "any") {
 				setLines1 = pkb->getLineTable()->getOrderedAssignLines();
 				set<int> pom = pkb->getLineTable()->getOrderedWhileLines();
@@ -1209,39 +1209,39 @@ namespace std {
 		cout << endl;
 		*/
 
-		// Skr�cenie listy parametru 1 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 1 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field1->getType() != "constant" && field1->getType() != "any")
 			setLines1 = cutSetLines(field1->getValue(), setLines1);
-		// Skr�cenie listy parametru 2 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 2 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field2->getType() != "constant" && field2->getType() != "any")
 			setLines2 = cutSetLines(field2->getValue(), setLines2);
 
 		vector<int> resultPart;
-		// Sprawdzenie czy wszystkie parametry by�y dobre, je�eli nie return pusta lista - TZN. by� b��d przy parsowaniu lub walidacji
+		// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
 		if (!setLines1.empty() && !setLines2.empty()) {
 			for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 				for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
 					if (pkb->getFollows()->followsStar(*l1, *l2) == true) {
 						//cout << "FOLLOWS TRUE" << endl;
 						if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
-							// Je�eli oba parametry s� takie same a nie s� to constant to znaczy �e nie ma odpowiedzi
+							// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 							//cout << "-" << endl;
 							return resultPart;
 						}
 						else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
-							// Je�eli pierwszy parametr jest tym kt�rego szukamy to wybieramy z listy pierwszej
+							// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 							//cout << "L1 " << *l1 << endl;
 							if (find(resultPart.begin(), resultPart.end(), *l1) >= resultPart.end())
 								resultPart.push_back(*l1);
 						}
 						else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l2) != lines.end()) {
-							// Je�eli drugi parametr jest tym kt�rego szukamy to wybieramy z listy drugiej
+							// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 							//cout << "L2 " << *l2 << endl;
 							if (find(resultPart.begin(), resultPart.end(), *l2) >= resultPart.end())
 								resultPart.push_back(*l2);
 						}
 						else {
-							// Je�eli �aden parametr nie jest tym kt�rego szukamy to zwracamy wszystkie warto�ci
+							// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoci
 							//cout << "ALL" << endl;
 							return lines;
 						}
@@ -1382,15 +1382,15 @@ namespace std {
 			}
 		}
 
-		// Skr�cenie listy parametru 1 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 1 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field1->getType() != "constant" && field1->getType() != "any")
 			setLines1 = cutSetLines(field1->getValue(), setLines1);
-		// Skr�cenie listy parametru 2 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 2 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field2->getType() != "constant" && field2->getType() != "any")
 			setLines2 = cutSetLines(field2->getValue(), setLines2);
 
 		vector<int> resultPart;
-		// Sprawdzenie czy wszystkie parametry by�y dobre, je�eli nie return pusta lista - TZN. by� b��d przy parsowaniu lub walidacji
+		// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
 		if (!setLines1.empty() && !setLines2.empty()) {
 			for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
 				for (set<int>::iterator l2 = setLines2.begin(); l2 != setLines2.end(); ++l2) {
@@ -1400,12 +1400,12 @@ namespace std {
 						usesPairs.insert(std::pair<string, int>(std::make_pair(pkb->getVarTable()->getVarName((*l2)), *l1)));
 
 						if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
-							// Je�eli oba parametry s� takie same a nie s� to constant to znaczy �e nie ma odpowiedzi
+							// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 							//cout << "-" << endl;
 							return resultPart;
 						}
 						else if (selectValue == field1->getValue() && selectValue != "boolean") {
-							// Je�eli pierwszy parametr jest tym kt�rego szukamy to wybieramy z listy pierwszej
+							// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 							//cout << "L1 " << *l1 << endl;
 							if (find(resultPart.begin(), resultPart.end(), *l1) >= resultPart.end())
 							{
@@ -1413,7 +1413,7 @@ namespace std {
 							}
 						}
 						else if (selectValue == field2->getValue() && selectValue != "boolean") {
-							// Je�eli drugi parametr jest tym kt�rego szukamy to wybieramy z listy drugiej
+							// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
 							//cout << "L2 " << *l2 << endl;
 							if (find(resultPart.begin(), resultPart.end(), *l1) >= resultPart.end())
 							{
@@ -1421,7 +1421,7 @@ namespace std {
 							}
 						}
 						else {
-							// Je�eli �aden parametr nie jest tym kt�rego szukamy to zwracamy wszystkie warto�ci
+							// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoci
 							//cout << "ALL" << endl;
 							return lines;
 						}
@@ -1494,11 +1494,11 @@ namespace std {
 			}
 		}
 
-		// Skr�cenie listy parametru 1 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 1 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field1->getType() != "constant" && field1->getType() != "any") {
 			candidatesForParameter1 = cutSetLines(field1->getValue(), candidatesForParameter1);
 		}
-		// Skr�cenie listy parametru 2 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 2 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field2->getType() != "constant" && field2->getType() != "any") {
 			candidatesForParameter2 = cutSetLines(field2->getValue(), candidatesForParameter2);
 		}
@@ -1653,11 +1653,11 @@ namespace std {
 		cout << endl;
 		*/
 
-		// Skr�cenie listy parametru 1 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 1 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field1->getType() != "constant" && field1->getType() != "any") {
 			candidatesForParameter1 = cutSetLines(field1->getValue(), candidatesForParameter1);
 		}
-		// Skr�cenie listy parametru 2 bior�c pod uwag� cz�ci zapytania z 'with'
+		// Skrócenie listy parametru 2 bior¹c pod uwagê czêci zapytania z 'with'
 		if (field2->getType() != "constant" && field2->getType() != "any") {
 			candidatesForParameter2 = cutSetLines(field2->getValue(), candidatesForParameter2);
 		}
@@ -1858,7 +1858,6 @@ namespace std {
 		}
 		else
 		cout << value1 << endl;
-
 		cout << "Lista 2: ";
 		if(!setLines2.empty())
 		{

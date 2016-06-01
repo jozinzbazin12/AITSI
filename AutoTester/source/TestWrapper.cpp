@@ -59,11 +59,22 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
   // ...code to evaluate query...
   // store the answers to the query in the results list (it is initially empty)
   // each result must be a string.
-	QueryPreProcessor* que = new QueryPreProcessor();
-	que->parseQuery(query);
-	PQLTree* tree = que->getTree();
-	vector<string> resultsTmp = queEva->getResult(tree);
-	copy(resultsTmp.begin(), resultsTmp.end(), back_inserter(results));
-	delete que;
-	delete tree;
+	try {
+		QueryPreProcessor* que = new QueryPreProcessor();
+		que->parseQuery(query);
+		PQLTree* tree = que->getTree();
+		vector<string> resultsTmp = queEva->getResult(tree);
+		copy(resultsTmp.begin(), resultsTmp.end(), back_inserter(results));
+		delete que;
+		delete tree;
+	}
+	catch (const char* ex) {
+		vector<string> tmp;
+		string query = pql->getQuery();
+		if (query.find("BOOLEAN") <= query.length())
+			results.push_back("false");
+		else
+			copy(tmp.begin(), tmp.end(), back_inserter(results));
+		cerr << ex << endl;
+	}
 }
