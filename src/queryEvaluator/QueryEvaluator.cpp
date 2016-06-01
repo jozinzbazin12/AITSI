@@ -31,27 +31,8 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 	bool isModifies = false;
 	bool isUses = false;
 
-	/***** Wype³nienie pomocniczej usesLines i usesIDs *****/
+	firstUses = true;
 
-	map<int,vector<int>> tmpUsesLines = pkb->getUses()->getAllUses();
-	for (map<int, vector<int>>::iterator it = tmpUsesLines.begin(); it != tmpUsesLines.end(); ++it)
-	{
-		//usesIDs.insert((*it).first);
-		vector<int> tmp = (*it).second;
-		for(size_t i = 0 ; i < tmp.size() ; i++)
-		{
-			//usesLines.insert(tmp[i]);
-			//usesPairs.insert(std::pair<string,int>(std::make_pair(pkb->getVarTable()->getVarName((*it).first),tmp[i])));
-		}
-	}
-
-	/*
-	cout << "PAIRS " << endl;
-	for (set<std::pair<string,int>>::iterator i = usesPairs.begin(); i != usesPairs.end(); ++i) {
-		cout << (*i).first << " " << (*i).second << endl;
-	}
-	cout << endl;
-	*/
 	/***** Szukanie odpowiedzi przy pomocy relacji *****/
 
 	while (begin != end) {
@@ -143,12 +124,7 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 					}
 					//zwykly Uses
 					else {
-						vector<int> tmpLines = getUsesResult((*begin)->data->getField1(), (*begin)->data->getField2(), lines, selectValue);
-						for(size_t i = 0 ; i < tmpLines.size() ; i++)
-						{
-							if(find(lines.begin(), lines.end(), tmpLines[i]) == lines.end())
-								lines.push_back(tmpLines[i]);
-						}
+						lines = getUsesResult((*begin)->data->getField1(), (*begin)->data->getField2(), lines, selectValue);
 
 						//cout << "Uses" << endl;
 						isUses = true;
@@ -199,28 +175,6 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 		cout << "---> " << lines[i] << endl;
 	}
 	*/
-	if(isUses && !isModifies)
-	{
-		set<int> uL;
-		for (set<std::pair<string,int>>::iterator l1 = usesPairs.begin(); l1 != usesPairs.end(); ++l1) {
-			uL.insert((*l1).second);
-		}
-
-		vector<int> tmpL;
-		for (size_t i = 0 ; i < lines.size(); i++) {
-			if(find(uL.begin(),uL.end(),lines[i]) != uL.end() && find(tmpL.begin(), tmpL.end(), lines[i]) == tmpL.end())
-				tmpL.push_back(lines[i]);
-		}
-		lines = tmpL;
-
-		/*
-		for(size_t i = 0 ; i < lines.size() ; i++)
-		{
-			cout << "LINES ---> " << lines[i] << endl;
-		}
-		*/
-		cutUsesPairs(lines);
-	}
 
 	/*
 	for (set<std::pair<string,int>>::iterator i = usesPairs.begin(); i != usesPairs.end(); ++i) {
@@ -249,30 +203,25 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 				}
  				else if(resultType == "variable")
 				{
+					if(isUses && !isModifies) // Wyst¹pi³a tylko relacja -> Uses
+					{
+						for (set<std::pair<string,int>>::iterator it = usesPairs.begin(); it != usesPairs.end(); ++it) {
+							//cout << "(P) PAIR ---> " << (*i).first << " " << (*i).second << endl;
+							if((*it).second == lines[i] && find(result.begin(),result.end(),(*it).first) == result.end())
+							{
+								result.push_back((*it).first);
+							}
+						}
+					}
+
 					map<int,vector<int>> varUsesLines = pkb -> getUses() -> getAllUses();
 					map<int,vector<int>> varModifiesLines = pkb -> getModifies() -> getAllModifies();
 					vector<int> variableIds;
 					if(withMap.count(selectValue) > 0) variableIds = withMap[selectValue];
 
-					if(isUses && !isModifies) // Wyst¹pi³a tylko relacja -> Uses
+					if(!isUses && isModifies) // Wyst¹pi³a tylko relacja -> Modifies
 					{
-						for (map<int, vector<int>>::iterator it = varUsesLines.begin(); it != varUsesLines.end(); ++it)
-						{
-							vector<int> tmp = (*it).second;
-							if(find(tmp.begin(), tmp.end(), lines[i]) != tmp.end())
-							{
-								string name = pkb -> getVarTable() -> getVarName((*it).first);
-								std::pair<string,int> pair = { pkb->getVarTable()->getVarName((*it).first), lines[i]};
 
-								if(find(result.begin(), result.end(), name) == result.end()
-										&& (find(variableIds.begin(),variableIds.end(), (*it).first) != variableIds.end() || variableIds.empty())
-										&& find(usesPairs.begin(),usesPairs.end(),pair) != usesPairs.end())
-									result.push_back(name);
-							}
-						}
-					}
-					else if(!isUses && isModifies) // Wyst¹pi³a tylko relacja -> Modifies
-					{
 						for (map<int, vector<int>>::iterator it = varModifiesLines.begin(); it != varModifiesLines.end(); ++it)
 						{
 							vector<int> tmp = (*it).second;
@@ -321,6 +270,7 @@ vector<string> QueryEvaluator::getResult(PQLTree *Tree) {
 							}
 						}
 					}
+
 				}
 				else
 				{
@@ -356,23 +306,28 @@ vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vect
 	set<int> setLines1;
 	set<int> setLines2;
 
-	if(field1->getType() == "constant" && field2->getType() == "constant")
+	if(field1->getType() == "constant" && field2->getType() != "constant")
 	{
-		int param1 = field1->getIntegerValue();
-		string param2 = pkb->getVarTable()->getVarName(field2->getIntegerValue());
-		setLines1.insert(param1);
-		if(!param2.empty())
-		{
-			setLines2.insert(field2->getIntegerValue());
-		}
-	}
-	else if(field1->getType() == "constant" && field2->getType() != "constant")
-	{
-		int param1 = field1->getIntegerValue();
-		setLines1.insert(param1);
+		  int param1 = field1->getIntegerValue();
+		  vector<int> a = pkb->getLineTable()->getCallLines();
+		  if(find(a.begin(),a.end(),param1) != a.end())
+		  {
+		   string name = pkb->getLineTable()->getCalledProcName(param1);
+		   vector<int> b = pkb->getProcTable()->getProcedureBodyLines(pkb->getProcTable()->getProcId(name));
+		   setLines1.insert(b.begin(),b.end());
+		  }
+		  else if(pkb->getProcTable()->getMaxProcId() >= param1)
+		  {
+		   string name = pkb->getProcTable()->getProcName(param1);
+		   vector<int> b = pkb->getProcTable()->getProcedureBodyLines(pkb->getProcTable()->getProcId(name));
+		   setLines1.insert(b.begin(),b.end());
+		  }
+		  else
+		  setLines1.insert(param1);
 
-		if(field2->getType() == "variable")
+		if(field2->getType() == "variable" || field2->getType() == "any")
 		{
+
 			vector<string> tmp = pkb->getVarTable()->getAllVar();
 			for(size_t i = 0 ; i < tmp.size() ; i++)
 			{
@@ -386,94 +341,7 @@ vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vect
 				setLines2.insert(param2);
 		}
 	}
-	else if(field1->getType() != "constant" && field2->getType() == "constant")
-	{
-		//if
-		//while
-		//assign
-		//procedure
-		//call
-		if(field1->getType() == "if")
-		{
-			map<int,vector<int>> ifLinesStart = pkb->getLineTable()->getIfBodyLines();
-
-			for (map<int, vector<int>>::iterator it = ifLinesStart.begin(); it != ifLinesStart.end(); ++it) {
-				vector<int> ifLines = (*it).second;
-				//setLines1.insert((*it).first);
-				for(size_t i = 0 ; i < ifLines.size() ; i++)
-				{
-					setLines1.insert(ifLines[i]);
-				}
-			}
-		}
-		else if(field1->getType() == "while")
-		{
-			map<int,vector<int>> whileLinesStart = pkb->getLineTable()->getWhileBodyLines();
-
-			for (map<int, vector<int>>::iterator it = whileLinesStart.begin(); it != whileLinesStart.end(); ++it) {
-				vector<int> whileLines = (*it).second;
-				//setLines1.insert((*it).first);
-				for(size_t i = 0 ; i < whileLines.size() ; i++)
-				{
-					setLines1.insert(whileLines[i]);
-				}
-			}
-		}
-		else if(field1->getType() == "assign")
-		{
-			setLines1 = pkb->getLineTable()->getOrderedAssignLines();
-		}
-		else if(field1->getType() == "procedure")
-		{
-			map<int,vector<int>> procLinesStart = pkb->getProcTable()->getProceduresBodyLines();
-
-			for (map<int, vector<int>>::iterator it = procLinesStart.begin(); it != procLinesStart.end(); ++it)
-			{
-				vector<int> procLines = (*it).second;
-				int procParam = pkb->getProcTable()->getProcStartLine((*it).first);
-				setLines1.insert(procParam);
-				for(size_t i = 0 ; i < procLines.size() ; i++)
-				{
-					setLines1.insert(procLines[i]);
-				}
-			}
-		}
-		else if(field1->getType() == "call")
-		{
-			vector<int> callLinesStart = pkb->getLineTable()->getCallLines();
-			for(size_t i = 0 ; i < callLinesStart.size() ; i++)
-			{
-				string procName = pkb->getLineTable()->getCalledProcName(callLinesStart[i]);
-				int procId = pkb->getProcTable()->getProcId(procName);
-				if(procId != -1)
-				{
-					vector<int> callLines = pkb->getProcTable()->getProcedureBodyLines(procId);
-
-					for(size_t j = 0 ; j < callLines.size() ; j++)
-					{
-						setLines1.insert(callLines[j]);
-					}
-				}
-			}
-		}
-		else if(field1->getType() == "string")
-		{
-			int procId = pkb->getProcTable()->getProcId(field1->getValue());
-			if(procId != -1)
-			{
-				vector<int> procLines = pkb->getProcTable()->getProcedureBodyLines(procId);
-
-				for(size_t j = 0 ; j < procLines.size() ; j++)
-				{
-					setLines1.insert(procLines[j]);
-				}
-			}
-		}
-
-		int param2 = field2->getIntegerValue();
-		setLines2.insert(param2);
-	}
-	else
+	else if(field1->getType() != "constant" && field2->getType() != "constant")
 	{
 		//Sprawdzenie atrybutu z pola 1
 		if(field1->getType() == "if")
@@ -482,7 +350,6 @@ vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vect
 
 			for (map<int, vector<int>>::iterator it = ifLinesStart.begin(); it != ifLinesStart.end(); ++it) {
 				vector<int> ifLines = (*it).second;
-				//setLines1.insert((*it).first);
 				for(size_t i = 0 ; i < ifLines.size() ; i++)
 				{
 					setLines1.insert(ifLines[i]);
@@ -495,7 +362,6 @@ vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vect
 
 			for (map<int, vector<int>>::iterator it = whileLinesStart.begin(); it != whileLinesStart.end(); ++it) {
 				vector<int> whileLines = (*it).second;
-				//setLines1.insert((*it).first);
 				for(size_t i = 0 ; i < whileLines.size() ; i++)
 				{
 					setLines1.insert(whileLines[i]);
@@ -552,9 +418,17 @@ vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vect
 				}
 			}
 		}
+		else if(field1->getType() == "stmt")
+		{
+			vector<int> allLines = pkb->getLineTable()->getLines();
+			for(size_t j = 0 ; j < allLines.size() ; j++)
+			{
+				setLines1.insert(allLines[j]);
+			}
+		}
 
 		//Sprawdzenie atrybutu z pola 2
-		if(field2->getType() == "variable")
+		if(field2->getType() == "variable" || field2->getType() == "any")
 		{
 			vector<string> tmp = pkb->getVarTable()->getAllVar();
 			for(size_t i = 0 ; i < tmp.size() ; i++)
@@ -571,47 +445,12 @@ vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vect
 	}
 
 	// Skrócenie listy parametru 1 bior¹c pod uwagê czêœci zapytania z 'with'
-	if(field1->getType() != "constant")
+	if(field1->getType() != "constant" && field1->getType() != "any")
 		setLines1 = cutSetLines(field1->getValue(), setLines1);
 	// Skrócenie listy parametru 2 bior¹c pod uwagê czêœci zapytania z 'with'
-
-	/*
-	set<int> tmpSetLines2;
-	map<int,vector<int>> varLines = pkb -> getUses() ->getAllUses();
-	for (set<int>::iterator l1 = setLines2.begin(); l1 != setLines2.end(); ++l1)
-	{
-		for (map<int, vector<int>>::iterator it = varLines.begin(); it != varLines.end(); ++it)
-		{
-			if(*l1 == (*it).first)
-			{
-				vector<int> tmp = (*it).second;
-				for(size_t j = 0 ; j < tmp.size() ; j++)
-				{
-					tmpSetLines2.insert(tmp[j]);
-				}
-			}
-		}
-	}
-    */
-	if(field2->getType() != "constant")
+	if(field2->getType() != "constant" && field2->getType() != "any")
 		setLines2 = cutSetLines(field2->getValue(), setLines2);
 
-	/*
-	setLines2.clear();
-	for (set<int>::iterator l1 = tmpSetLines2.begin(); l1 != tmpSetLines2.end(); ++l1) {
-		for (map<int, vector<int>>::iterator it = varLines.begin(); it != varLines.end(); ++it)
-		{
-			vector<int> tmp = (*it).second;
-			for(size_t j = 0 ; j < tmp.size() ; j++)
-			{
-				if(tmp[j] == *l1 && find(setLines2.begin(),setLines2.end(), *l1) == setLines2.end())
-				{
-					setLines2.insert((*it).first);
-				}
-			}
-		}
-	}
-	*/
 
 	vector<int> resultPart;
 	// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
@@ -623,19 +462,22 @@ vector<int> QueryEvaluator::getModifiesResult(Field* field1, Field* field2, vect
 						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 						//cout << "-" << endl;
 						return resultPart;
-					} else if (selectValue == field1->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
+					} else if (selectValue == field1->getValue() && selectValue != "boolean") {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
 						//cout << "L1 " << *l1 << endl;
 						if(find(resultPart.begin(),resultPart.end(),*l1) >= resultPart.end())
+						{
 							resultPart.push_back(*l1);
-					} else if (selectValue == field2->getValue() && selectValue != "boolean" && find(lines.begin(), lines.end(), *l1) != lines.end()) {
+						}
+					} else if (selectValue == field2->getValue() && selectValue != "boolean") {
 						// Je¿eli drugi parametr jest tym którego szukamy to wybieramy z listy drugiej
-						//cout << "L2 " << *l2 << endl;
 						if(find(resultPart.begin(),resultPart.end(),*l1) >= resultPart.end())
+						{
 							resultPart.push_back(*l1);
+						}
 					} else {
+						cout<<"wlazi"<<endl;
 						// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
-						//cout << "ALL" << endl;
 						return lines;
 					}
 				}
@@ -1170,7 +1012,21 @@ vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<i
 	if(field1->getType() == "constant" && field2->getType() != "constant")
 	{
 		int param1 = field1->getIntegerValue();
-		setLines1.insert(param1);
+		vector<int> a = pkb->getLineTable()->getCallLines();
+		if(find(a.begin(),a.end(),param1) != a.end())
+		{
+			string name = pkb->getLineTable()->getCalledProcName(param1);
+			vector<int> b = pkb->getProcTable()->getProcedureBodyLines(pkb->getProcTable()->getProcId(name));
+			setLines1.insert(b.begin(),b.end());
+		}
+		else if(pkb->getProcTable()->getMaxProcId() >= param1)
+		{
+			string name = pkb->getProcTable()->getProcName(param1);
+			vector<int> b = pkb->getProcTable()->getProcedureBodyLines(pkb->getProcTable()->getProcId(name));
+			setLines1.insert(b.begin(),b.end());
+		}
+		else
+			setLines1.insert(param1);
 
 		if(field2->getType() == "variable" || field2->getType() == "any")
 		{
@@ -1266,7 +1122,7 @@ vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<i
 				}
 			}
 		}
-		else if(field1->getType() == "any" || field1->getType() == "stmt")
+		else if(field1->getType() == "stmt")
 		{
 			vector<int> allLines = pkb->getLineTable()->getLines();
 			for(size_t j = 0 ; j < allLines.size() ; j++)
@@ -1300,6 +1156,7 @@ vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<i
 		setLines2 = cutSetLines(field2->getValue(), setLines2);
 
 	vector<int> resultPart;
+	set<std::pair<string,int>> tmpUsesPairs;
 	// Sprawdzenie czy wszystkie parametry by³y dobre, je¿eli nie return pusta lista - TZN. by³ b³¹d przy parsowaniu lub walidacji
 	if (!setLines1.empty() && !setLines2.empty()) {
 		for (set<int>::iterator l1 = setLines1.begin(); l1 != setLines1.end(); ++l1) {
@@ -1307,11 +1164,23 @@ vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<i
 				if (pkb->getUses()->uses(*l1, pkb->getVarTable()->getVarName(*l2)) == true) {
 
 					cout << "USES: "<< pkb->getVarTable()->getVarName(*l2) << " --- " << *l1 << endl;
-					usesPairs.insert(std::pair<string,int>(std::make_pair(pkb->getVarTable()->getVarName((*l2)),*l1)));
+
+					if(firstUses == true)
+					{
+						cout << "(1) " << firstUses << endl;
+						usesPairs.insert(std::pair<string,int>(std::make_pair(pkb->getVarTable()->getVarName((*l2)),*l1)));
+					}
+					else
+					{
+						cout << "(2) " << firstUses << endl;
+						tmpUsesPairs.insert(std::pair<string,int>(std::make_pair(pkb->getVarTable()->getVarName((*l2)),*l1)));
+					}
 
 					if (selectValue == field1->getValue() && selectValue == field2->getValue() && selectValue != "boolean") {
 						// Je¿eli oba parametry s¹ takie same a nie s¹ to constant to znaczy ¿e nie ma odpowiedzi
 						//cout << "-" << endl;
+						firstUses = false;
+						usesPairs.clear();
 						return resultPart;
 					} else if (selectValue == field1->getValue() && selectValue != "boolean") {
 						// Je¿eli pierwszy parametr jest tym którego szukamy to wybieramy z listy pierwszej
@@ -1330,13 +1199,65 @@ vector<int> QueryEvaluator::getUsesResult(Field* field1, Field* field2, vector<i
 					} else {
 						// Je¿eli ¿aden parametr nie jest tym którego szukamy to zwracamy wszystkie wartoœci
 						//cout << "ALL" << endl;
+						firstUses = false;
 						return lines;
 					}
 				}
 			}
 		}
+
+		//////////////////////////////////////////////////////////
+
+
+		if(firstUses != true)
+		{
+			set<string> usesPairsName;
+			set<string> actPairsName;
+			set<int> usesPairsLines;
+			set<int> actPairsLines;
+
+			cout << endl;
+			for (set<std::pair<string,int>>::iterator it = tmpUsesPairs.begin(); it != tmpUsesPairs.end(); ++it) {
+				actPairsName.insert((*it).first);
+				actPairsLines.insert((*it).second);
+
+				cout << "TMP USES ---> " << (*it).first << " " << (*it).second << endl;
+			}
+			cout << endl;
+			for (set<string>::iterator it = actPairsName.begin(); it != actPairsName.end(); ++it) {
+				cout << "ACT NAME ---> " << (*it) << endl;
+			}
+			cout << endl;
+			for (set<int>::iterator it = actPairsLines.begin(); it != actPairsLines.end(); ++it) {
+				cout << "ACT LINE ---> " << (*it) << endl;
+			}
+			cout << endl;
+
+			for (set<std::pair<string,int>>::iterator it = usesPairs.begin(); it != usesPairs.end(); ++it) {
+
+				if(find(actPairsName.begin(),actPairsName.end(),(*it).first) == actPairsName.end())
+				{
+					//usesPairsName.insert((*it).first);
+					cout << "Usuwam: " << (*it).first << " " << (*it).second << endl;
+					usesPairs.erase(*it);
+				}
+				if(find(actPairsLines.begin(),actPairsLines.end(),(*it).second) == actPairsLines.end())
+				{
+					//usesPairsLines.insert((*it).second);
+					cout << "Usuwam: " << (*it).first << " " << (*it).second << endl;
+					usesPairs.erase(*it);
+				}
+			}
+
+			for (set<std::pair<string,int>>::iterator it = usesPairs.begin(); it != usesPairs.end(); ++it) {
+				cout << "PAIR ---> " << (*it).first << " " << (*it).second << endl;
+			}
+		}
+
+		//////////////////////////////////////////////////////////
 	}
 
+	firstUses = false;
 	return resultPart;
 }
 
@@ -1907,7 +1828,7 @@ void QueryEvaluator::cutUsesPairs(vector<int> lines)
 			{
 				for(set<std::pair<string,int>>::iterator it = usesPairs.begin(); it != usesPairs.end(); ++it)
 				{
-					if((*it).first == tmp.first) usesPairs.erase((*it));
+					if((*it).first == tmp.first && (*it).second == tmp.second) usesPairs.erase((*it));
 				}
 			}
 		}
