@@ -1,20 +1,8 @@
-﻿  QueryPreProcessor.cpp
+﻿  QueryEvaluator.cpp
 d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(115): warning C4018: '>': signed/unsigned mismatch
 d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(134): warning C4018: '<': signed/unsigned mismatch
 d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(134): warning C4018: '>': signed/unsigned mismatch
 d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(145): warning C4018: '<': signed/unsigned mismatch
 d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(145): warning C4018: '>': signed/unsigned mismatch
 d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(177): warning C4018: '<': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\querypreprocessor.h(510): warning C4018: '<': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\querypreprocessor.h(607): warning C4018: '<': signed/unsigned mismatch
-  AITSI.cpp
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(115): warning C4018: '>': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(134): warning C4018: '<': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(134): warning C4018: '>': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(145): warning C4018: '<': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(145): warning C4018: '>': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(177): warning C4018: '<': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\querypreprocessor.h(510): warning C4018: '<': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\querypreprocessor.h(607): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
   SPA.vcxproj -> D:\Workspace\AiTSI\EmptyGeneralTesting\Debug\SPA.lib

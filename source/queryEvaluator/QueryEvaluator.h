@@ -50,6 +50,7 @@ namespace std {
 		string resultType;
 
 		set<std::pair<string, int>> usesPairs;
+		bool firstUses;
 
 		void cutUsesPairs(vector<int> lines);
 	};

@@ -1,14 +1,4 @@
-﻿  TestWrapper.cpp
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(115): warning C4018: '>': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(134): warning C4018: '<': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(134): warning C4018: '>': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(145): warning C4018: '<': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(145): warning C4018: '>': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\parserpql\matcherpql.h(177): warning C4018: '<': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\querypreprocessor.h(510): warning C4018: '<': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\source\querypreprocessor.h(607): warning C4018: '<': signed/unsigned mismatch
-d:\workspace\aitsi\emptygeneraltesting\autotester\source\testwrapper.cpp(11): warning C4356: 'AbstractWrapper::GlobalStop': static data member cannot be initialized via derived class
-AutoTester_debug.lib(AutoTester.obj) : warning LNK4099: PDB 'AutoTester.pdb' was not found with 'AutoTester_debug.lib(AutoTester.obj)' or at 'D:\Workspace\AiTSI\EmptyGeneralTesting\Debug\AutoTester.pdb'; linking object as if no debug info
+﻿AutoTester_debug.lib(AutoTester.obj) : warning LNK4099: PDB 'AutoTester.pdb' was not found with 'AutoTester_debug.lib(AutoTester.obj)' or at 'D:\Workspace\AiTSI\EmptyGeneralTesting\Debug\AutoTester.pdb'; linking object as if no debug info
 AutoTester_debug.lib(Query.obj) : warning LNK4099: PDB 'AutoTester.pdb' was not found with 'AutoTester_debug.lib(Query.obj)' or at 'D:\Workspace\AiTSI\EmptyGeneralTesting\Debug\AutoTester.pdb'; linking object as if no debug info
 AutoTester_debug.lib(QueryManager.obj) : warning LNK4099: PDB 'AutoTester.pdb' was not found with 'AutoTester_debug.lib(QueryManager.obj)' or at 'D:\Workspace\AiTSI\EmptyGeneralTesting\Debug\AutoTester.pdb'; linking object as if no debug info
 AutoTester_debug.lib(Tokenizer.obj) : warning LNK4099: PDB 'AutoTester.pdb' was not found with 'AutoTester_debug.lib(Tokenizer.obj)' or at 'D:\Workspace\AiTSI\EmptyGeneralTesting\Debug\AutoTester.pdb'; linking object as if no debug info
