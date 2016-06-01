@@ -65,7 +65,7 @@ private:
 		while (pos != string::npos) {
 			//elems.push_back(s.substr(0, pos));
 			positions.push_back(pos);
-			pos = s.find(token, pos + 3);
+			pos = s.find(token, pos + 5);
 		}
 
 		int p1 = 0;
@@ -76,7 +76,7 @@ private:
 			for (size_t i = 0; i < positions.size(); i++) {
 				pos = positions[i];
 				elems.push_back(s.substr(p1,pos-p1));
-				p1 = pos + 3;
+				p1 = pos + 5;
 			}
 			elems.push_back(s.substr(p1,p2-p1));
 		}
@@ -354,7 +354,7 @@ private:
 		//cout << suchPart << endl;
 		vector<string> suchParts = split(suchPart," and ");
 
-		//writeVector(suchParts);
+		writeVector(suchParts);
 
 		string suchType;
 		vector<Field*> attr;
