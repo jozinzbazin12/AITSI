@@ -349,6 +349,7 @@ Select s such that Parent (s, 9) with s.stmt#=8
 
 5000
 999999999
+
 Select BOOLEAN such that Parent (8, 9)
 
 5000
