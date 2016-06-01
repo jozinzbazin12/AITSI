@@ -6,6 +6,7 @@
 #include <iterator>
 #include <sstream>
 #include <map>
+#include <utility>
 #ifndef _GLIBCXX_VECTOR
 #include <vector>
 #endif
@@ -17,7 +18,6 @@
 #endif
 
 namespace std {
-
 	class QueryEvaluator {
 	public:
 		QueryEvaluator();
@@ -48,8 +48,11 @@ namespace std {
 		map<string, vector<int>> withMap;
 		set<int> cutSetLines(string fieldValue, set<int> setLines);
 		string resultType;
-	};
 
+		set<std::pair<string, int>> usesPairs;
+
+		void cutUsesPairs(vector<int> lines);
+	};
 } /* namespace std */
 
 #endif /* SRC_QUERYEVALUATOR_QUERYEVALUATOR_H_ */

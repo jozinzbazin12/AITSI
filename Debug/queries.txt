@@ -68,3 +68,43 @@ stmt s;
 Select s such that Calls* ("Circle","Triangle")
 1
 5000
+8909 - id
+stmt s; 
+Select s such that Parent (s, _)
+8, 10, 18, 23, 24
+5000
+666
+stmt s, s1;
+Select s such that Parent (s, s1) with s1.stmt#=13
+8
+5000
+777
+stmt s, s1;
+Select s such that Parent (s, s1) with s1.stmt#=11
+10
+5000
+888
+
+Select BOOLEAN such that Parent (8, 9)
+true
+5000
+999
+stmt s; 
+Select BOOLEAN such that Parent (s, 9) with s.stmt#=8
+true
+5000
+1001
+stmt s;
+Select s such that Parent (s, 9) with s.stmt#=8
+8
+5000
+2002
+while w; 
+Select w such that Modifies (w, "t")
+18
+5000
+3003
+assign a; 
+Select a such that Modifies (a, "t") and Uses (a, "c")
+19
+5000
